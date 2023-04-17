@@ -1,0 +1,14 @@
+//
+// Created by bruger on 17-04-2023.
+//
+
+#ifndef FAGPROJEKTLORA2023_SETTINGS_H
+#define FAGPROJEKTLORA2023_SETTINGS_H
+
+#define UP_KEY 0
+#define RIGHT_KEY 1
+#define LEFT_KEY 2
+#define BACK_KEY 3
+#define ENTER_KEY 4
+
+#endif //FAGPROJEKTLORA2023_SETTINGS_H

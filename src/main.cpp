@@ -1,4 +1,5 @@
 #include <Arduino.h>
+#include <ssd1306.h>
 void setup() {
 // write your initialization code here
 }
