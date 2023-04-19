@@ -12,5 +12,6 @@
 #include "mbedtls/ctr_drbg.h"
 #include "mbedtls/sha256.h"
 #include "sha/sha_parallel_engine.h"
+#include "Utility.h"
 
 #endif //FAGPROJEKTLORA2023_CRYPTOGRAPHER_H

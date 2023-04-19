@@ -14,6 +14,7 @@
 
 //RSA related errors
 #define RSA_ERR_INPUT_EXCEEDS_MAX_LEN -69
+#define RSA_ERR_OUTPUT_EXCEEDS_OUTPUT_ARRAY_LEN -68
 
 //Identification/Network related
 #define IDLen 20 //How many of the chars we take from the hash

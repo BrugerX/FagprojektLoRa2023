@@ -14,7 +14,6 @@
 #include "Utility.h"
 #include "Cryptography/Cryptographer.h"
 #include "Cryptography/Cryptographer.cpp"
-#include "Cryptography/RSAEncryption.cpp"
 
 #include "HardwareMacros.h"
 
@@ -84,6 +83,7 @@ void setup(){
 
     result = generate_keys_PK_context(&key,&ctr_drbg);
 
+
     int res = 0;
 
     Serial.println("___________________PROGRAM_START_________________________"); //We get a lot of fluffer at the start of the program
@@ -91,6 +91,12 @@ void setup(){
 
     //SPIFFS
     FileManager * spiff = new SPIFFSFileManager();
+
+    RSACryptographer * rsaCryptographer = new RSACryptographer();
+    unsigned char inputArray[2000];
+    fill_alphanumeric_unsignedString(inputArray,sizeof(inputArray));
+    println_unsignedString(inputArray,2000,CHR);
+    unsigned char outputArray[256];
 
 
 
