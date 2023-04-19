@@ -1,6 +1,9 @@
 //
 // Created by DripTooHard on 03-04-2023.
 //
+
+#ifndef UNTITLED1_KEYGENERATION_H
+#define UNTITLED1_KEYGENERATION_H
 #include "Arduino.h"
 #include "CryptographicSettings.cpp"
 #include "mbedtls/rsa.h"
@@ -11,10 +14,8 @@
 #include "sha/sha_parallel_engine.h"
 
 
-#ifndef UNTITLED1_KEYGENERATION_H
-#define UNTITLED1_KEYGENERATION_H
 
-#endif //UNTITLED1_KEYGENERATION_H
+
 static const char* TAG = "RSACryptography";
 
 
@@ -46,3 +47,6 @@ int generate_keys_PK_context(mbedtls_pk_context * key,mbedtls_ctr_drbg_context *
  *  \return BooleanTrue: Otherwise
  */
 int verify_ptxt_SHA256hash(const unsigned char * plainText, size_t plaintext_len, unsigned char * suppossed_hash, size_t hashSize);
+
+
+#endif //UNTITLED1_KEYGENERATION_H
