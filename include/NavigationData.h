@@ -4,10 +4,11 @@ using namespace std;
 #define NAVIGATION_DATA_H
 class NavigationData {
     private:
-    char * timeStamp;
+    char * timestamp;
 
     public:
     NavigationData();
+    char * getTimestamp();
 
 };
 

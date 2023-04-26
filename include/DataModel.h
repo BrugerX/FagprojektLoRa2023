@@ -1,5 +1,7 @@
 #include "DataView.h"
 #include "Settings.h"
+#include "Member.h"
+#include <vector>
 
 using namespace std;
 
@@ -12,25 +14,28 @@ class DataModel{
 private:
     DataView view;
     char state;
-    char numberOfGroupMembers;
+    //char numberOfGroupMembers;
     char tableIndex;
-    char coordinates[32][2];
-    char currentMember;
+    //char coordinates[32][2];
+    vector<Member> groupMembers;
+
 
 
 public:
     DataModel(char state, DataView dataView);
-    char tableID[32][8];
-    char tableName[32][8];
-    void changeCurrentLocation(char userInput);
-    char findMember(char * ID);
-    void changeMemberLocation(char userInput, char memberIndex);
+    //char tableID[32][8];
+    //char tableName[32][8];
+    void changeCurrentLocation(char x, char y);
+    char findMemberIndex(char * ID);
+    void changeMemberLocation(char x, char y, char memberIndex);
     char getTableIndex();
-    char getCurrentMember();
-    void changeCurrentMember(char userInput);
+    char getCurrentMemberIndex();
     void changeTableIndex(char userInput);
     char getState();
     void setState(char newState);
+    char getNumberOfMembers();
+    char * getMemberName(char index);
+    char * getMemberTimestamp(char index);
 
 };
 #endif //DATAMODEL_H

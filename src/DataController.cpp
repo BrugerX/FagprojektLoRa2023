@@ -29,7 +29,19 @@ switch(this->model.getState()){
         break;
     case TABLE_STATE:
         ssd1306_clear_screen(dev, 0);
-        this->view.drawIDTable(this->model.tableID, this->model.tableName, dev);
+        char tableID[4][8];
+        char timestamp[4][8];
+        unsigned char lowerBound;
+        model.getCurrentMemberIndex() + 4 > model.getNumberOfMembers() ? lowerBound = model.getNumberOfMembers()-4 : model.getCurrentMemberIndex();
+        for(lowerBound; lowerBound < lowerBound+4; lowerBound++){
+            char * IDString = model.getMemberName(lowerBound);
+            char * timestampString = model.getMemberTimestamp(lowerBound);
+            for(unsigned char i=0; i < 8; i++){
+                tableID[lowerBound][i] = IDString[i];
+                timestamp[lowerBound][i] = timestampString[i];
+            }
+        }
+        this->view.drawIDTable(tableID, timestamp, dev);
         if(userInput == ENTER_KEY) {
             //Show more user info
         }
