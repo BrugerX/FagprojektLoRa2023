@@ -4,6 +4,7 @@ using namespace std;
 #define NAVIGATION_DATA_H
 class NavigationData {
     private:
+    char * timeStamp;
 
     public:
     NavigationData();

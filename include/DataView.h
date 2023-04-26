@@ -1,5 +1,7 @@
 #include <ssd1306.h>
 #include "Settings.h"
+#include "CompassViewer.h"
+#include "TableViewer.h"
 
 using namespace std;
 
@@ -10,6 +12,8 @@ using namespace std;
 
 class DataView {
 private:
+    NavigationViewer compassViewer;
+    TableViewer tableViewer;
     void scrollTextUp(SSD1306_t * dev, char * text, char length);
     void scrollTextDown(SSD1306_t * dev, char * text, char length);
     void scrollTableUp(SSD1306_t * dev, char * ID, char * name);

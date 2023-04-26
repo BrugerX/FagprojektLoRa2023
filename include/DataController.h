@@ -1,6 +1,7 @@
 #include "DataView.h"
 #include "DataModel.h"
 #include "Settings.h"
+#include <ssd1306.h>
 
 using namespace std;
 
@@ -10,14 +11,13 @@ using namespace std;
 
 class DataController{
 private:
-    char state;
     DataModel model;
     DataView view;
     void updateModel(char input); //many more methods
 
 public:
-    DataController(DataModel datamodel, DataView dataView, char state);
-    void handleUserInput(char userInput);
+    DataController(DataView dataView); //DataModel datamodel, DataView dataView
+    void handleUserInput(char userInput, SSD1306_t * dev);
 
 };
 #endif //DATACONTROLLER_H
