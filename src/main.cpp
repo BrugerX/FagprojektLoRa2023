@@ -29,22 +29,6 @@ unsigned char a[2] = "a";
 unsigned char outputBuf[SHA256_OUTPUT_BUFFERLEN];
 unsigned char ID[IDLen];
 unsigned char outputBufDecrypt[SHA256_OUTPUT_BUFFERLEN];
-size_t outputSize;
-size_t outputSizeDecrypt;
-int sizeOfKey;
-
-
-
-TinyGPSPlus gps;
-
-//Spiffy part of the code
-esp_vfs_spiffs_conf_t SPIFFS_conf;
-
-
-
-mbedtls_ctr_drbg_context ctr_drbg;
-mbedtls_pk_context key;
-int result = getready_CTRDRBG_context(&ctr_drbg);
 
 /**
  * Finds the size of an RSA key formatted in PEM format
@@ -78,10 +62,15 @@ int findStartingIndexPEMFile(unsigned char * PEMBuffer,size_t sizeOfBuffer){
 }
 
 
+mbedtls_ctr_drbg_context ctr_CTX;
+mbedtls_pk_context RSA_ctx;
+
+
+
+
 void setup(){
     Serial.begin(9600);
 
-    result = generate_keys_PK_context(&key,&ctr_drbg);
 
 
     int res = 0;
@@ -92,13 +81,45 @@ void setup(){
     //SPIFFS
     FileManager * spiff = new SPIFFSFileManager();
 
-    RSACryptographer * rsaCryptographer = new RSACryptographer();
-    unsigned char inputArray[2000];
+    /*
+    auto * rsaCryptographer = new RSACryptographer();
+
+    if(rsaCryptographer->generate_CTRX_context() != 0){
+        Serial.println("Error generating CTR");
+    }
+    if(rsaCryptographer->generate_key() != 0){
+        Serial.println("Error");
+    }
+
+    if(rsaCryptographer->validate_key() != 0){
+        Serial.println("Error");
+    }*/
+
+    getready_CTRDRBG_context(&ctr_CTX);
+    generate_keys_PK_context(&RSA_ctx,&ctr_CTX);
+
+    unsigned char inputArray[30];
+    unsigned char outputArray[4000];
+    size_t oLen;
+
     fill_alphanumeric_unsignedString(inputArray,sizeof(inputArray));
-    println_unsignedString(inputArray,2000,CHR);
-    unsigned char outputArray[256];
+    println_unsignedString(inputArray,sizeof(inputArray),CHR);
+
+    res = rsaCryptographer->encrypt(inputArray,sizeof(inputArray),outputArray,sizeof(outputArray),&oLen);
+    if(res != 0){
+        Serial.println("Error encrypting");
+        Serial.println(res);
+    }
 
 
+    println_unsignedString(outputArray,sizeof(inputArray),CHR);
+
+
+    //fill_alphanumeric_unsignedString(outputArray,sizeof(outputArray));
+    rsaCryptographer->decrypt(outputArray,oLen,outputArray,sizeof(outputArray),&oLen);
+
+    //mbedtls_pk_encrypt(&key,(const unsigned char *)inputArray,sizeof(inputArray),outputArray,&oLen,sizeof(outputArray),mbedtls_ctr_drbg_random,&ctr_drbg);
+    println_unsignedString(outputArray,oLen,CHR);
 
 
 
