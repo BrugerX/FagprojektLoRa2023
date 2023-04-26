@@ -11,6 +11,7 @@
 #define LEFT_KEY 2
 #define DOWN_KEY 3
 #define ENTER_KEY 4
+#define BACK_KEY 5
 
 //state definitions
 #define START_STATE 0
