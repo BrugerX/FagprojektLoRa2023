@@ -33,7 +33,7 @@ void println_unsignedString(const unsigned char * unsginedString,int strlen, int
     Serial.print("\n");
 }
 
-//Generates the following array ReGex [A-z]^(sizeOf)
+//Generates the following array ReGex [A,B,C,...,z]^(|[A,B,C,...,z]|%(sizeOf))
 void fill_alphanumeric_unsignedString(unsigned char * unsignedString, size_t sizeOf){
     unsigned char a = 'A';
 
@@ -43,7 +43,7 @@ void fill_alphanumeric_unsignedString(unsigned char * unsignedString, size_t siz
         //91 is not an alphanumeric char
         if(a == 91){
             a = 97; //The ASCII value for 'a'
-        } else if(a == 173){
+        } else if(a == 122){
             a = 65; //ASCII for 'A'
         }
     }

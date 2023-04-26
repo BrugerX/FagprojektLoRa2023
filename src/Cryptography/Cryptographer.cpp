@@ -10,24 +10,24 @@ protected:
 
 public:
     Cryptographer(){
-        if(generate_CTRX_context() != 0){
-            throw;
-        }
     }
 
     virtual ~Cryptographer(){}
 
     //TODO: Add PEMformatter
 
-    virtual int encrypt(unsigned char * inputArray, size_t inputLen, unsigned char * outputArray, size_t * outLen) = 0;
-    virtual int decrypt(unsigned char * inputArray, size_t inputLen, unsigned char * outputArray, size_t * outLen) = 0;
+    virtual int encrypt(unsigned char * inputArray, size_t inputLen, unsigned char * outputArray, size_t outSize, size_t * outLen) = 0;
+    virtual int decrypt(unsigned char * inputArray, size_t inputLen, unsigned char * outputArray,size_t outSize, size_t * outLen) = 0;
     virtual int generate_key() = 0;
     virtual int validate_key() = 0;
+
     int generate_CTRX_context(){
+        mbedtls_ctr_drbg_free(&CTR_ctx);
         mbedtls_entropy_context entropy; //Used to seed the drbg
 
-        mbedtls_ctr_drbg_init(&this->CTR_ctx);
         mbedtls_entropy_init(&entropy);
+        mbedtls_ctr_drbg_init(&this->CTR_ctx);
+
 
         Serial.println("Seeding the random number generator...");
         int ret = (mbedtls_ctr_drbg_seed(&this->CTR_ctx, mbedtls_entropy_func, &entropy, NULL, 0)) != 0;
@@ -39,7 +39,12 @@ public:
             //ESP_LOGE(TAG, "mbedtls_ctr_drbg_seed returned %d", ret);
         }
 
-        return 0;};
+        return 0;
+    };
+
+    mbedtls_ctr_drbg_context get_CTRX_context(){
+        return CTR_ctx;
+    }
 
 };
 
@@ -51,11 +56,10 @@ protected:
 public:
     RSACryptographer()
     {
-        generate_CTRX_context();
-        generate_key();
 
     }
-    ~RSACryptographer(){}
+    ~RSACryptographer(
+            ){}
 
 
     /**
@@ -67,8 +71,7 @@ public:
      * @param isEncryption : 0 if we're decrypting, 1 if we're encrypting
      * @return 0 if succesfull, otherwise a specified error code
      */
-    int use_key(unsigned char * inputArray, size_t inputLen, unsigned char * outputArray, size_t * outLen, int isEncryption){
-        size_t outArrSize = sizeof(outputArray);
+    int use_key(unsigned char * inputArray, size_t inputLen, unsigned char * outputArray,size_t outSize, size_t * outLen, int isEncryption){
         int res;
 
         //The input is larger than what our encryption algorithm can handle
@@ -81,16 +84,18 @@ public:
         }
 
         if(isEncryption) {
-            res = mbedtls_pk_encrypt(&this->RSA_ctx, inputArray, inputLen, (unsigned char *) outputArray, outLen,
-                                     outArrSize, mbedtls_ctr_drbg_random, &this->CTR_ctx);
+            res = mbedtls_pk_encrypt(&this->RSA_ctx, inputArray, inputLen,  outputArray, outLen,
+                                     outSize, mbedtls_ctr_drbg_random, &this->CTR_ctx);
         }
         else{
-            res =  mbedtls_pk_decrypt(&this->RSA_ctx, inputArray,inputLen,( unsigned char *) outputArray, outLen, outArrSize ,mbedtls_ctr_drbg_random,&this->CTR_ctx);
+            res =  mbedtls_pk_decrypt(&this->RSA_ctx, inputArray,inputLen, outputArray, outLen, outSize ,mbedtls_ctr_drbg_random,&this->CTR_ctx);
         }
 
         //If our output is larger than the array
-        if(*outLen>outArrSize){
-            Serial.println("Output length exceeds size of the outputArray");
+        if(*outLen>outSize){
+            Serial.println("ERROR: Output length exceeds size of the outputArray");
+            Serial.println(*outLen);
+            Serial.println(outSize);
             return RSA_ERR_OUTPUT_EXCEEDS_OUTPUT_ARRAY_LEN;
         }
 
@@ -98,25 +103,25 @@ public:
 
     }
 
-    int encrypt(unsigned char * inputArray, size_t inputLen, unsigned char * outputArray, size_t * outLen){
+    int encrypt(unsigned char * inputArray, size_t inputLen, unsigned char * outputArray,size_t outSize, size_t * outLen){
 
-        return use_key(inputArray, inputLen, outputArray, outLen, 1);
+
+        return use_key(inputArray, inputLen, outputArray, outSize, outLen, 1);
 
     }
 
-    int decrypt(unsigned char * inputArray, size_t inputLen, unsigned char * outputArray, size_t * outLen) {
+    int decrypt(unsigned char * inputArray, size_t inputLen, unsigned char * outputArray,size_t outSize, size_t * outLen) {
 
-        return use_key(inputArray, inputLen, outputArray, outLen, 0);
+        return use_key(inputArray, inputLen, outputArray, outSize, outLen, 0);
 
     }
 
     int generate_key(){
-        mbedtls_rsa_context rsa_cntx;
-
         mbedtls_pk_init(&RSA_ctx);
 
 
         int ret = mbedtls_pk_setup(&RSA_ctx, mbedtls_pk_info_from_type(MBEDTLS_PK_RSA));
+        Serial.println("Initializing key context...");
         ESP_LOGI(TAG_MAIN, "Initializing key context...");
         if (ret != 0)
         {
@@ -124,7 +129,7 @@ public:
             return RSABooleanFalse;
         }
 
-        ESP_LOGI(TAG, "Generating the private key...");
+        Serial.println("Generating the private key...");
         ret = mbedtls_rsa_gen_key(mbedtls_pk_rsa(RSA_ctx), mbedtls_ctr_drbg_random, &CTR_ctx, pubKeyLen, RSAPubKeyEXPONENT);
         if (ret != 0)
         {
@@ -137,6 +142,10 @@ public:
 
     int validate_key(){
         return mbedtls_pk_check_pair(&this->RSA_ctx,&this->RSA_ctx);
+    }
+
+    mbedtls_pk_context get_RSA_context(){
+        return this->RSA_ctx;
     }
 
 };
