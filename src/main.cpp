@@ -61,9 +61,7 @@ int findStartingIndexPEMFile(unsigned char * PEMBuffer,size_t sizeOfBuffer){
     return PEM_ERR_NO_PEM_FILE;
 }
 
-
-mbedtls_ctr_drbg_context ctr_CTX;
-mbedtls_pk_context RSA_ctx;
+auto * rsaCryptographer = new RSACryptographer();
 
 
 
@@ -95,8 +93,6 @@ void setup(){
         Serial.println("Error");
     }*/
 
-    getready_CTRDRBG_context(&ctr_CTX);
-    generate_keys_PK_context(&RSA_ctx,&ctr_CTX);
 
     unsigned char inputArray[30];
     unsigned char outputArray[4000];
