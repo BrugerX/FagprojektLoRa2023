@@ -18,6 +18,6 @@ private:
 public:
     DataController(DataView dataView); //DataModel datamodel, DataView dataView
     void handleUserInput(char userInput, SSD1306_t * dev);
-
+    char getModelState();
 };
 #endif //DATACONTROLLER_H

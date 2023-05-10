@@ -16,6 +16,7 @@ private:
     char state;
     //char numberOfGroupMembers;
     char tableIndex;
+    char topTableIndex;
     //char coordinates[32][2];
     vector<Member> groupMembers;
 
@@ -30,12 +31,16 @@ public:
     void changeMemberLocation(char x, char y, char memberIndex);
     char getTableIndex();
     char getCurrentMemberIndex();
-    void changeTableIndex(char userInput);
+    void changeTableIndex(char userInput, SSD1306_t *dev);
     char getState();
     void setState(char newState);
     char getNumberOfMembers();
-    char * getMemberName(char index);
+    char * getMemberID(char index);
     char * getMemberTimestamp(char index);
+    void initializeTable(SSD1306_t * dev);
+    void addGroupMember(Member groupMember);
+    void removeGroupMember(char index);
+    void removeGroupMember(Member groupMember);
 
 };
 #endif //DATAMODEL_H

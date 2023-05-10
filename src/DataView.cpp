@@ -60,10 +60,10 @@ void DataView::drawCompass(SSD1306_t * dev) {
     uint8_t W_top[7] = {0xf0,0xf0,0x00,0x00,0x00,0xf0,0xf0};
     uint8_t W_bottom[7] = {0x0f,0x0f,0x06,0x03,0x06,0x0f,0x0f};*/
     //char width = 7;
-    drawTextAt(61, 0, (char*) "N", 0, dev);
-    drawTextAt(61, 56, (char*) "S", 0, dev);
-    drawTextAt(25, 28, (char*)"W", 0, dev);
-    drawTextAt(97, 28, (char*) "E", 0, dev);
+    drawTextAt(61, 0, (char *) "N", 1, 0, dev);
+    drawTextAt(61, 56, (char *) "S", 1, 0, dev);
+    drawTextAt(25, 28, (char *) "W", 1, 0, dev);
+    drawTextAt(97, 28, (char *) "E", 1, 0, dev);
     drawCircle(64, 32, 31, dev);
     drawCircle(64, 32, 15, dev);
     //ssd1306_show_buffer(dev);
@@ -171,7 +171,7 @@ void DataView::displayText(char *text, SSD1306_t * dev) {
 //Draws text starting at the specified location, does not make you all text fits on screen.
 //this method expects 0 <= x <= 127 and 0 <= y <= 63 but will not fail it not satisfied.
 //If text is too long, then it overflows 1 pixel down, from the other side.
-void DataView::drawTextAt(char x, char y, char * text, bool invert, SSD1306_t * dev) {
+void DataView::drawTextAt(char x, char y, char *text, char length, bool invert, SSD1306_t *dev) {
     /*char page = y >> 3; //integer division by 8
     char yOffset = y - (page << 3);
     ssd1306_display_text(dev, page, text, strlen(text), 0);
@@ -181,7 +181,7 @@ void DataView::drawTextAt(char x, char y, char * text, bool invert, SSD1306_t * 
     for(char i = 0; i < x; i++){
         ssd1306_wrap_arround(dev, SCROLL_RIGHT, 0, 63, 0); //scrolls once start at seg 0 and to seg 127 (the whole line)
     }*/
-    int textLength = strlen(text);
+    int textLength = length;
     char offset = 0;
     for(int i = 0; i < textLength; i++){
         uint8_t * image = font8x8_basic_tr[(uint8_t) text[i]];
@@ -228,41 +228,42 @@ void DataView::drawRectangle(char x, char y, char length, char height, SSD1306_t
     ESP_LOGD(TAG, "successfully displayed rectangle");
 }
 
-void DataView::scrollTableUp(SSD1306_t * dev, char * ID, char * name){
+void DataView::scrollTableUp(SSD1306_t * dev, char * ID, char * name){ //only display 8 first characters of string
     char clearingString[] = "        ";
     for(char j = 0; j < 16; j++){
         ssd1306_wrap_arround(dev, SCROLL_UP, 0, 127, 0); //scrolls once start at seg 0 and to seg 127 (the whole line)
     }
-    ssd1306_display_text(dev, 6, clearingString, strlen(clearingString), 0);
-    drawTextAt(65, 48, clearingString, 0, dev);
-    ssd1306_display_text(dev, 6, ID, strlen(ID), 0);
-    drawTextAt(65, 48, name, 0, dev);
+    ssd1306_display_text(dev, 6, clearingString, 8, 0);
+    drawTextAt(65, 48, clearingString, 8, 0, dev);
+    ssd1306_display_text(dev, 6, ID, 8, 0);
+    drawTextAt(65, 48, name, 8, 0, dev);
 }
 
-void DataView::scrollTableDown(SSD1306_t * dev, char * ID, char * name){
+void DataView::scrollTableDown(SSD1306_t * dev, char * ID, char * name){ //only display 8 first characters of string
     char clearingString[] = "        ";
     for(char j = 0; j < 16; j++){
         ssd1306_wrap_arround(dev, SCROLL_DOWN, 0, 127, 0); //scrolls once start at seg 0 and to seg 127 (the whole line)
     }
-    ssd1306_display_text(dev, 0, clearingString, strlen(clearingString), 0);
-    drawTextAt(65, 0, clearingString, 0, dev);
-    ssd1306_display_text(dev, 0, ID, strlen(ID), 0);
-    drawTextAt(65, 0, name, 0, dev);
+    ssd1306_display_text(dev, 0, clearingString, 8, 0);
+    drawTextAt(65, 0, clearingString, 8, 0, dev);
+    ssd1306_display_text(dev, 0, ID, 8, 0);
+    drawTextAt(65, 0, name, 8, 0, dev);
 }
 
-void DataView::drawIDTable(char IDs[32][8], char names[32][8], SSD1306_t * dev){
+void DataView::drawIDTable(char startIndex, vector<Member> members, SSD1306_t * dev){ //only display 8 first characters of string
     drawTable(2, 4, dev);
     //fill the table
     signed char i;
     for(i = 0; i < 4; i++){
-        ssd1306_display_text(dev, i*2, IDs[i], strlen(IDs[i]), 0);
-        drawTextAt(65, i*16, names[i], 0, dev);
+        char index = (char) std::abs((int)((i+startIndex) % members.size()));
+        ssd1306_display_text(dev, i*2, members[index].getID(), 8, 0);
+        drawTextAt(65, i * 16, members[index].getNav().getTimestamp(), 8, 0, dev);
     }
-    vTaskDelay(1000);
+    /*vTaskDelay(1000);
     //if everything doesn't fit on the table
     for(; i < 32; i ++) {
         if(strlen(IDs[i]) > 0){
-            scrollTableUp(dev, IDs[i], names[i]);
+            scrollTableUp(dev, IDs[i], timestamps[i]);
             //vTaskDelay(1/1000);
         }
         else {
@@ -274,9 +275,18 @@ void DataView::drawIDTable(char IDs[32][8], char names[32][8], SSD1306_t * dev){
 //works for ID table
 void DataView::highlightTableCell(char row, char column, char * text, SSD1306_t * dev){
     if(column){
-        drawTextAt(65, row*16, text, 1, dev);
+        drawTextAt(65, row * 16, text, 8,1, dev);
     }
     else{
         ssd1306_display_text(dev, row*2, text, strlen(text), 1);
+    }*/
+}
+
+void DataView::highlightTableCell(char row, char column, char *text, char highlight, SSD1306_t *dev) {
+    if(column){
+        drawTextAt(65, row*16, text, 8, highlight, dev);
+    }
+    else {
+        ssd1306_display_text(dev, row*2, text, 8, highlight);
     }
 }
