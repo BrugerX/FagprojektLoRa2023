@@ -74,15 +74,6 @@ public:
     int use_key(unsigned char * inputArray, size_t inputLen, unsigned char * outputArray,size_t outSize, size_t * outLen, int isEncryption){
         int res;
 
-        //The input is larger than what our encryption algorithm can handle
-        if(inputLen>RSA_MAX_INPUT_LEN){
-            Serial.print("ERROR: INPUT: \n");
-            println_unsignedString(inputArray,inputLen,CHR);
-            Serial.print("EXCEEDS MAX ENCRYPTION INPUT LEN: ");
-            Serial.print(RSA_MAX_INPUT_LEN);
-            return RSA_ERR_INPUT_EXCEEDS_MAX_LEN;
-        }
-
         if(isEncryption) {
             res = mbedtls_pk_encrypt(&this->RSA_ctx, inputArray, inputLen,  outputArray, outLen,
                                      outSize, mbedtls_ctr_drbg_random, &this->CTR_ctx);
@@ -92,7 +83,7 @@ public:
         }
 
         //If our output is larger than the array
-        if(*outLen>outSize){
+        if(*outLen>outSize){ //2
             Serial.println("ERROR: Output length exceeds size of the outputArray");
             Serial.println(*outLen);
             Serial.println(outSize);
@@ -103,7 +94,28 @@ public:
 
     }
 
+    /**
+     * @pre inputLen <= |inputArray| && outputSize<=outputArray
+     * @post outLen = |encrypted(inputArray)| && outputArray]0:-outLen] = encrypted(inputArray)
+     * @param inputArray
+     * @param inputLen
+     * @param outputArray
+     * @param outSize
+     * @param outLen
+     * @return
+     */
     int encrypt(unsigned char * inputArray, size_t inputLen, unsigned char * outputArray,size_t outSize, size_t * outLen){
+
+        assert(inputLen<=sizeof(inputArray) && outSize<=sizeof(outputArray)); //0
+
+        //The input is larger than what our encryption algorithm can handle
+        if(inputLen>RSA_MAX_INPUT_LEN){ //1
+            Serial.print("ERROR: INPUT: \n");
+            println_unsignedString(inputArray,inputLen,CHR);
+            Serial.print("EXCEEDS MAX ENCRYPTION INPUT LEN: ");
+            Serial.print(RSA_MAX_INPUT_LEN);
+            return RSA_ERR_INPUT_EXCEEDS_MAX_LEN;
+        }
 
 
         return use_key(inputArray, inputLen, outputArray, outSize, outLen, 1);
@@ -116,6 +128,11 @@ public:
 
     }
 
+    /**
+     * @pre &RSA_ctx != null && RSA_ctx.initialized == True
+     * @post
+     *
+     */
     int generate_key(){
         mbedtls_pk_init(&RSA_ctx);
 
