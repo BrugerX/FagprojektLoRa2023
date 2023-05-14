@@ -79,8 +79,8 @@ void setup(){
     //SPIFFS
     FileManager * spiff = new SPIFFSFileManager();
 
-    /*
-    auto * rsaCryptographer = new RSACryptographer();
+
+
 
     if(rsaCryptographer->generate_CTRX_context() != 0){
         Serial.println("Error generating CTR");
@@ -91,11 +91,11 @@ void setup(){
 
     if(rsaCryptographer->validate_key() != 0){
         Serial.println("Error");
-    }*/
+    }
 
 
-    unsigned char inputArray[30];
-    unsigned char outputArray[4000];
+    unsigned char inputArray[245];
+    unsigned char outputArray[300];
     size_t oLen;
 
     fill_alphanumeric_unsignedString(inputArray,sizeof(inputArray));
@@ -106,7 +106,6 @@ void setup(){
         Serial.println("Error encrypting");
         Serial.println(res);
     }
-
 
     println_unsignedString(outputArray,sizeof(inputArray),CHR);
 
