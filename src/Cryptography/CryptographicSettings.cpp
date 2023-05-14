@@ -9,7 +9,7 @@
 
 //RSA related
 #define RSAPubKeyEXPONENT 65537
-#define pubKeyLen 256 //2048 bits
+#define pubKeyLen 256*8 //2048 bits
 #define RSA_MAX_INPUT_LEN 245 //245 bytes
 
 //RSA related errors
