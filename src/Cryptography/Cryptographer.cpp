@@ -96,7 +96,7 @@ public:
 
     /**
      * @pre inputLen <= |inputArray| && outputSize<=outputArray
-     * @post outLen = |encrypted(inputArray)| && outputArray]0:-outLen] = encrypted(inputArray)
+     * @post outLen = |encrypted(inputArray)| && outputArray[0;outLen] = encrypted(inputArray)
      * @param inputArray
      * @param inputLen
      * @param outputArray
@@ -105,8 +105,6 @@ public:
      * @return
      */
     int encrypt(unsigned char * inputArray, size_t inputLen, unsigned char * outputArray,size_t outSize, size_t * outLen){
-
-        assert(inputLen<=sizeof(inputArray) && outSize<=sizeof(outputArray)); //0
 
         //The input is larger than what our encryption algorithm can handle
         if(inputLen>RSA_MAX_INPUT_LEN){ //1

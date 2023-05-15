@@ -48,3 +48,9 @@ void fill_alphanumeric_unsignedString(unsigned char * unsignedString, size_t siz
         }
     }
 }
+
+void fill_char_unsignedString(unsigned char * unsignedString, size_t sizeOf,unsigned char chosenChar){
+    for(int i = 0; i<sizeOf;i++){
+        unsignedString[i] = chosenChar;
+    }
+}

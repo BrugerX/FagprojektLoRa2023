@@ -20,4 +20,6 @@ void println_unsignedString(const unsigned char * unsginedString,int strlen, int
 
 void fill_alphanumeric_unsignedString(unsigned char * unsignedString, size_t sizeOf);
 
+void fill_char_unsignedString(unsigned char * unsignedString, size_t sizeOf,unsigned char chosenChar);
+
 #endif //UNTITLED1_UTILITY_H

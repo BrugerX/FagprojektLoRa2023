@@ -61,7 +61,7 @@ int findStartingIndexPEMFile(unsigned char * PEMBuffer,size_t sizeOfBuffer){
     return PEM_ERR_NO_PEM_FILE;
 }
 
-auto * rsaCryptographer = new RSACryptographer();
+auto * rsa_Cryptographer = new RSACryptographer();
 
 
 
@@ -82,26 +82,26 @@ void setup(){
 
 
 
-    if(rsaCryptographer->generate_CTRX_context() != 0){
+    if(rsa_Cryptographer->generate_CTRX_context() != 0){
         Serial.println("Error generating CTR");
     }
-    if(rsaCryptographer->generate_key() != 0){
+    if(rsa_Cryptographer->generate_key() != 0){
         Serial.println("Error");
     }
 
-    if(rsaCryptographer->validate_key() != 0){
+    if(rsa_Cryptographer->validate_key() != 0){
         Serial.println("Error");
     }
 
 
-    unsigned char inputArray[245];
+    unsigned char inputArray[10];
     unsigned char outputArray[300];
     size_t oLen;
 
     fill_alphanumeric_unsignedString(inputArray,sizeof(inputArray));
     println_unsignedString(inputArray,sizeof(inputArray),CHR);
 
-    res = rsaCryptographer->encrypt(inputArray,sizeof(inputArray),outputArray,sizeof(outputArray),&oLen);
+    res = rsa_Cryptographer->encrypt(inputArray, sizeof(inputArray), outputArray, sizeof(outputArray), &oLen);
     if(res != 0){
         Serial.println("Error encrypting");
         Serial.println(res);
@@ -111,7 +111,7 @@ void setup(){
 
 
     //fill_alphanumeric_unsignedString(outputArray,sizeof(outputArray));
-    rsaCryptographer->decrypt(outputArray,oLen,outputArray,sizeof(outputArray),&oLen);
+    rsa_Cryptographer->decrypt(outputArray, oLen, outputArray, sizeof(outputArray), &oLen);
 
     //mbedtls_pk_encrypt(&key,(const unsigned char *)inputArray,sizeof(inputArray),outputArray,&oLen,sizeof(outputArray),mbedtls_ctr_drbg_random,&ctr_drbg);
     println_unsignedString(outputArray,oLen,CHR);
