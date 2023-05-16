@@ -1,7 +1,6 @@
 #include <esp_spiffs.h>
 #include "Arduino.h"
-#include "Cryptography/CryptographicSettings.cpp"
-#include "Cryptography/RSAEncryption.h"
+#include "Cryptography/CryptographicSettings.h"
 #include "esp_dsp.h"
 #include "SPIFFS.h"
 #include "Flash/CustomSPIFFS.h"
@@ -12,7 +11,6 @@
 #include "TinyGPSPlus-master/src/TinyGPS++.h"
 #include "stddef.h"
 #include "Utility.h"
-#include "Cryptography/Cryptographer.h"
 #include "Cryptography/Cryptographer.cpp"
 
 #include "HardwareMacros.h"
@@ -61,6 +59,19 @@ int findStartingIndexPEMFile(unsigned char * PEMBuffer,size_t sizeOfBuffer){
     return PEM_ERR_NO_PEM_FILE;
 }
 
+
+
+bool assertNotEqualArray(unsigned char * arr1, unsigned char * arr2, size_t nrElements){
+    for(int i = 0; i<nrElements;i++){
+        if(arr1[i] != arr2[i]){
+            return true;
+        }
+    }
+
+    return false;
+}
+
+
 auto * rsa_Cryptographer = new RSACryptographer();
 
 
@@ -73,51 +84,51 @@ void setup(){
 
     int res = 0;
 
-    Serial.println("___________________PROGRAM_START_________________________"); //We get a lot of fluffer at the start of the program
+    Serial.println("\n___________________PROGRAM_START_________________________"); //We get a lot of fluffer at the start of the program
 
 
     //SPIFFS
     FileManager * spiff = new SPIFFSFileManager();
+    int operation_result;
 
-
-
-
-    if(rsa_Cryptographer->generate_CTRX_context() != 0){
-        Serial.println("Error generating CTR");
-    }
-    if(rsa_Cryptographer->generate_key() != 0){
-        Serial.println("Error");
+    //Get the key ready
+    rsa_Cryptographer->generate_CTRX_context();
+    operation_result = rsa_Cryptographer->generate_key();
+    if(!isGoodResult(operation_result)){
+        Serial.println(-operation_result,HEX);
     }
 
-    if(rsa_Cryptographer->validate_key() != 0){
-        Serial.println("Error");
+    assert(rsa_Cryptographer->validate_key() == RSABooleanTrue);
+
+    mbedtls_pk_context pk_ctx = rsa_Cryptographer->get_RSA_context();
+
+    //Filling the buffer with keys
+    unsigned char * pub;
+    unsigned char * priv;
+    rsa_Cryptographer->get_key_pem(&pub,0);
+    println_unsignedString(pub,PEMPublicKeyLen,CHR);
+    rsa_Cryptographer->get_key_pem(&priv,1);
+    println_unsignedString(priv,PEMPrivKeyLen,CHR);
+
+    //Parsing these keys into a context
+    mbedtls_pk_context pk_ctx_pub;
+    mbedtls_pk_context pk_ctx_priv;
+
+    mbedtls_pk_init(&pk_ctx_pub);
+    mbedtls_pk_init(&pk_ctx_priv);
+    operation_result = mbedtls_pk_parse_public_key(&pk_ctx_pub,pub,PEMPublicKeyLen);
+    if(!isGoodResult(operation_result)){
+        Serial.print(operation_result);
     }
 
-
-    unsigned char inputArray[10];
-    unsigned char outputArray[300];
-    size_t oLen;
-
-    fill_alphanumeric_unsignedString(inputArray,sizeof(inputArray));
-    println_unsignedString(inputArray,sizeof(inputArray),CHR);
-
-    res = rsa_Cryptographer->encrypt(inputArray, sizeof(inputArray), outputArray, sizeof(outputArray), &oLen);
-    if(res != 0){
-        Serial.println("Error encrypting");
-        Serial.println(res);
+    operation_result = mbedtls_pk_parse_key(&pk_ctx_priv,priv,PEMPrivKeyLen,NULL,69);
+    if(!isGoodResult(operation_result)){
+        Serial.print(-operation_result,HEX);
     }
 
-    println_unsignedString(outputArray,sizeof(inputArray),CHR);
-
-
-    //fill_alphanumeric_unsignedString(outputArray,sizeof(outputArray));
-    rsa_Cryptographer->decrypt(outputArray, oLen, outputArray, sizeof(outputArray), &oLen);
-
-    //mbedtls_pk_encrypt(&key,(const unsigned char *)inputArray,sizeof(inputArray),outputArray,&oLen,sizeof(outputArray),mbedtls_ctr_drbg_random,&ctr_drbg);
-    println_unsignedString(outputArray,oLen,CHR);
-
-
-
+    //Asserting, that the keys match
+    assert(mbedtls_pk_check_pair(&pk_ctx_pub,&pk_ctx_priv) == 0);
+    Serial.print("DONEE"); //Print statement for added swag
 };
 
 void loop(){

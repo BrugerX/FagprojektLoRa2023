@@ -132,13 +132,17 @@ public:
      *
      */
     int generate_key(){
+        if(!&RSA_ctx){
+            free_key();
+        }
+
         mbedtls_pk_init(&RSA_ctx);
 
 
         int ret = mbedtls_pk_setup(&RSA_ctx, mbedtls_pk_info_from_type(MBEDTLS_PK_RSA));
         Serial.println("Initializing key context...");
         ESP_LOGI(TAG_MAIN, "Initializing key context...");
-        if (ret != 0)
+        if (ret != RSABooleanTrue)
         {
             ESP_LOGE(TAG_WORDS, "mbedtls_pk_info_from_type returned %d", ret);
             return RSABooleanFalse;
@@ -146,13 +150,13 @@ public:
 
         Serial.println("Generating the private key...");
         ret = mbedtls_rsa_gen_key(mbedtls_pk_rsa(RSA_ctx), mbedtls_ctr_drbg_random, &CTR_ctx, pubKeyLen, RSAPubKeyEXPONENT);
-        if (ret != 0)
+        if (ret != RSABooleanTrue)
         {
             ESP_LOGE(TAG_WORDS, "mbedtls_rsa_gen_key returned %d", ret);
             return RSABooleanFalse;
         }
 
-        return 0;
+        return RSABooleanTrue;
     }
 
     int validate_key(){
@@ -161,6 +165,69 @@ public:
 
     mbedtls_pk_context get_RSA_context(){
         return this->RSA_ctx;
+    }
+
+    int free_key(){
+        mbedtls_pk_free(&RSA_ctx);
+        return 0;
+    }
+
+    /**
+     * @description Takes a pointer to an unsigned char and points it towards an unsigned char array containing (ONLY) the PEM file of the specified key
+     *
+     * @HEAP: THE ARRAY WILL BE STORED ON THE HEAP AND MUST THEREFORE BE MANUALLED FREED AFTERWARDS
+     *
+     * @Note: This method uses huge amounts of memory.
+     *
+     *        For public operation: |final_array| + |temp| >= ~800 + 1500 bytes
+     *        For private operation: |final_array| + |temp| >= ~1500 + 1800 bytes
+     *
+     * @param buf: The buffer which will point towards the PEM file
+     * @param getPrivateKey: Whether we want the private og public pem file
+     * @return Returns 0 if everything went well else specific error code
+     */
+    int get_key_pem(unsigned char ** buf,bool getPrivateKey){
+        int result;
+
+        if(getPrivateKey) {
+            return this->get_priv_key_pem(buf);
+        }else{
+            return this->get_pub_key_pem(buf);
+        }
+
+
+    }
+
+    int get_pub_key_pem(unsigned char ** buf){
+        int result;
+
+        unsigned char * temp = (unsigned char *) malloc(PEMPublicKeyLen * sizeof(unsigned char));
+        result = mbedtls_pk_write_pubkey_pem(&this->RSA_ctx,temp,PEMPublicKeyLen);
+
+        if(!isGoodResult(result)){
+            //TODO: Better exceptions
+            //throw "FAILED TO WRITE PUBLIC KEY TO PEM FILE";
+            Serial.print(-result,HEX);
+        }
+
+        *buf = temp;
+        return result;
+    }
+
+    int get_priv_key_pem(unsigned char ** buf){
+        int result;
+
+        unsigned char * temp = (unsigned char *) malloc(PEMPrivKeyLen * sizeof(unsigned char));
+        result = mbedtls_pk_write_key_pem(&this->RSA_ctx, temp, PEMPrivKeyLen);
+
+        if(!isGoodResult(result)){
+            // TODO: Better exceptions
+            // throw "FAILED TO WRITE PUBLIC KEY TO PEM FILE";
+            Serial.print(-result,HEX);
+        }
+
+        *buf = temp;
+        return result;
     }
 
 };

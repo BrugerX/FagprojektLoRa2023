@@ -8,7 +8,7 @@
 #define UNTITLED1_KEYGENERATION_H
 
 #include "Arduino.h"
-#include "CryptographicSettings.cpp"
+#include "CryptographicSettings.h"
 #include "mbedtls/rsa.h"
 #include "mbedtls/entropy.h"
 #include "mbedtls/pk.h"

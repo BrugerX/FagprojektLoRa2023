@@ -5,7 +5,7 @@
 #ifndef FAGPROJEKTLORA2023_CRYPTOGRAPHER_H
 #define FAGPROJEKTLORA2023_CRYPTOGRAPHER_H
 #include "Arduino.h"
-#include "CryptographicSettings.cpp"
+#include "CryptographicSettings.h"
 #include "mbedtls/rsa.h"
 #include "mbedtls/entropy.h"
 #include "mbedtls/pk.h"
