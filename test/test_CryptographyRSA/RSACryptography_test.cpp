@@ -68,6 +68,7 @@ void tearDown(void){
 }
 
 
+
 //The input size is too big for the RSA algorithm
 void inputIsBiggerThanMaxInput(){
     unsigned char INPUT_ARR[RSA_MAX_INPUT_LEN+1];
@@ -182,72 +183,126 @@ void newGeneratedKeysAreValid(){
     delete temporary_rsa_Cryptographer;
 }
 
+
+//Whenever we generate a new pair of keys, they're unique/not identical with the previous pair
 void newKeyIsUnique(){
 
     unsigned char *priv1, *priv2, *pub1, *pub2;
-    priv1 = (unsigned char *) malloc(PEMPrivKeyLen * sizeof(unsigned char));
-    priv2 = (unsigned char *) malloc(PEMPrivKeyLen * sizeof(unsigned char));
-    pub1 = (unsigned char *) malloc(PEMPublicKeyLen * sizeof(unsigned char));
-    pub2 = (unsigned char *) malloc(PEMPublicKeyLen * sizeof(unsigned char));
-
-    fill_char_unsignedString(priv1,PEMPrivKeyLen,PEM_EMPTY_PLACEHOLDER);
-    fill_char_unsignedString(priv2,PEMPrivKeyLen,PEM_EMPTY_PLACEHOLDER);
-    fill_char_unsignedString(pub1,PEMPublicKeyLen,PEM_EMPTY_PLACEHOLDER);
-    fill_char_unsignedString(pub2,PEMPublicKeyLen,PEM_EMPTY_PLACEHOLDER);
 
     //TODO: Vi får null pointers
     auto * temporary_rsa_Cryptographer = new RSACryptographer();
     temporary_rsa_Cryptographer->generate_CTRX_context();
     temporary_rsa_Cryptographer->generate_key();
 
-    mbedtls_pk_context  rsa_ctx1 = temporary_rsa_Cryptographer->get_RSA_context();
+    //The key we got them from is valid
+    TEST_ASSERT_EQUAL(RSABooleanTrue,temporary_rsa_Cryptographer->validate_key());
 
-    assert(temporary_rsa_Cryptographer->validate_key() == RSABooleanTrue);
-    assert(mbedtls_pk_check_pair(&rsa_ctx1,&rsa_ctx1) == RSABooleanTrue);
 
-    //Fill 1keys
-    operation_result = mbedtls_pk_write_key_pem(&rsa_ctx1,priv1,PEMPrivKeyLen);
+    //Get the public key 1
+    operation_result = temporary_rsa_Cryptographer->get_key_pem(&pub1,0);
 
     if(!isGoodResult(operation_result)){
-        Serial.println(-operation_result,HEX);
-        Serial.print("COULD NOT GENERATE PRIVATE KEY 1 PEM FILE\n");
+        Serial.print(-operation_result,HEX);
+        TEST_FAIL_MESSAGE("UNABLE TO GET PUBLIC KEY 1 PEM\n");
     }
 
-    operation_result = mbedtls_pk_write_pubkey_pem(&rsa_ctx1,pub1,PEMPublicKeyLen);
+    //Get the private key 1
+    operation_result = temporary_rsa_Cryptographer->get_key_pem(&priv1,1);
+
     if(!isGoodResult(operation_result)){
-        Serial.println(-operation_result,HEX);
-        Serial.print("COULD NOT GENERATE PUBLIC KEY 1 PEM FILE\n");
+        Serial.print(-operation_result,HEX);
+        TEST_FAIL_MESSAGE("UNABLE TO GET PRIVATE KEY 1 PEM\n");
     }
 
-    temporary_rsa_Cryptographer->generate_key();
-
-    assert(RSABooleanTrue == temporary_rsa_Cryptographer->validate_key());
-    mbedtls_pk_context  rsa_ctx2 = temporary_rsa_Cryptographer->get_RSA_context();
-
-    //Fill 2keys
-    operation_result = mbedtls_pk_write_key_pem(&rsa_ctx2,priv2,PEMPrivKeyLen);
+    //Generate a new pair of keys
+    operation_result = temporary_rsa_Cryptographer->generate_key();
     if(!isGoodResult(operation_result)){
-        Serial.println(-operation_result,HEX);
-        Serial.print("COULD NOT GENERATE PRIVATE KEY 2 PEM FILE\n");
+        Serial.print(-operation_result,HEX);
+        TEST_FAIL_MESSAGE("UNABLE TO GENERATE NEW PAIR OF KEYS");
     }
 
-    operation_result = mbedtls_pk_write_pubkey_pem(&rsa_ctx2,pub2,PEMPublicKeyLen);
+    //Get the public key 2
+    operation_result = temporary_rsa_Cryptographer->get_key_pem(&pub2,0);
+
     if(!isGoodResult(operation_result)){
-        Serial.println(-operation_result,HEX);
-        Serial.print("COULD NOT GENERATE PUBLIC KEY 2 PEM FILE\n");
+        Serial.print(-operation_result,HEX);
+        TEST_FAIL_MESSAGE("UNABLE TO GET PUBLIC 2 KEY PEM\n");
     }
 
-    println_unsignedString(pub1,PEMPublicKeyLen,CHR);
-    println_unsignedString(pub2,PEMPublicKeyLen,CHR);
-    assert(assertNotEqualArray(priv1, priv2, PEMPrivKeyLen) == true);
-    assert(assertNotEqualArray(pub1, pub2, PEMPublicKeyLen) == true);
+    //Get the private key 1
+    operation_result = temporary_rsa_Cryptographer->get_key_pem(&priv2,1);
+
+    if(!isGoodResult(operation_result)){
+        Serial.print(-operation_result,HEX);
+        TEST_FAIL_MESSAGE("UNABLE TO GET PRIVATE 2 KEY PEM\n");
+    }
+
+    TEST_ASSERT_TRUE(assertNotEqualArray(priv1,priv2,PEMPrivKeyLen));
+    TEST_ASSERT_TRUE(assertNotEqualArray(pub1, pub2, PEMPubKeyLen));
+
     free(priv1);
     free(priv2);
     free(pub1);
     free(pub2);
 }
 
+//If we get the PEM file for public- and private key they're valid together
+void PEMFilesAreValid(){
+    int operation_result;
 
+    //Create a temporary RSA cryptographer
+
+    auto * temporary_rsa_Cryptographer = new RSACryptographer();
+    operation_result = temporary_rsa_Cryptographer->generate_CTRX_context();
+    temporary_rsa_Cryptographer->generate_key();
+
+
+    assert(temporary_rsa_Cryptographer->validate_key() == RSABooleanTrue);
+
+    mbedtls_pk_context pk_ctx = temporary_rsa_Cryptographer->get_RSA_context();
+
+    //Filling the buffer with keys
+    unsigned char * pub;
+    unsigned char * priv;
+    operation_result = temporary_rsa_Cryptographer->get_key_pem(&pub,0);
+    if(!isGoodResult(operation_result)){
+        Serial.print(-operation_result,HEX);
+        TEST_FAIL_MESSAGE("UNABLE TO GET PUBLIC KEY PEM\n");
+        println_unsignedString(pub, PEMPubKeyLen, CHR);
+    }
+
+    operation_result = temporary_rsa_Cryptographer->get_key_pem(&priv,1);
+
+    if(!isGoodResult(operation_result)){
+        Serial.print(-operation_result,HEX);
+        TEST_FAIL_MESSAGE("UNABLE TO GET PRIVATE KEY PEM\n");
+        println_unsignedString(priv,PEMPrivKeyLen,CHR);
+    }
+
+    //Parsing these keys into a context
+    mbedtls_pk_context pk_ctx_pub;
+    mbedtls_pk_context pk_ctx_priv;
+
+    mbedtls_pk_init(&pk_ctx_pub);
+    mbedtls_pk_init(&pk_ctx_priv);
+    operation_result = mbedtls_pk_parse_public_key(&pk_ctx_pub, pub, PEMPubKeyLen);
+    if(!isGoodResult(operation_result)){
+        Serial.print(-operation_result,HEX);
+        TEST_FAIL_MESSAGE("UNABLE TO PARSE PUBLIC KEY");
+    }
+
+    operation_result = mbedtls_pk_parse_key(&pk_ctx_priv,priv,PEMPrivKeyLen,NULL,69);
+    if(!isGoodResult(operation_result)){
+        Serial.print(-operation_result,HEX);
+        TEST_FAIL_MESSAGE("UNABLE TO PARSE PRIVATE KEY");
+    }
+
+    //Asserting, that the keys match
+    TEST_ASSERT_EQUAL(RSABooleanTrue,mbedtls_pk_check_pair(&pk_ctx_pub,&pk_ctx_priv));
+    free(priv);
+    free(pub);
+    delete(temporary_rsa_Cryptographer);
+}
 
 void setup()
 {
@@ -258,15 +313,16 @@ void setup()
     UNITY_BEGIN(); //Define stuff after this
     rsa_Cryptographer.generate_CTRX_context();
     rsa_Cryptographer.generate_key();
-    /*RUN_TEST(inputIsBiggerThanMaxInput);
+    RUN_TEST(inputIsBiggerThanMaxInput);
     RUN_TEST(inputIsSameSizeAsMaxInput);
     RUN_TEST(outLenIsBiggerThanOutputArray);
     RUN_TEST(encrypt_decrypt);
     RUN_TEST(encrypt_decryptInPlace);
     RUN_TEST(validateIsTrueEncryptDecryptWorks);
-    RUN_TEST(validateIsNotTrueEncryptDecryptWorksnt);*/
+    //RUN_TEST(validateIsNotTrueEncryptDecryptWorksnt);
     RUN_TEST(newKeyIsUnique);
     RUN_TEST(newGeneratedKeysAreValid);
+    RUN_TEST(PEMFilesAreValid);
     UNITY_END(); // stop unit testing
 }
 

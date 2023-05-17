@@ -201,8 +201,8 @@ public:
     int get_pub_key_pem(unsigned char ** buf){
         int result;
 
-        unsigned char * temp = (unsigned char *) malloc(PEMPublicKeyLen * sizeof(unsigned char));
-        result = mbedtls_pk_write_pubkey_pem(&this->RSA_ctx,temp,PEMPublicKeyLen);
+        unsigned char * temp = (unsigned char *) malloc(PEMPubKeyLen * sizeof(unsigned char));
+        result = mbedtls_pk_write_pubkey_pem(&this->RSA_ctx, temp, PEMPubKeyLen);
 
         if(!isGoodResult(result)){
             //TODO: Better exceptions

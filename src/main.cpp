@@ -105,8 +105,11 @@ void setup(){
     //Filling the buffer with keys
     unsigned char * pub;
     unsigned char * priv;
-    rsa_Cryptographer->get_key_pem(&pub,0);
-    println_unsignedString(pub,PEMPublicKeyLen,CHR);
+    operation_result = rsa_Cryptographer->get_key_pem(&pub,0);
+    if(!isGoodResult(operation_result)){
+        Serial.println(-operation_result,HEX);
+
+    }
     rsa_Cryptographer->get_key_pem(&priv,1);
     println_unsignedString(priv,PEMPrivKeyLen,CHR);
 
@@ -116,7 +119,7 @@ void setup(){
 
     mbedtls_pk_init(&pk_ctx_pub);
     mbedtls_pk_init(&pk_ctx_priv);
-    operation_result = mbedtls_pk_parse_public_key(&pk_ctx_pub,pub,PEMPublicKeyLen);
+    operation_result = mbedtls_pk_parse_public_key(&pk_ctx_pub, pub, PEMPubKeyLen);
     if(!isGoodResult(operation_result)){
         Serial.print(operation_result);
     }
@@ -128,7 +131,7 @@ void setup(){
 
     //Asserting, that the keys match
     assert(mbedtls_pk_check_pair(&pk_ctx_pub,&pk_ctx_priv) == 0);
-    Serial.print("DONEE"); //Print statement for added swag
+    Serial.print("DONEE"); //Print statement for added swagger
 };
 
 void loop(){
