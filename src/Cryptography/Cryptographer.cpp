@@ -52,6 +52,7 @@ class RSACryptographer : public Cryptographer{
 
 protected:
     mbedtls_pk_context RSA_ctx;
+    mbedtls_pk_context RSA_pub_ctx;
 
 public:
     RSACryptographer()
@@ -75,7 +76,7 @@ public:
         int res;
 
         if(isEncryption) {
-            res = mbedtls_pk_encrypt(&this->RSA_ctx, inputArray, inputLen,  outputArray, outLen,
+            res = mbedtls_pk_encrypt(&this->RSA_pub_ctx, inputArray, inputLen,  outputArray, outLen,
                                      outSize, mbedtls_ctr_drbg_random, &this->CTR_ctx);
         }
         else{
@@ -127,16 +128,19 @@ public:
     }
 
     /**
-     * @pre &RSA_ctx != null && RSA_ctx.initialized == True
-     * @post
+     * @post RSA_ctx.initialized == True, RSA_ctx.can_debug == True
      *
      */
     int generate_key(){
+
+        //If the key has already been initialized we need to reset it.
         if(!&RSA_ctx){
-            free_key();
+            mbedtls_pk_free(&RSA_ctx);
+            mbedtls_pk_free(&RSA_pub_ctx);
         }
 
         mbedtls_pk_init(&RSA_ctx);
+        mbedtls_pk_init(&RSA_pub_ctx);
 
 
         int ret = mbedtls_pk_setup(&RSA_ctx, mbedtls_pk_info_from_type(MBEDTLS_PK_RSA));
@@ -156,6 +160,17 @@ public:
             return RSABooleanFalse;
         }
 
+        unsigned char * PEMpub;
+
+        get_pub_key_pem(&PEMpub);
+        ret = mbedtls_pk_parse_public_key(&RSA_pub_ctx,PEMpub,PEMPubKeyLen);
+        if(ret != RSABooleanTrue){
+            printf("%x",-ret);
+            assert(false);
+        }
+
+        //We malloc'ed the array, so we of course need to delete it afterwards to avoid memory leak ;)
+        free (PEMpub);
         return RSABooleanTrue;
     }
 
