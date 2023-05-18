@@ -23,12 +23,25 @@ int operation_result;
 size_t oLen;
 
 
+bool assertNotEqualArray(unsigned char * arr1, unsigned char * arr2, size_t nrElements){
+    for(int i = 0; i<nrElements;i++){
+        if(arr1[i] != arr2[i]){
+            return true;
+        }
+    }
+
+    TEST_FAIL_MESSAGE("Arrays are equal");
+}
+
+
 int encryptDecrypt(RSACryptographer rsaCrypto){
     operation_result = rsaCrypto.encrypt(STR_TO_ENCRYPT,sizeof(STR_TO_ENCRYPT), OUTPUT_ARRAY, sizeof(OUTPUT_ARRAY), &oLen);
 
     if(!isGoodResult(operation_result)){
         return operation_result;
     }
+
+    assertNotEqualArray(STR_TO_ENCRYPT,OUTPUT_ARRAY,sizeof(STR_TO_ENCRYPT));
 
     operation_result = rsaCrypto.decrypt(OUTPUT_ARRAY,oLen,OUTPUT_ARRAY,sizeof(OUTPUT_ARRAY),&oLen);
 
@@ -40,19 +53,8 @@ int encryptDecrypt(RSACryptographer rsaCrypto){
 
 }
 
-bool assertNotEqualArray(unsigned char * arr1, unsigned char * arr2, size_t nrElements){
-    for(int i = 0; i<nrElements;i++){
-        if(arr1[i] != arr2[i]){
-            return true;
-        }
-    }
 
-    TEST_FAIL_MESSAGE("Arrays are equal");
-}
 
-mbedtls_pk_context getNonValidatedKey(RSACryptographer rsaCryptographer){
-
-}
 
 void setUp(void) {
     // set stuff up here
@@ -130,6 +132,17 @@ void encrypt_decryptInPlace(){
 }
 
 
+
+//Generating new keys makes them valid
+void newGeneratedKeysAreValid(){
+    auto * temporary_rsa_Cryptographer = new RSACryptographer();
+    temporary_rsa_Cryptographer->generate_CTRX_context();
+    temporary_rsa_Cryptographer->generate_key();
+    temporary_rsa_Cryptographer->generate_key();
+    TEST_ASSERT_EQUAL(RSABooleanTrue,temporary_rsa_Cryptographer->validate_key());
+    delete temporary_rsa_Cryptographer;
+}
+
 //RSACryptographer.validate_key() = true <=> decrypt(encrypt(TEXT)) = TEXT
 void validateIsTrueEncryptDecryptWorks(){
     TEST_ASSERT_EQUAL(RSABooleanTrue,rsa_Cryptographer.validate_key());
@@ -143,9 +156,11 @@ void validateIsTrueEncryptDecryptWorks(){
 
 
 //Worksn't, lol
+/*
+ */
 void validateIsNotTrueEncryptDecryptWorksnt(){
-    unsigned char examplePubKey[500];
-    fill_char_unsignedString(examplePubKey,sizeof(examplePubKey),PEM_EMPTY_PLACEHOLDER); //For some reason, we have to fill it with empty placeholders
+    //The private and public keys
+    unsigned char *pub;
 
     auto * temporary_rsa_Cryptographer = new RSACryptographer();
     temporary_rsa_Cryptographer->generate_CTRX_context();
@@ -153,35 +168,45 @@ void validateIsNotTrueEncryptDecryptWorksnt(){
 
     TEST_ASSERT_EQUAL(RSABooleanTrue,temporary_rsa_Cryptographer->validate_key()); //Our key is valid
 
-    mbedtls_pk_context temporary_pk_ctx = temporary_rsa_Cryptographer->get_RSA_context();
-
-    mbedtls_pk_write_pubkey_pem(&temporary_pk_ctx,examplePubKey,sizeof(examplePubKey));
-    mbedtls_pk_free(&temporary_pk_ctx);
-
-    operation_result = mbedtls_pk_parse_public_key(&temporary_pk_ctx,(const unsigned char *) examplePubKey, sizeof(examplePubKey));
+    //The public key will be from the first context
+    operation_result = temporary_rsa_Cryptographer->get_key_pem(&pub,0);
 
     if(!isGoodResult(operation_result)){
-        TEST_FAIL_MESSAGE("COULD NOT PARSE PUBLIC KEY");
+        Serial.print(-operation_result,HEX);
+        TEST_FAIL_MESSAGE("COULD NOT GET PUBLIC KEY PEM FILE");
     }
 
-    TEST_ASSERT_NOT_EQUAL(RSABooleanTrue,temporary_rsa_Cryptographer->validate_key()); //It is no longer valid :D
-    operation_result = encryptDecrypt(*temporary_rsa_Cryptographer);
+    //We first get a public key, which we will use to show, that the validation doesn't turn out to be true
+    mbedtls_pk_context pub_ctx;
+    mbedtls_pk_init(&pub_ctx);
+    operation_result = mbedtls_pk_parse_public_key(&pub_ctx,pub,PEMPubKeyLen);
 
-    TEST_ASSERT_EQUAL(MBEDTLS_ERR_PK_PASSWORD_MISMATCH,operation_result); //The error code, when the given private key doesn't allow for correct decryption
-
-    for(int i = 0; i<sizeof(STR_TO_ENCRYPT);i++){
-        TEST_ASSERT_NOT_EQUAL(STR_TO_ENCRYPT[i],OUTPUT_ARRAY[i]);
+    if(!isGoodResult(operation_result)){
+        Serial.print(-operation_result,HEX);
+        TEST_FAIL_MESSAGE("COULD NOT PARSE PUBLIC KEY PEM");
     }
-}
 
-//Generating new keys makes them valid
-void newGeneratedKeysAreValid(){
-    auto * temporary_rsa_Cryptographer = new RSACryptographer();
-    temporary_rsa_Cryptographer->generate_CTRX_context();
+    //We encrypt the input
+    temporary_rsa_Cryptographer->encrypt(STR_TO_ENCRYPT,sizeof(STR_TO_ENCRYPT),OUTPUT_ARRAY,sizeof(OUTPUT_ARRAY),&oLen);
+
+    //We now fill out the private key with a second context
     temporary_rsa_Cryptographer->generate_key();
+
+    mbedtls_pk_context priv_ctx = temporary_rsa_Cryptographer->get_RSA_context();
+
     TEST_ASSERT_EQUAL(RSABooleanTrue,temporary_rsa_Cryptographer->validate_key());
-    delete temporary_rsa_Cryptographer;
+
+    //We use the public key to encrypt
+    temporary_rsa_Cryptographer->decrypt(OUTPUT_ARRAY,oLen,OUTPUT_ARRAY,sizeof(OUTPUT_ARRAY),&oLen);
+
+
+    TEST_ASSERT_FALSE(RSABooleanTrue == temporary_rsa_Cryptographer->validate_key(pub_ctx,priv_ctx));
+    TEST_ASSERT_TRUE(assertNotEqualArray(OUTPUT_ARRAY,STR_TO_ENCRYPT,sizeof(STR_TO_ENCRYPT)));
+
+    delete(temporary_rsa_Cryptographer);
+    free(pub);
 }
+
 
 
 //Whenever we generate a new pair of keys, they're unique/not identical with the previous pair
@@ -189,14 +214,14 @@ void newKeyIsUnique(){
 
     unsigned char *priv1, *priv2, *pub1, *pub2;
 
-    //TODO: Vi får null pointers
+
+    //Generate the first pair of keys
     auto * temporary_rsa_Cryptographer = new RSACryptographer();
     temporary_rsa_Cryptographer->generate_CTRX_context();
     temporary_rsa_Cryptographer->generate_key();
 
     //The key we got them from is valid
     TEST_ASSERT_EQUAL(RSABooleanTrue,temporary_rsa_Cryptographer->validate_key());
-
 
     //Get the public key 1
     operation_result = temporary_rsa_Cryptographer->get_key_pem(&pub1,0);
@@ -220,6 +245,7 @@ void newKeyIsUnique(){
         Serial.print(-operation_result,HEX);
         TEST_FAIL_MESSAGE("UNABLE TO GENERATE NEW PAIR OF KEYS");
     }
+    TEST_ASSERT_EQUAL(RSABooleanTrue,temporary_rsa_Cryptographer->validate_key());
 
     //Get the public key 2
     operation_result = temporary_rsa_Cryptographer->get_key_pem(&pub2,0);
@@ -229,7 +255,7 @@ void newKeyIsUnique(){
         TEST_FAIL_MESSAGE("UNABLE TO GET PUBLIC 2 KEY PEM\n");
     }
 
-    //Get the private key 1
+    //Get the private key 2
     operation_result = temporary_rsa_Cryptographer->get_key_pem(&priv2,1);
 
     if(!isGoodResult(operation_result)){
@@ -244,6 +270,7 @@ void newKeyIsUnique(){
     free(priv2);
     free(pub1);
     free(pub2);
+    delete(temporary_rsa_Cryptographer);
 }
 
 //If we get the PEM file for public- and private key they're valid together
@@ -298,7 +325,7 @@ void PEMFilesAreValid(){
     }
 
     //Asserting, that the keys match
-    TEST_ASSERT_EQUAL(RSABooleanTrue,mbedtls_pk_check_pair(&pk_ctx_pub,&pk_ctx_priv));
+    TEST_ASSERT_EQUAL(RSABooleanTrue,rsa_Cryptographer.validate_key(pk_ctx_pub,pk_ctx_priv));
     free(priv);
     free(pub);
     delete(temporary_rsa_Cryptographer);
@@ -319,7 +346,7 @@ void setup()
     RUN_TEST(encrypt_decrypt);
     RUN_TEST(encrypt_decryptInPlace);
     RUN_TEST(validateIsTrueEncryptDecryptWorks);
-    //RUN_TEST(validateIsNotTrueEncryptDecryptWorksnt);
+    RUN_TEST(validateIsNotTrueEncryptDecryptWorksnt);
     RUN_TEST(newKeyIsUnique);
     RUN_TEST(newGeneratedKeysAreValid);
     RUN_TEST(PEMFilesAreValid);

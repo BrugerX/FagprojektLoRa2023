@@ -14,4 +14,7 @@
 #include "sha/sha_parallel_engine.h"
 #include "Utility.h"
 
+class Cryptographer;
+class RSACryptographer;
+
 #endif //FAGPROJEKTLORA2023_CRYPTOGRAPHER_H

@@ -163,6 +163,11 @@ public:
         return mbedtls_pk_check_pair(&this->RSA_ctx,&this->RSA_ctx);
     }
 
+    int validate_key(mbedtls_pk_context pub,mbedtls_pk_context priv){
+        return mbedtls_pk_check_pair(&pub,&priv);
+    }
+
+
     mbedtls_pk_context get_RSA_context(){
         return this->RSA_ctx;
     }
