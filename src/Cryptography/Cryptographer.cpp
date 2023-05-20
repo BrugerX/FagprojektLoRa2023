@@ -51,7 +51,6 @@ public:
 class RSACryptographer : public Cryptographer{
 
 protected:
-    mbedtls_pk_context RSA_ctx;
     mbedtls_pk_context RSA_pub_ctx;
     mbedtls_pk_context RSA_priv_ctx;
 private:
@@ -60,7 +59,7 @@ private:
         int result;
 
         unsigned char * temp = (unsigned char *) malloc(PEMPubKeyLen * sizeof(unsigned char));
-        result = mbedtls_pk_write_pubkey_pem(&this->RSA_ctx, temp, PEMPubKeyLen);
+        result = mbedtls_pk_write_pubkey_pem(&this->RSA_pub_ctx, temp, PEMPubKeyLen);
 
         if(!isGoodResult(result)){
             //TODO: Better exceptions
@@ -76,7 +75,7 @@ private:
         int result;
 
         unsigned char * temp = (unsigned char *) malloc(PEMPrivKeyLen * sizeof(unsigned char));
-        result = mbedtls_pk_write_key_pem(&this->RSA_ctx, temp, PEMPrivKeyLen);
+        result = mbedtls_pk_write_key_pem(&this->RSA_priv_ctx, temp, PEMPrivKeyLen);
 
         if(!isGoodResult(result)){
             // TODO: Better exceptions
@@ -166,10 +165,10 @@ public:
      *
      */
     int generate_key(){
+        mbedtls_pk_context RSA_ctx;
 
         //If the key has already been initialized we need to reset it.
-        if(!&RSA_ctx || !&RSA_pub_ctx || !&RSA_priv_ctx){
-            mbedtls_pk_free(&RSA_ctx);
+        if(!&RSA_pub_ctx || !&RSA_priv_ctx){
             mbedtls_pk_free(&RSA_pub_ctx);
             mbedtls_pk_free(&RSA_priv_ctx);
         }
@@ -187,6 +186,7 @@ public:
             return RSABooleanFalse;
         }
 
+
         Serial.println("Generating the private key...");
         ret = mbedtls_rsa_gen_key(mbedtls_pk_rsa(RSA_ctx), mbedtls_ctr_drbg_random, &CTR_ctx, pubKeyLen, RSAPubKeyEXPONENT);
         if (ret != RSABooleanTrue)
@@ -195,22 +195,27 @@ public:
             return RSABooleanFalse;
         }
 
-        unsigned char * PEMpub, * PEMpriv;;
+        //TODO: Turn this into a single function...?
+        //Get PEMfiles in buffers and parse these into their respective keys
+        unsigned char * PEMpub, * PEMpriv;
+        Serial.println("GETTING THE PEM FILES FOR EACH KEY");
+        PEMpub = (unsigned char * ) malloc(PEMPubKeyLen*sizeof(unsigned char));
+        PEMpriv = (unsigned char * ) malloc(PEMPrivKeyLen*sizeof(unsigned char));
 
-        //Parse the public key
-        get_key_pem(&PEMpub,0);
+        assert(isGoodResult(mbedtls_pk_write_pubkey_pem(&RSA_ctx,PEMpub,PEMPubKeyLen)));
+        assert(isGoodResult(mbedtls_pk_write_key_pem(&RSA_ctx,PEMpriv,PEMPrivKeyLen)));
+
+
+        Serial.println("PARSING PEM FILES");
+
         ret = mbedtls_pk_parse_public_key(&RSA_pub_ctx,PEMpub,PEMPubKeyLen);
         if(ret != RSABooleanTrue){
             printf("%x",-ret);
             assert(false);
         }
 
-        //We malloc'ed the array, so we of course need to delete it afterwards to avoid memory leak ;)
-        free (PEMpub);
 
 
-        //Parse the private key
-        get_key_pem(&PEMpriv,1);
         ret = mbedtls_pk_parse_key(&RSA_priv_ctx,PEMpriv,PEMPrivKeyLen,NULL,0);
 
         if(ret != RSABooleanTrue){
@@ -220,8 +225,9 @@ public:
 
         //We malloc'ed the array, so we of course need to delete it afterwards to avoid memory leak ;)
         free (PEMpriv);
+        free (PEMpub);
 
-
+        Serial.println("SUCCESFULLY GENERATED KEYS");
 
         return RSABooleanTrue;
     }
