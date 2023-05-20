@@ -94,44 +94,7 @@ void setup(){
     //Get the key ready
     rsa_Cryptographer->generate_CTRX_context();
     operation_result = rsa_Cryptographer->generate_key();
-    if(!isGoodResult(operation_result)){
-        Serial.println(-operation_result,HEX);
-    }
 
-    assert(rsa_Cryptographer->validate_key() == RSABooleanTrue);
-
-    mbedtls_pk_context pk_ctx = rsa_Cryptographer->get_RSA_context();
-
-    //Filling the buffer with keys
-    unsigned char * pub;
-    unsigned char * priv;
-    operation_result = rsa_Cryptographer->get_key_pem(&pub,0);
-    if(!isGoodResult(operation_result)){
-        Serial.println(-operation_result,HEX);
-
-    }
-    rsa_Cryptographer->get_key_pem(&priv,1);
-    println_unsignedString(priv,PEMPrivKeyLen,CHR);
-
-    //Parsing these keys into a context
-    mbedtls_pk_context pk_ctx_pub;
-    mbedtls_pk_context pk_ctx_priv;
-
-    mbedtls_pk_init(&pk_ctx_pub);
-    mbedtls_pk_init(&pk_ctx_priv);
-    operation_result = mbedtls_pk_parse_public_key(&pk_ctx_pub, pub, PEMPubKeyLen);
-    if(!isGoodResult(operation_result)){
-        Serial.print(operation_result);
-    }
-
-    operation_result = mbedtls_pk_parse_key(&pk_ctx_priv,priv,PEMPrivKeyLen,NULL,69);
-    if(!isGoodResult(operation_result)){
-        Serial.print(-operation_result,HEX);
-    }
-
-    //Asserting, that the keys match
-    assert(mbedtls_pk_check_pair(&pk_ctx_pub,&pk_ctx_priv) == 0);
-    Serial.print("DONEE"); //Print statement for added swagger
 };
 
 void loop(){
