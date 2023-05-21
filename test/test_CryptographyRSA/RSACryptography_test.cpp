@@ -49,7 +49,7 @@ int encryptDecrypt(RSACryptographer rsaCrypto){
         return operation_result;
     }
 
-    return 0;
+    return RSABooleanTrue;
 
 }
 
@@ -153,8 +153,6 @@ void validateIsTrueEncryptDecryptWorks(){
     TEST_ASSERT_EQUAL_STRING(STR_TO_ENCRYPT,OUTPUT_ARRAY);
 }
 
-
-
 //Worksn't, lol
 /*
  */
@@ -206,7 +204,6 @@ void validateIsNotTrueEncryptDecryptWorksnt(){
     delete(temporary_rsa_Cryptographer);
     free(pub);
 }
-
 
 
 //Whenever we generate a new pair of keys, they're unique/not identical with the previous pair
@@ -329,6 +326,42 @@ void PEMFilesAreValid(){
     delete(temporary_rsa_Cryptographer);
 }
 
+/*
+ * We check if loading new keys into an RSA_Cryptographer object works by loading a functional pair from RSACryptoA into RSACryptoB
+ * Then we check to see if validate(RSACryptoA.pub,RSACryptoB.priv) == True && validate(RSACryptoB.pub,RSACryptoA.priv) == True
+ */
+void loadingNewKeysAreValid(){
+    printf("GOT SO FAR");
+    auto * temporary_rsa_cryptographer = new RSACryptographer();
+    temporary_rsa_cryptographer->generate_CTRX_context();
+    temporary_rsa_cryptographer->generate_key();
+    TEST_ASSERT_EQUAL(RSABooleanTrue,temporary_rsa_cryptographer->validate_key());
+
+    /*
+     * We load the two keys from rsa_Cryptographer into the temporary RSA cryptographer
+     */
+
+    unsigned char * privPEM, * pubPEM;
+    rsa_Cryptographer.get_key_pem(&pubPEM,0);
+    rsa_Cryptographer.get_key_pem(&privPEM,1);
+
+    temporary_rsa_cryptographer->load_key_pem(pubPEM,0);
+    temporary_rsa_cryptographer->load_key_pem(privPEM,1);
+    /*
+     * We now check to see if their encryption is the same
+     */
+
+    operation_result = temporary_rsa_cryptographer->validate_key(temporary_rsa_cryptographer->get_public_context(),rsa_Cryptographer.get_private_context());
+    TEST_ASSERT_EQUAL(RSABooleanTrue,operation_result);
+
+    operation_result = temporary_rsa_cryptographer->validate_key(rsa_Cryptographer.get_public_context(),temporary_rsa_cryptographer->get_private_context());
+    TEST_ASSERT_EQUAL(RSABooleanTrue,operation_result);
+
+    free(privPEM);
+    free(pubPEM);
+    delete(temporary_rsa_cryptographer);
+}
+
 void setup()
 {
     delay(5000); // service delay
@@ -348,6 +381,7 @@ void setup()
     RUN_TEST(newKeyIsUnique);
     RUN_TEST(newGeneratedKeysAreValid);
     RUN_TEST(PEMFilesAreValid);
+    RUN_TEST(loadingNewKeysAreValid);
     UNITY_END(); // stop unit testing
 }
 

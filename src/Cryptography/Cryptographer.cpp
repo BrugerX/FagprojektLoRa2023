@@ -87,6 +87,25 @@ private:
         return result;
     }
 
+    int load_priv_key(unsigned char * key_pem){
+        if(!&RSA_priv_ctx){
+            mbedtls_pk_free(&RSA_priv_ctx);
+        }
+
+        mbedtls_pk_init(&RSA_priv_ctx);
+
+        return mbedtls_pk_parse_key(&this->RSA_priv_ctx,key_pem,PEMPrivKeyLen,NULL,0);
+    }
+
+    int load_pub_key(unsigned char * key_pem){
+        if(!&RSA_pub_ctx){
+            mbedtls_pk_free(&RSA_pub_ctx);
+        }
+        mbedtls_pk_init(&RSA_pub_ctx);
+
+        return mbedtls_pk_parse_public_key(&this->RSA_pub_ctx,key_pem,PEMPubKeyLen);
+    }
+
 public:
     RSACryptographer()
     {
@@ -205,7 +224,6 @@ public:
         assert(isGoodResult(mbedtls_pk_write_pubkey_pem(&RSA_ctx,PEMpub,PEMPubKeyLen)));
         assert(isGoodResult(mbedtls_pk_write_key_pem(&RSA_ctx,PEMpriv,PEMPrivKeyLen)));
 
-
         Serial.println("PARSING PEM FILES");
 
         ret = mbedtls_pk_parse_public_key(&RSA_pub_ctx,PEMpub,PEMPubKeyLen);
@@ -213,8 +231,6 @@ public:
             printf("%x",-ret);
             assert(false);
         }
-
-
 
         ret = mbedtls_pk_parse_key(&RSA_priv_ctx,PEMpriv,PEMPrivKeyLen,NULL,0);
 
@@ -273,5 +289,26 @@ public:
 
 
     }
+
+    int load_key_pem(unsigned char * key_pem, bool isPrivateKeyPem){
+        int operation_result;
+
+        if(isPrivateKeyPem){
+            operation_result = load_priv_key(key_pem);
+        }
+        else{
+            operation_result = load_pub_key(key_pem);
+        }
+
+        //Error
+        if(!isGoodResult(operation_result)){
+            Serial.println(-operation_result,HEX);
+            throw std::runtime_error("COULD NOT PARSE KEY");
+        }
+
+        return RSABooleanTrue;
+
+    }
+
 
 };
