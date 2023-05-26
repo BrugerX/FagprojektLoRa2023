@@ -63,28 +63,37 @@ void dataIsSavedAfterReboot(){
 }
 
 /**
-* Scenarie: Vi gemmer noget, det eksisterer, vi sletter det, det eksisterer ikke
-*
- */
-
-
-/**
-* Scenarie: Vi gemmer ABCDEF, vi loader det i et array og får ABCDEF
-*
- */
-
-/**
-* Scenarie: Vi gemmer ABCDEF, genstarter ESP32'eren, og vi kan loade det og det eksisterer,
-*
- */
-
-/**
 * Scenarie: Vi laver to SPIFFS objekter på samme tid
  * Der eksisterer Spiffs objekt 1, der eksisterer spiffs objekt 2, vi bruger spiffs objekt 1 til at gemme ABCDF, vi bruger spiffs objekt 2 til at loade ABCDF
  * ABCDF er nu i arrayet, som vi har brugt til at loade
  * Vi genstarter ESP32'eren
  * Vi laver et Spiffs objekt 3, vi loader ABCDF, ABCDF er nu i arrayet
 */
+
+void multipleSPIFFSFileManagers(){
+    //Preparing the string to save and load
+    const char * path2 = "/ABCDEF";
+    int SIZE_OF_STR_2 = 5;
+    unsigned char  STR_TO_TEST2[SIZE_OF_STR_2];
+    unsigned char  STR_TO_LOAD2[SIZE_OF_STR_2];
+    fill_alphanumeric_unsignedString(STR_TO_TEST2,SIZE_OF_STR_2);
+
+    auto * spiffy2 = new SPIFFSFileManager();
+    if(!didWeRestart()){
+        TEST_ASSERT_FALSE(spiffy->exists(path2));
+        spiffy->save_file(path2,STR_TO_TEST2);
+
+        //We now load the array and assert they're equal
+        TEST_ASSERT_TRUE(spiffy2->exists(path2));
+        spiffy2->load_file(path2,STR_TO_LOAD2);
+        TEST_ASSERT_EQUAL_STRING(STR_TO_TEST2,STR_TO_LOAD2);
+
+    }
+    else{
+
+    }
+    delete spiffy2;
+}
 
 /**
 * Scenarie: Vi laver, sletter, laver
@@ -112,6 +121,9 @@ void setup()
     printf("%s","ABCDEF");
     spiffy = new SPIFFSFileManager();
     RUN_TEST(dataIsSavedAfterReboot);
+    RUN_TEST(multipleSPIFFSFileManagers);
+
+    //Tests that need to be resat above this
     if(!didWeRestart()){
         esp_restart();
     }
