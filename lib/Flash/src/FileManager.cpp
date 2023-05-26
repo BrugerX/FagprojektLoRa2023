@@ -19,8 +19,10 @@ public:
  */
 class SPIFFSFileManager : public FileManager{
 
-public:
+private:
     fs::FS fileSystem = SPIFFS;
+
+public:
 
     SPIFFSFileManager()
     {

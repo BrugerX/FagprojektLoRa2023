@@ -14,7 +14,6 @@ public:
 
     virtual ~Cryptographer(){}
 
-    //TODO: Add PEMformatter
 
     virtual int encrypt(unsigned char * inputArray, size_t inputLen, unsigned char * outputArray, size_t outSize, size_t * outLen) = 0;
     virtual int decrypt(unsigned char * inputArray, size_t inputLen, unsigned char * outputArray,size_t outSize, size_t * outLen) = 0;

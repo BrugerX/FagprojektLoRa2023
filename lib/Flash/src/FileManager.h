@@ -7,7 +7,5 @@
 
 #include "SPIFFS.h"
 
-class SPIFFSFileManager;
-class FileManager;
 
 #endif //FAGPROJEKTLORA2023_FILEMANAGER_H
