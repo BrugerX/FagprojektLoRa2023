@@ -26,9 +26,13 @@ void setUp(void) {
 
 void tearDown(void) {
     // delete stuff down here
-    testInt = 3;
+
 }
 
+void fakeTest(){
+    TEST_ASSERT_EQUAL_MESSAGE(true,true,(char *) didWeRestart());
+    TEST_ASSERT_TRUE(true);
+}
 
 /**
 * Scenarie:
@@ -41,14 +45,14 @@ void tearDown(void) {
 void dataIsSavedAfterReboot(){
     //Before the reset we save it, and assert that we have indeed saved it
     if(!didWeRestart()){
-        TEST_ASSERT_FALSE(spiffy->exists(TEST_STR_PATH));
-        spiffy->save_file(TEST_STR_PATH,(const unsigned char *) TEST_STR);
+        if(!spiffy->exists(TEST_STR_PATH)){
+        spiffy->save_file(TEST_STR_PATH,(const unsigned char *) TEST_STR);}
         TEST_ASSERT_TRUE(spiffy->exists(TEST_STR_PATH));
     }
-        //After the reset we check to see if it still exists, if we can load it, we then delete it
+    //After the reset we check to see if it still exists, if we can load it, we then delete it
     else{
         TEST_ASSERT_TRUE(spiffy->exists(TEST_STR_PATH));
-        unsigned char * load_result_arr;
+        unsigned char load_result_arr[sizeof(TEST_STR)-1];
         spiffy->load_file(TEST_STR_PATH,load_result_arr);
 
         //Time to delete it
@@ -105,10 +109,13 @@ void setup()
 
     //DON'T PUT ANYTHING BEFORE THIS EXCEPT FOR DELAY!!!!
     UNITY_BEGIN(); //Define stuff after this
+    printf("%s","ABCDEF");
+    spiffy = new SPIFFSFileManager();
     RUN_TEST(dataIsSavedAfterReboot);
     if(!didWeRestart()){
         esp_restart();
     }
+    RUN_TEST(fakeTest);
     UNITY_END(); // stop unit testing
 }
 

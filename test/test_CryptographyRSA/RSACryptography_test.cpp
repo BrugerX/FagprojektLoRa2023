@@ -5,8 +5,8 @@
 #include <Arduino.h>
 #include <unity.h>
 #include "../../lib/Utility/Utility.cpp"
-#include "Cryptography/CryptographicSettings.cpp"
-#include "Cryptography/Cryptographer.cpp"
+#include <CryptographicSettings.cpp>
+#include <Cryptographer.cpp>
 
 
 //
