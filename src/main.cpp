@@ -1,6 +1,6 @@
 #include <esp_spiffs.h>
 #include "Arduino.h"
-#include "Cryptography/CryptographicSettings.h"
+#include <CryptographicSettings.h>
 #include "esp_dsp.h"
 #include "SPIFFS.h"
 #include <FileManager.cpp>
@@ -8,8 +8,8 @@
 #include "sha/sha_parallel_engine.h"
 #include "TinyGPSPlus-master/src/TinyGPS++.h"
 #include "stddef.h"
-#include "Utility.h"
-#include "Cryptography/Cryptographer.cpp"
+#include "../lib/Utility/Utility.h"
+#include <Cryptographer.cpp>
 
 #include "HardwareMacros.h"
 
@@ -86,14 +86,13 @@ void setup(){
 
 
     //SPIFFS
-    FileManager * spiff = new SPIFFSFileManager();
+    auto * spiff = new SPIFFSFileManager();
     int operation_result;
     //Get the key ready
+    Serial.print("HIHI");
+    Serial.println(spiff->exists("/ABC"));
     rsa_Cryptographer->generate_CTRX_context();
     operation_result = rsa_Cryptographer->generate_key();
-    fs::FS fileSystem = SPIFFS;
-
-    fileSystem.exists("/abc");
 
 
 };
