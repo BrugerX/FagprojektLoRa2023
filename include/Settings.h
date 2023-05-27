@@ -6,12 +6,12 @@
 #define FAGPROJEKTLORA2023_SETTINGS_H
 
 //keyboard definitions
-#define UP_KEY 0
-#define RIGHT_KEY 1
-#define LEFT_KEY 2
-#define DOWN_KEY 3
-#define ENTER_KEY 4
-#define BACK_KEY 5
+#define UP_KEY 'w'//0
+#define RIGHT_KEY 'd'//1
+#define LEFT_KEY 'a'//2
+#define DOWN_KEY 's'//3
+#define ENTER_KEY 'v'//4
+#define BACK_KEY 'b'//5
 
 //state definitions
 #define START_STATE 0

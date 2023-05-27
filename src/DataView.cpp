@@ -1,3 +1,4 @@
+#include <Arduino.h>
 extern "C" {
 #include "ssd1306.h"
 #include <math.h>
@@ -250,14 +251,18 @@ void DataView::scrollTableDown(SSD1306_t * dev, char * ID, char * name){ //only 
     drawTextAt(65, 0, name, 8, 0, dev);
 }
 
-void DataView::drawIDTable(char startIndex, vector<Member> members, SSD1306_t * dev){ //only display 8 first characters of string
+void DataView::drawIDTable(char startIndex, vector<Member> &members, SSD1306_t * dev){ //only display 8 first characters of string
     drawTable(2, 4, dev);
     //fill the table
     signed char i;
     for(i = 0; i < 4; i++){
         char index = (char) std::abs((int)((i+startIndex) % members.size()));
+        Serial.print("Member name: ");
+        Serial.println(members[index].getID());
+        Serial.print("Member timestamp: ");
+        Serial.println(members[index].getNav().getTimestamp());
         ssd1306_display_text(dev, i*2, members[index].getID(), 8, 0);
-        drawTextAt(65, i * 16, members[index].getNav().getTimestamp(), 8, 0, dev);
+        drawTextAt(65, i * 16, members[index].getNav().getTimestamp(), 7, 0, dev);
     }
     /*vTaskDelay(1000);
     //if everything doesn't fit on the table

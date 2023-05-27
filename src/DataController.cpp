@@ -32,7 +32,7 @@ switch(this->model.getState()){
     case COMPASS_STATE:
         if(userInput == BACK_KEY) {
             //go back in state (will probably no nothing in the future)
-            this->model.setState(this->model.getState()-1);
+            this->model.setState(START_STATE);
         }
         break;
     case TABLE_STATE:
@@ -68,4 +68,8 @@ switch(this->model.getState()){
 
 char DataController::getModelState(){
     return model.getState();
+}
+
+void DataController::addGroupMember(Member groupMember){
+    model.addGroupMember(groupMember);
 }

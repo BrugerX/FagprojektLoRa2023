@@ -1,4 +1,5 @@
 #include "DataModel.h"
+#include "Arduino.h"
 
 using namespace std;
 
@@ -86,6 +87,7 @@ char * DataModel::getMemberTimestamp(char index){
 
 void DataModel::initializeTable(SSD1306_t * dev){
     view.drawIDTable(topTableIndex, groupMembers, dev);
+    view.highlightTableCell(0, 0, groupMembers[0].getID(), 1, dev);
 }
 
 void DataModel::addGroupMember(Member groupMember){

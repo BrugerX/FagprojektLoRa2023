@@ -2,9 +2,10 @@
 
 using namespace std;
 
-NavigationData::NavigationData() {}
+NavigationData::NavigationData() {
+    timestamp = "14 07";
+}
 
 char * NavigationData::getTimestamp() {
-    char ts[] = "14:07";
-    return ts;
+    return (char *) timestamp.data();
 }

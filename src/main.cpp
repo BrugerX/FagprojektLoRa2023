@@ -8,28 +8,32 @@
 #define CONFIG_SCL_GPIO 22
 #define CONFIG_RESET_GPIO 15
 
+DataView dataView;
+DataController dataController = DataController(dataView);
+SSD1306_t dev;
+char names[4][8] = {"Bjarke", "Benny", "Birger", "Bjarne"};
+
 void setup() {
     // put your setup code here, to run once:
     Serial.begin(9600);
     //delay(2000);
     //Serial.println("Hello world");
-    SSD1306_t dev;
     i2c_master_init(&dev, CONFIG_SDA_GPIO, CONFIG_SCL_GPIO, CONFIG_RESET_GPIO);
     //initializing display of size 128x64
     ssd1306_init(&dev, 128, 64);
     ssd1306_contrast(&dev, 0xc3);
     ssd1306_clear_screen(&dev, false);
 
-    DataView dataView;
-    //dataView.drawCompass(&dev);
-    DataController dataController = DataController(dataView);
-    dataController.handleUserInput(UP_KEY, &dev);
-    dataController.handleUserInput(LEFT_KEY, &dev);
-    //Serial.print((int) dataController.getModelState());
-    //char startText[] = "StartScreen";
-    //ssd1306_clear_screen(&dev, 0);
-    //ssd1306_display_text(&dev, 4, startText, strlen(startText), 0);
 
+    //dataView.drawCompass(&dev);
+    //dataController.handleUserInput(UP_KEY, &dev);
+    dataController.handleUserInput(LEFT_KEY, &dev); //to initialise startscreen
+    //Serial.print((int) dataController.getModelState());
+
+    for(int i = 0; i < 4; i++){
+        dataController.addGroupMember(Member(names[i],NavigationData()));
+    }
+    String s = "gej";
     /*while(Serial.available() != 0){
       char input = Serial.read();
       delay(2);
@@ -40,8 +44,14 @@ void setup() {
       }
     }*/
 }
-
+char input = 'q';
 void loop() {
     // put your main code here, to run repeatedly:
-    //Serial.print("ABC");
+    if(Serial.available() != 0){
+        Serial.println("Ready to read");
+        input = (char) Serial.read();
+        Serial.print("char is: " );
+        Serial.println(input);
+        dataController.handleUserInput(input, &dev);
+   }
 }
