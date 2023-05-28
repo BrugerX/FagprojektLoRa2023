@@ -21,7 +21,10 @@ public:
 SPIFFSFileManager::SPIFFSFileManager()
 {
     //We have to mount the spiffs
-    fileSystem.begin(true);
+    if(!mount()){
+        Serial.println("COULD NOT MOUNT SPIFFS");
+        throw std::runtime_error("COULD NOT MOUNT SPIFFS");
+    }
 }
 
 
@@ -49,6 +52,8 @@ bool SPIFFSFileManager::save_file(const char *filePath, const unsigned char *dat
         Serial.println("− frite failed");
         return false;
     }
+
+    file.close();
 
 }
 
@@ -85,4 +90,37 @@ bool SPIFFSFileManager::load_file(const char * filePath, unsigned char * resultA
 
     return true;
 
+}
+
+bool SPIFFSFileManager::load_file(const char * filePath, unsigned char * resultArray, size_t endIdx){
+    File f1 = fileSystem.open(filePath,FILE_READ);
+    if(!f1 || f1.isDirectory()){
+        Serial.println("− failed to open file for reading");
+        return false;
+    }
+
+    unsigned char res;
+
+    for (int i = 0; i<endIdx; i++){
+        if(!f1.available()){
+            break;
+        }
+        res = f1.read();
+        resultArray[i] = res;
+    }
+
+    resultArray[endIdx] = '\0';
+
+    return true;
+
+}
+
+
+void SPIFFSFileManager::dismount() {
+    fileSystem.end();
+}
+
+//TODO: Default arguments ift. basepath + partition label
+bool SPIFFSFileManager::mount() {
+    return fileSystem.begin(true);
 }

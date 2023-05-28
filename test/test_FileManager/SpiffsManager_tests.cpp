@@ -26,12 +26,19 @@ void setUp(void) {
 
 void tearDown(void) {
     // delete stuff down here
-
+    spiffy->mount();
 }
 
 void fakeTest(){
     TEST_ASSERT_EQUAL_MESSAGE(true,true,(char *) didWeRestart());
     TEST_ASSERT_TRUE(true);
+}
+
+void dataIsSavedAndLoadedCorrectly(){
+    unsigned char STR_TO_LOAD[sizeof(TEST_STR)];
+    TEST_ASSERT_TRUE(spiffy->save_file(TEST_STR_PATH,(unsigned char *)TEST_STR));
+    TEST_ASSERT_TRUE(spiffy->load_file(TEST_STR_PATH,STR_TO_LOAD,sizeof(STR_TO_LOAD)-1));
+    TEST_ASSERT_EQUAL_STRING(TEST_STR,STR_TO_LOAD);
 }
 
 /**
@@ -45,54 +52,33 @@ void fakeTest(){
 void dataIsSavedAfterReboot(){
     //Before the reset we save it, and assert that we have indeed saved it
     if(!didWeRestart()){
-        if(!spiffy->exists(TEST_STR_PATH)){
-        spiffy->save_file(TEST_STR_PATH,(const unsigned char *) TEST_STR);}
+        spiffy->save_file(TEST_STR_PATH,(const unsigned char *) TEST_STR);
         TEST_ASSERT_TRUE(spiffy->exists(TEST_STR_PATH));
     }
     //After the reset we check to see if it still exists, if we can load it, we then delete it
     else{
         TEST_ASSERT_TRUE(spiffy->exists(TEST_STR_PATH));
-        unsigned char load_result_arr[sizeof(TEST_STR)-1];
-        spiffy->load_file(TEST_STR_PATH,load_result_arr);
+        unsigned char load_result_arr[sizeof(TEST_STR)];
+        spiffy->load_file(TEST_STR_PATH,load_result_arr,sizeof(load_result_arr)-1);
 
         //Time to delete it
-        TEST_ASSERT_EQUAL_STRING(TEST_STR,load_result_arr);
+        TEST_ASSERT_EQUAL_STRING((unsigned char *) TEST_STR,load_result_arr);
         spiffy->delete_file(TEST_STR_PATH);
         TEST_ASSERT_FALSE(spiffy->exists(TEST_STR_PATH));
     }
 }
 
 /**
-* Scenarie: Vi laver to SPIFFS objekter på samme tid
- * Der eksisterer Spiffs objekt 1, der eksisterer spiffs objekt 2, vi bruger spiffs objekt 1 til at gemme ABCDF, vi bruger spiffs objekt 2 til at loade ABCDF
- * ABCDF er nu i arrayet, som vi har brugt til at loade
- * Vi genstarter ESP32'eren
- * Vi laver et Spiffs objekt 3, vi loader ABCDF, ABCDF er nu i arrayet
+* Scenarie: Vi har to SPIFFS objekter på samme tid, men kun det ene kan operere på SPIFFS
+ * Spiffy gemmer et array og bekræfter, at det eksisterer samt loade det
+ * Spiffy2 prøver at bekræfte, at det eksisterer, men det gør det ikke
+ * Spiffy2 prøver at loade arrayet, men det kan ikke
+ * Spiffy dismounter, Spiffy2 kan nu loade og bekræfte arrayets eksistens
+ * Spiffy kan ikke loade eller bekræfte
 */
 
 void multipleSPIFFSFileManagers(){
-    //Preparing the string to save and load
-    const char * path2 = "/ABCDEF";
-    int SIZE_OF_STR_2 = 5;
-    unsigned char  STR_TO_TEST2[SIZE_OF_STR_2];
-    unsigned char  STR_TO_LOAD2[SIZE_OF_STR_2];
-    fill_alphanumeric_unsignedString(STR_TO_TEST2,SIZE_OF_STR_2);
 
-    auto * spiffy2 = new SPIFFSFileManager();
-    if(!didWeRestart()){
-        TEST_ASSERT_FALSE(spiffy->exists(path2));
-        spiffy->save_file(path2,STR_TO_TEST2);
-
-        //We now load the array and assert they're equal
-        TEST_ASSERT_TRUE(spiffy2->exists(path2));
-        spiffy2->load_file(path2,STR_TO_LOAD2);
-        TEST_ASSERT_EQUAL_STRING(STR_TO_TEST2,STR_TO_LOAD2);
-
-    }
-    else{
-
-    }
-    delete spiffy2;
 }
 
 /**
@@ -121,13 +107,14 @@ void setup()
     printf("%s","ABCDEF");
     spiffy = new SPIFFSFileManager();
     RUN_TEST(dataIsSavedAfterReboot);
-    RUN_TEST(multipleSPIFFSFileManagers);
 
     //Tests that need to be resat above this
     if(!didWeRestart()){
         esp_restart();
     }
-    RUN_TEST(fakeTest);
+
+    RUN_TEST(dataIsSavedAndLoadedCorrectly);
+    RUN_TEST(multipleSPIFFSFileManagers);
     UNITY_END(); // stop unit testing
 }
 

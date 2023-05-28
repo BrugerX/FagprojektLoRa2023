@@ -87,13 +87,32 @@ void setup(){
 
     //SPIFFS
     auto * spiff = new SPIFFSFileManager();
-    int operation_result;
-    //Get the key ready
-    Serial.print("HIHI");
-    Serial.println(spiff->exists("/ABC"));
-    rsa_Cryptographer->generate_CTRX_context();
-    operation_result = rsa_Cryptographer->generate_key();
+    char * STR_FILE_PATH = "/ABC";
+    int SIZE_OF_FILE = 3;
+    unsigned char STR_FILE[SIZE_OF_FILE+1];
+    unsigned char load_buffer[SIZE_OF_FILE+1];
 
+    fill_alphanumeric_unsignedString(STR_FILE,SIZE_OF_FILE);
+    println_unsignedString(STR_FILE,sizeof(STR_FILE),CHR);
+
+    if(esp_reset_reason() != ESP_RST_SW) {
+        spiff->save_file(STR_FILE_PATH, (unsigned char *) STR_FILE);
+        esp_restart();
+    }
+    else{
+    spiff->load_file(STR_FILE_PATH,load_buffer,(int) sizeof(load_buffer));
+    Serial.print("Loaded file:");
+    println_unsignedString(load_buffer,SIZE_OF_FILE,CHR);
+
+    for(int i = 0; i<sizeof(load_buffer);i++){
+        assert(load_buffer[i] == STR_FILE[i]);
+    }
+
+    for(int i = 0; load_buffer[i];i++){
+        Serial.print(load_buffer[i],HEX);
+        Serial.print(",");
+    }
+    }
 
 };
 
