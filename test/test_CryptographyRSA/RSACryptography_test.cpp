@@ -7,6 +7,7 @@
 #include "../../lib/Utility/Utility.cpp"
 #include <CryptographicSettings.cpp>
 #include <Cryptographer.cpp>
+#include <TestUtility.h>
 
 
 //
@@ -23,15 +24,6 @@ int operation_result;
 size_t oLen;
 
 
-bool assertNotEqualArray(unsigned char * arr1, unsigned char * arr2, size_t nrElements){
-    for(int i = 0; i<nrElements;i++){
-        if(arr1[i] != arr2[i]){
-            return true;
-        }
-    }
-
-    TEST_FAIL_MESSAGE("Arrays are equal");
-}
 
 
 int encryptDecrypt(RSACryptographer rsaCrypto){
@@ -41,7 +33,7 @@ int encryptDecrypt(RSACryptographer rsaCrypto){
         return operation_result;
     }
 
-    assertNotEqualArray(STR_TO_ENCRYPT,OUTPUT_ARRAY,sizeof(STR_TO_ENCRYPT));
+    TEST_ASSERT_TRUE_MESSAGE(assertNotEqualArray(STR_TO_ENCRYPT,OUTPUT_ARRAY,sizeof(STR_TO_ENCRYPT)),"Arrays are equal");
 
     operation_result = rsaCrypto.decrypt(OUTPUT_ARRAY,oLen,OUTPUT_ARRAY,sizeof(OUTPUT_ARRAY),&oLen);
 

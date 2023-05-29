@@ -4,6 +4,8 @@
 
 #include "FileManager.h"
 
+
+
 class FileManager{
 public:
     FileManager(){}
@@ -14,9 +16,6 @@ public:
     virtual bool exists(const char * filePath) = 0;
 };
 
-/**
- * Whenever we deconstruct the SPIFFSFileManager, we unmount the SPIFFs module.
- */
 
 SPIFFSFileManager::SPIFFSFileManager()
 {

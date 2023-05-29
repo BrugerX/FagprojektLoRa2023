@@ -10,6 +10,14 @@
 
 class FileManager;
 
+
+/**
+ * Only a single SPIFFSFileManager can do operations with the flash at any given time
+ * Once the previously active SPIFFSFileManager has dismounted, the next one must mount
+ * The SPIFFSFileManager starts out mounted, given that no other filemanager is mounted
+ * Currently it is only possible to mount to the same partition and with the same base path - will be added to the constructor and the mount() method when neccessary
+ */
+
 class SPIFFSFileManager{
 
 private:
@@ -30,6 +38,9 @@ public:
 
     bool delete_file(const char * filePath);
 
+    /**
+     * Warning: Do not use this with strings. It will append random characters at the end of the string array.
+     */
     bool load_file(const char * filePath, unsigned char * resultArray);
 
     /**

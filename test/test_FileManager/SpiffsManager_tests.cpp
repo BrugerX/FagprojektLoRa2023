@@ -7,11 +7,23 @@
 #include "../../lib/Utility/Utility.cpp"
 #include <FileManager.cpp>
 #include "esp_system.h"
+#include <TestUtility.h>
 
 const char * TEST_STR_PATH;
 char * TEST_STR;
 SPIFFSFileManager * spiffy;
 int testInt;
+
+
+void deleteSaveLoadString(SPIFFSFileManager * spiffsFileManager,const char * PATH_OF_STR,unsigned char * STR_TO_TEST, size_t endIdx){
+    unsigned char STR_TO_LOAD[endIdx+1];
+
+    spiffsFileManager->delete_file(PATH_OF_STR);
+    TEST_ASSERT_FALSE(spiffsFileManager->exists(PATH_OF_STR));
+    TEST_ASSERT_TRUE(spiffsFileManager->save_file(PATH_OF_STR,STR_TO_TEST));
+    TEST_ASSERT_TRUE(spiffsFileManager->load_file(PATH_OF_STR,STR_TO_LOAD,endIdx));
+    TEST_ASSERT_EQUAL_STRING(STR_TO_TEST,STR_TO_LOAD);
+}
 
 bool didWeRestart(){
     return  esp_reset_reason() == ESP_RST_SW;
@@ -29,16 +41,10 @@ void tearDown(void) {
     spiffy->mount();
 }
 
-void fakeTest(){
-    TEST_ASSERT_EQUAL_MESSAGE(true,true,(char *) didWeRestart());
-    TEST_ASSERT_TRUE(true);
-}
 
 void dataIsSavedAndLoadedCorrectly(){
-    unsigned char STR_TO_LOAD[sizeof(TEST_STR)];
-    TEST_ASSERT_TRUE(spiffy->save_file(TEST_STR_PATH,(unsigned char *)TEST_STR));
-    TEST_ASSERT_TRUE(spiffy->load_file(TEST_STR_PATH,STR_TO_LOAD,sizeof(STR_TO_LOAD)-1));
-    TEST_ASSERT_EQUAL_STRING(TEST_STR,STR_TO_LOAD);
+    deleteSaveLoadString(spiffy,TEST_STR_PATH,(unsigned char *) TEST_STR,sizeof(TEST_STR)/sizeof(TEST_STR[0])-1);
+    TEST_ASSERT_TRUE(spiffy->delete_file(TEST_STR_PATH));
 }
 
 /**
@@ -78,25 +84,46 @@ void dataIsSavedAfterReboot(){
 */
 
 void multipleSPIFFSFileManagers(){
+    //Preparing the string to save and load
+    const char * path2 = "/paf2";
+    int SIZE_OF_STR_2 = 5;
+    unsigned char  STR_TO_TEST2[SIZE_OF_STR_2 +1];
+    unsigned char  STR_TO_LOAD2[SIZE_OF_STR_2 +1];
+    STR_TO_TEST2[SIZE_OF_STR_2] = '\0';
+    fill_alphanumeric_unsignedString(STR_TO_TEST2,SIZE_OF_STR_2);
 
+    auto * spiffy2 = new SPIFFSFileManager();
+    //First we save it, assert that it exists and that we can load it using spiffy
+    deleteSaveLoadString(spiffy,path2,STR_TO_TEST2,SIZE_OF_STR_2);
+
+    //We now fill the string with the same char
+    fill_char_unsignedString(STR_TO_LOAD2,SIZE_OF_STR_2,'A');
+
+    //We now confirm that spiffy2 cannot load the array
+    TEST_ASSERT_FALSE(spiffy2->exists(path2));
+    spiffy2->load_file(path2,STR_TO_LOAD2);
+    TEST_ASSERT_NOT_EQUAL_STRING(STR_TO_TEST2,STR_TO_LOAD2);
+
+    //We now dismount spiffy, mount spiffy2 again and redo all the operations we did with spiffy this time with spiffy2
+    spiffy->dismount();
+    spiffy2->mount();
+
+    deleteSaveLoadString(spiffy2,path2,STR_TO_TEST2,SIZE_OF_STR_2);
+    fill_char_unsignedString(STR_TO_LOAD2,SIZE_OF_STR_2,'A');
+
+
+    //Finally we confirm that spiffy cannot load the array, now that spiffy2 is mounted
+    TEST_ASSERT_FALSE(spiffy->exists(path2));
+    spiffy->load_file(path2,STR_TO_LOAD2);
+    TEST_ASSERT_NOT_EQUAL_STRING(STR_TO_TEST2,STR_TO_LOAD2);
+
+    spiffy2->dismount();
+    spiffy->mount();
+
+
+    delete spiffy2;
 }
 
-/**
-* Scenarie: Vi laver, sletter, laver
- * Givet laver spiffs2
- * Og sletter spiffs2
- * Og laver spiffs 1
- * Så bør spiffs1 være mounted
-*/
-
-/**
-* Scenarie: Vi laver, vi laver, vi sletter
- * Givet laver spiffs2
- * Og laver spiffs 1
- * Og sletter spiffs 2
- * Og vi prøver at gemme "ABCDF" i path "EKG"
- * Så bør vi kunne loade "EKG" vhja. Spiffs1
-*/
 
 void setup()
 {
@@ -108,13 +135,13 @@ void setup()
     spiffy = new SPIFFSFileManager();
     RUN_TEST(dataIsSavedAfterReboot);
 
-    //Tests that need to be resat above this
+    //Tests that need to be resat are placed above this and run twice
     if(!didWeRestart()){
         esp_restart();
     }
-
-    RUN_TEST(dataIsSavedAndLoadedCorrectly);
+    //Tests where we don't check what happens after reset, below here, run once
     RUN_TEST(multipleSPIFFSFileManagers);
+    RUN_TEST(dataIsSavedAndLoadedCorrectly);
     UNITY_END(); // stop unit testing
 }
 
