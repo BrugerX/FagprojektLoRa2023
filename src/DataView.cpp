@@ -257,10 +257,6 @@ void DataView::drawIDTable(char startIndex, vector<Member> &members, SSD1306_t *
     signed char i;
     for(i = 0; i < 4; i++){
         char index = (char) std::abs((int)((i+startIndex) % members.size()));
-        Serial.print("Member name: ");
-        Serial.println(members[index].getID());
-        Serial.print("Member timestamp: ");
-        Serial.println(members[index].getNav().getTimestamp());
         ssd1306_display_text(dev, i*2, members[index].getID(), 8, 0);
         drawTextAt(65, i * 16, members[index].getNav().getTimestamp(), 7, 0, dev);
     }
@@ -289,9 +285,9 @@ void DataView::highlightTableCell(char row, char column, char * text, SSD1306_t 
 
 void DataView::highlightTableCell(char row, char column, char *text, char highlight, SSD1306_t *dev) {
     if(column){
-        drawTextAt(65, row*16, text, 8, highlight, dev);
+        drawTextAt(65, row*16, text, 7, highlight, dev);
     }
     else {
-        ssd1306_display_text(dev, row*2, text, 8, highlight);
+        ssd1306_display_text(dev, row*2, text, 7, highlight);
     }
 }

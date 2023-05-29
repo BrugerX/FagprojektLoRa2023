@@ -20,5 +20,6 @@ public:
     void handleUserInput(char userInput, SSD1306_t * dev);
     char getModelState();
     void addGroupMember(Member groupMember);
+    char getTableIndex();
 };
 #endif //DATACONTROLLER_H

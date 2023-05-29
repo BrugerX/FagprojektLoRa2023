@@ -6,6 +6,8 @@ using namespace std;
 DataModel::DataModel(char state, DataView dataView){
     this->state = state;
     view = dataView;
+    tableIndex = 0;
+    topTableIndex = 0;
     //constructor
 }
 
@@ -37,19 +39,19 @@ void DataModel::changeTableIndex(char userInput, SSD1306_t *dev) {
     char * currentText = (tableIndex % 2 == 0) ? groupMembers[getCurrentMemberIndex()].getID() : groupMembers[getCurrentMemberIndex()].getNav().getTimestamp();
     view.highlightTableCell(getCurrentMemberIndex()-topTableIndex, tableIndex % 2, currentText, 0, dev);
     if(userInput == UP_KEY){
-        getCurrentMemberIndex() == 0 ? tableIndex = (groupMembers.size()*2-2 + tableIndex % 2) : tableIndex+= 2;
+        getCurrentMemberIndex() == 0 ? /*tableIndex = (groupMembers.size()*2-2 + tableIndex % 2)*/ : tableIndex-= 2;
     }
     else if(userInput == DOWN_KEY){
-        getCurrentMemberIndex() == groupMembers.size() ? tableIndex = (0 + tableIndex % 2) : tableIndex-= 2;
+        getCurrentMemberIndex() == groupMembers.size()-1 ? /*tableIndex = (0 + tableIndex % 2)*/ : tableIndex+= 2;
     }
     else if(userInput == LEFT_KEY){
         (tableIndex % 2) == 0 ? tableIndex++ : tableIndex--;
     }
-    else { //user pressed RIGHT_KEY
+    else if(userInput == RIGHT_KEY) {
         (tableIndex % 2) == 1 ? tableIndex-- : tableIndex++;
     }
     //finding out if table should be scrolled
-    if (getCurrentMemberIndex() > topTableIndex + 7){
+    if (getCurrentMemberIndex() > topTableIndex + 3){
         topTableIndex++;
         char * newName = groupMembers[getCurrentMemberIndex()].getID();
         char * newTimestamp = groupMembers[getCurrentMemberIndex()].getNav().getTimestamp();

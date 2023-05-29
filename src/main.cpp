@@ -11,7 +11,7 @@
 DataView dataView;
 DataController dataController = DataController(dataView);
 SSD1306_t dev;
-char names[4][8] = {"Bjarke", "Benny", "Birger", "Bjarne"};
+char names[5][8] = {"Bjarke", "Benny", "Birger", "Bjarne", "Bent"};
 
 void setup() {
     // put your setup code here, to run once:
@@ -23,17 +23,25 @@ void setup() {
     ssd1306_init(&dev, 128, 64);
     ssd1306_contrast(&dev, 0xc3);
     ssd1306_clear_screen(&dev, false);
-
+    char s[] = "gej";
+    Member mem = Member(s,NavigationData());
+    char * ts = mem.getNav().getTimestamp();
+    for(int i = 0; i < 18; i++){
+        Serial.print("at index ");
+        Serial.print(i,DEC);
+        Serial.print(": ");
+        Serial.println(ts[i]);
+    }
 
     //dataView.drawCompass(&dev);
     //dataController.handleUserInput(UP_KEY, &dev);
     dataController.handleUserInput(LEFT_KEY, &dev); //to initialise startscreen
+    dataView.drawTextAt(0,0,ts, 16, 0, &dev);
     //Serial.print((int) dataController.getModelState());
 
-    for(int i = 0; i < 4; i++){
+    for(int i = 0; i < 5; i++){
         dataController.addGroupMember(Member(names[i],NavigationData()));
     }
-    String s = "gej";
     /*while(Serial.available() != 0){
       char input = Serial.read();
       delay(2);
@@ -44,7 +52,7 @@ void setup() {
       }
     }*/
 }
-char input = 'q';
+char input = ' ';
 void loop() {
     // put your main code here, to run repeatedly:
     if(Serial.available() != 0){

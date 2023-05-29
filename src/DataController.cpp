@@ -3,6 +3,7 @@
 #include "DataController.h"
 #include <ssd1306.h>
 #include <string.h>
+#include <Arduino.h>
 
 using namespace std;
 
@@ -26,6 +27,8 @@ switch(this->model.getState()){
             this->model.setState(TABLE_STATE);
             ssd1306_clear_screen(dev, 0);
             model.initializeTable(dev);
+            Serial.print("stateChanging: ");
+            Serial.println(getTableIndex(),DEC);
         }
         break;
     }
@@ -36,6 +39,8 @@ switch(this->model.getState()){
         }
         break;
     case TABLE_STATE:
+        Serial.print("Start of switch: ");
+        Serial.println(getTableIndex(),DEC);
         /*char tableID[4][8];
         char timestamp[4][8];
         unsigned char lowerBound;
@@ -56,7 +61,11 @@ switch(this->model.getState()){
             this->model.setState(START_STATE);
         }
         else {
+            Serial.print("Changing index: ");
+            Serial.println(getTableIndex(),DEC);
             this->model.changeTableIndex(userInput, dev);
+            Serial.print("Changed index: ");
+            Serial.println(getTableIndex(),DEC);
             //go where to where the input decides in the table
         }
         break;
@@ -72,4 +81,8 @@ char DataController::getModelState(){
 
 void DataController::addGroupMember(Member groupMember){
     model.addGroupMember(groupMember);
+}
+
+char DataController::getTableIndex(){
+    return model.getTableIndex();
 }
