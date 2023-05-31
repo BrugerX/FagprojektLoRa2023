@@ -2,44 +2,34 @@
 #include <ssd1306.h>
 #include <DataView.h>
 #include <DataController.h>
-#include "settings.h"
+#include "MVCSettings.h"
 
 #define CONFIG_SDA_GPIO 21
 #define CONFIG_SCL_GPIO 22
 #define CONFIG_RESET_GPIO 15
 
-DataView dataView;
+DataView dataView = DataView();
 DataController dataController = DataController(dataView);
 SSD1306_t dev;
-char names[5][8] = {"Bjarke", "Benny", "Birger", "Bjarne", "Bent"};
+char names[6][8] = {"Bjarke", "Benny", "Birger", "Bjarne", "Bent", "Birk"};
 
 void setup() {
     // put your setup code here, to run once:
     Serial.begin(9600);
-    //delay(2000);
+    delay(2000);
     //Serial.println("Hello world");
     i2c_master_init(&dev, CONFIG_SDA_GPIO, CONFIG_SCL_GPIO, CONFIG_RESET_GPIO);
     //initializing display of size 128x64
     ssd1306_init(&dev, 128, 64);
     ssd1306_contrast(&dev, 0xc3);
     ssd1306_clear_screen(&dev, false);
-    char s[] = "gej";
-    Member mem = Member(s,NavigationData());
-    char * ts = mem.getNav().getTimestamp();
-    for(int i = 0; i < 18; i++){
-        Serial.print("at index ");
-        Serial.print(i,DEC);
-        Serial.print(": ");
-        Serial.println(ts[i]);
-    }
 
     //dataView.drawCompass(&dev);
     //dataController.handleUserInput(UP_KEY, &dev);
     dataController.handleUserInput(LEFT_KEY, &dev); //to initialise startscreen
-    dataView.drawTextAt(0,0,ts, 16, 0, &dev);
     //Serial.print((int) dataController.getModelState());
 
-    for(int i = 0; i < 5; i++){
+    for(int i = 0; i < 6; i++){
         dataController.addGroupMember(Member(names[i],NavigationData()));
     }
     /*while(Serial.available() != 0){

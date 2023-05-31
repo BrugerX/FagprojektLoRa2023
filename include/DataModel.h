@@ -1,5 +1,5 @@
 #include "DataView.h"
-#include "Settings.h"
+#include "MVCSettings.h"
 #include "Member.h"
 #include <vector>
 
@@ -41,6 +41,7 @@ public:
     void addGroupMember(Member groupMember);
     void removeGroupMember(char index);
     void removeGroupMember(Member groupMember);
+    void restartIndexes();
 
 };
 #endif //DATAMODEL_H

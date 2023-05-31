@@ -15,9 +15,7 @@ DataController::DataController(DataView dataView) : model(0, dataView) {
 void DataController::handleUserInput(char userInput, SSD1306_t * dev){
 switch(this->model.getState()){
     case START_STATE: {
-        char startText[] = "StartScreen";
-        ssd1306_clear_screen(dev, 0);
-        ssd1306_display_text(dev, 4, startText, strlen(startText), 0);
+        view.showStartScreen(dev);
         if (userInput == UP_KEY) {
             this->model.setState(COMPASS_STATE);
             ssd1306_clear_screen(dev, 0);
@@ -58,6 +56,7 @@ switch(this->model.getState()){
             //Show more user info
         }
         else if (userInput == BACK_KEY){
+            model.restartIndexes();
             this->model.setState(START_STATE);
         }
         else {

@@ -1,5 +1,5 @@
 #include <ssd1306.h>
-#include "Settings.h"
+#include "MVCSettings.h"
 #include "NavigationViewer.h"
 
 #ifndef FAGPROJEKTLORA2023_COMPASSVIEWER_H

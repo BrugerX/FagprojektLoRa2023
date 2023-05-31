@@ -1,5 +1,5 @@
 #include <ssd1306.h>
-#include "Settings.h"
+#include "MVCSettings.h"
 
 #ifndef FAGPROJEKTLORA2023_TABLEVIEWER_H
 #define FAGPROJEKTLORA2023_TABLEVIEWER_H

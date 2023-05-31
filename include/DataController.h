@@ -1,6 +1,6 @@
 #include "DataView.h"
 #include "DataModel.h"
-#include "Settings.h"
+#include "MVCSettings.h"
 #include <ssd1306.h>
 
 using namespace std;
