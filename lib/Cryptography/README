@@ -1,0 +1,26 @@
+#####About this library:
+
+This library deals with everything related to cryptography.
+
+#####Error handling:
+
+In case of failed or unexpected errors from functions facing the user of this API, we throw errors as well as print the specific error codes of the given error.
+We do this because of the unique and important role cryptography has in keeping the device safe.
+
+Some of these errors are defined in CryptographicSettings.h others are defined in the different MbedTLS libraries we've used to create this library.
+Currently, there is no way to distinguish between the two, and it is up to the programmer to figure out where the error code came from.
+
+However this should be easy, as the majority of the error codes from the MbedTLS library can be found in their documents.
+
+#####Undocumented error codes:
+
+Errors that are apparently not documented typically stem from the MbedTLS library.
+
+#####Success == 0:
+
+The MbedTLS libraries typically uses 0 as the value for success and the specific error code for failures.
+
+We've therefore defined the macros RSABooleanTrue and RSABooleanFalse to designate success of an operation in the Cryptography library.
+
+In other words: It is important that a future developer does not check the success of an MbedTLS API call by using:
+result == True

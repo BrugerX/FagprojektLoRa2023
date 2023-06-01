@@ -13,14 +13,15 @@ SHA256Hasher::SHA256Hasher(){
  *
  * @return 0 if no errors are encountered else the specific error code
  * @warning Please note, that mbedtls_sha256_init doesn't return any error warnings
- *
+ * @pre SHA_ctx != NULL
  * @post is_initialized is equal to 1
  *
  */
 int SHA256Hasher::init_ctx() {
 
     if(&SHA_ctx == NULL){
-        throw std;
+        Serial.println(SHA256_ERR_CTX_IS_NULL);
+        throw std::invalid_argument("COULD NOT INIT SHA256 CTX: CTX IS EQUAL TO NULL");
     }
 
     mbedtls_sha256_init(&SHA_ctx);
@@ -43,28 +44,34 @@ int SHA256Hasher::generate_checksum(unsigned char *input, size_t strLen, unsigne
     int res;
 
     if(!is_initialized){
-        res = init_ctx();
-        if(!isGoodResult(res)){
-            return res;
-        }
+
+        //init throws its own error
+        init_ctx();
     }
 
     //Starts a calculation
     res = mbedtls_sha256_starts_ret(&SHA_ctx,0);
     if(!isGoodResult(res)){
-        return res;
+        Serial.println(-res,HEX);
+        throw std::runtime_error("COULD NOT START SHA256 CHECKSUM CALCULATION");
     }
 
     //Update context
     res = mbedtls_sha256_update_ret(&SHA_ctx,(const unsigned char *) input,strLen);
     if(!isGoodResult(res))
     {
-        return res;
+        Serial.println(-res,HEX);
+        throw std::runtime_error("COULD NOT START SHA256 CHECKSUM CALCULATION");
     }
 
     //Finish and store to output
     res = mbedtls_sha256_finish_ret(&SHA_ctx,outputBuffer);
+    if(!isGoodResult(res)){
+        Serial.println(-res,HEX);
+        throw std::runtime_error("FAILED TO FINISH CHECKSUM CALCULATIONS");
+    }
 
+    //When you finish the calculations you have to re-init in order to make a new calculation
     is_initialized = 0;
     return res;
 

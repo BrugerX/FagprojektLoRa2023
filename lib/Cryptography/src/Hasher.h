@@ -5,6 +5,8 @@
 #ifndef FAGPROJEKTLORA2023_HASHER_H
 #define FAGPROJEKTLORA2023_HASHER_H
 
+#include <Arduino.h>
+#include <stdexcept>
 #include "stdio.h"
 #include "mbedtls/sha256.h"
 #include "CryptographicSettings.h"

@@ -1,0 +1,19 @@
+#####About this library:
+
+This library is ESP32 specific and deals with saving to the ESP32's NVM
+
+- currently only the SPLIFFSFileManager - sometimes reffered to in this readme as SPLIFFS-FM - has been implemented, which deals exclusively with the flash.
+
+#####One SPLIFFSFileManager To Rule Them All:
+
+Please note, that only a single SPLIFFSFileManager can utilize the filesystem at any given time.
+
+After the currently controlling SPLIFFS-FM has been dismounted, the next must call the mount method
+
+#####Manually mount/dismount:
+
+It was proposed to (dis)mount automatically during the constructor and deconstructor of the SPIFFS-FM class.
+This was not implemented, and it is therefore necessary for the programmer to manually mount and dismount the filesystem.
+
+This wasn't implemented, as mounting and dismounting is system wide, and it could therefore cause quite a lot of confusion
+and unsuspected errors, which would be hard to pick up on.

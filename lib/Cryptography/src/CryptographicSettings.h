@@ -9,8 +9,6 @@
 // Created by DripTooHard on 03-04-2023.
 //
 
-
-
 //Truth values for our RSA functions
 //They're defined as such, because the mbedtls libraries define 0 as success
 #define RSABooleanTrue 0
