@@ -1,12 +1,8 @@
 #include <Arduino.h>
 #include <ssd1306.h>
-#include <DataView.h>
-#include <DataController.h>
-#include "MVCSettings.h"
-
-#define CONFIG_SDA_GPIO 21
-#define CONFIG_SCL_GPIO 22
-#define CONFIG_RESET_GPIO 15
+#include "../lib/MVC/DataView.h"
+#include "../lib/MVC/DataController.h"
+#include "../lib/MVC/MVCSettings.h"
 
 DataView dataView = DataView();
 DataController dataController = DataController(dataView);

@@ -1,11 +1,8 @@
-#include <Arduino.h>
-extern "C" {
 #include "ssd1306.h"
 #include <math.h>
 #include "freertos/task.h"
 #include <string.h>
 #include "esp_log.h"
-}
 #include "DataView.h"
 #include <font8x8_basic.h>
 using namespace std;

@@ -30,4 +30,4 @@ add_custom_target(
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-add_executable(Z_DUMMY_TARGET ${SRC_LIST} include/MVCSettings.h src/NavigationData.cpp)
+add_executable(Z_DUMMY_TARGET ${SRC_LIST} lib/MVC/MVCSettings.h lib/MVC/NavigationData.cpp test/test_embedded/test_adding_and_deletion_of_members.cpp)
