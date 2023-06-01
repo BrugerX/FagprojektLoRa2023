@@ -73,8 +73,8 @@ void setup(){
     //SPIFFS
     auto * spiff = new SPIFFSFileManager();
     unsigned char * pub,*priv;
-    unsigned char * pub_to_load = (unsigned char *) malloc(PEMPubKeyLen * sizeof(unsigned char));
-    unsigned char * priv_to_load = (unsigned char *) malloc(PEMPrivKeyLen * sizeof(unsigned char));
+    auto * pub_to_load = (unsigned char *) malloc(PEMPubKeyLen * sizeof(unsigned char));
+    auto * priv_to_load = (unsigned char *) malloc(PEMPrivKeyLen * sizeof(unsigned char));
 
     rsa_Cryptographer->generate_CTRX_context();
     rsa_Cryptographer->generate_key();
@@ -85,9 +85,10 @@ void setup(){
     spiff->save_file(RSAPubKeyPath,pub);
     spiff->save_file(RSAPrivKeyPath,priv);
 
-    spiff->load_file(RSAPubKeyPath,pub_to_load);
-    spiff->load_file(RSAPrivKeyPath,priv_to_load);
-    println_unsignedString(priv_to_load,PEMPrivKeyLen,CHR);
+    spiff->load_file(RSAPubKeyPath,pub_to_load,PEMPubKeyLen-1);
+    spiff->load_file(RSAPrivKeyPath,priv_to_load,PEMPrivKeyLen-1);
+    println_unsignedString(pub_to_load,CHR);
+
 
     res = rsa_Cryptographer->load_key_pem(pub_to_load,0);
     if(!isGoodResult(res)){

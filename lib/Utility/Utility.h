@@ -16,6 +16,8 @@
 //Prints an unsigned char array into either numerical or text format based on the base
 void println_unsignedString(unsigned char * unsginedString,int strlen, int base);
 
+void println_unsignedString(unsigned char * unsginedString, int base);
+
 void println_unsignedString(const unsigned char * unsginedString,int strlen, int base);
 
 void fill_alphanumeric_unsignedString(unsigned char * unsignedString, size_t sizeOf);

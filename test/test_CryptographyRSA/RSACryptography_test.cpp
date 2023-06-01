@@ -343,10 +343,10 @@ void loadingNewKeysAreValid(){
      * We now check to see if their encryption is the same
      */
 
-    operation_result = temporary_rsa_cryptographer->validate_key(temporary_rsa_cryptographer->get_public_context(),rsa_Cryptographer.get_private_context());
+    operation_result = temporary_rsa_cryptographer->validate_key(temporary_rsa_cryptographer->get_context(0),rsa_Cryptographer.get_context(1));
     TEST_ASSERT_EQUAL(RSABooleanTrue,operation_result);
 
-    operation_result = temporary_rsa_cryptographer->validate_key(rsa_Cryptographer.get_public_context(),temporary_rsa_cryptographer->get_private_context());
+    operation_result = temporary_rsa_cryptographer->validate_key(rsa_Cryptographer.get_context(0),temporary_rsa_cryptographer->get_context(1));
     TEST_ASSERT_EQUAL(RSABooleanTrue,operation_result);
 
     free(privPEM);

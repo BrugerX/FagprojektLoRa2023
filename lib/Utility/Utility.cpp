@@ -19,6 +19,20 @@ void println_unsignedString(unsigned char * unsginedString,int strlen, int base)
     Serial.print("\n");
 }
 
+//Prints an unsigned char array until the first \0 terminator
+void println_unsignedString(unsigned char * unsginedString, int base){
+
+    for(int x = 0; unsginedString[x] ;x++){
+        unsigned char chr = unsginedString[x];
+        if(chr == '\0') break;
+
+        if(chr<10 && base == HEX){ //We print the leading 0's in a hexadecimal number
+            Serial.print(0);
+        }
+        Serial.print(chr,base);
+    }
+    Serial.print("\n");
+}
 
 void println_unsignedString(const unsigned char * unsginedString,int strlen, int base){
 

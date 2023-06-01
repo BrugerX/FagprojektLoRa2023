@@ -54,6 +54,15 @@ protected:
     mbedtls_pk_context RSA_priv_ctx;
 private:
 
+
+    mbedtls_pk_context get_public_context(){
+        return this->RSA_pub_ctx;
+    }
+
+    mbedtls_pk_context get_private_context(){
+        return this->RSA_priv_ctx;
+    }
+
     int get_pub_key_pem(unsigned char ** buf){
         int result;
 
@@ -255,13 +264,17 @@ public:
         return mbedtls_pk_check_pair(&pub,&priv);
     }
 
-    mbedtls_pk_context get_public_context(){
-        return this->RSA_pub_ctx;
+    mbedtls_pk_context get_context(bool isPrivate){
+        if(isPrivate)
+        {
+            return get_private_context();
+        }
+        else
+        {
+            return get_public_context();
+        }
     }
 
-    mbedtls_pk_context get_private_context(){
-        return this->RSA_priv_ctx;
-    }
 
     /**
      * @description Takes a pointer to an unsigned char and points it towards an unsigned char array containing (ONLY) the PEM file of the specified key
