@@ -2,6 +2,7 @@
 // Created by DripTooHard on 20-05-2023.
 //
 
+
 #include <Arduino.h>
 #include <unity.h>
 #include "../../lib/Utility/Utility.cpp"
@@ -9,6 +10,10 @@
 #include "esp_system.h"
 #include <TestUtility.h>
 
+
+/**
+ * IMPORTANT: Remember not to use the same paths for the tests that need to be resat; They will overwrite each other.
+ */
 const char * TEST_STR_PATH;
 char * TEST_STR;
 SPIFFSFileManager * spiffy;
@@ -131,7 +136,6 @@ void setup()
 
     //DON'T PUT ANYTHING BEFORE THIS EXCEPT FOR DELAY!!!!
     UNITY_BEGIN(); //Define stuff after this
-    printf("%s","ABCDEF");
     spiffy = new SPIFFSFileManager();
     RUN_TEST(dataIsSavedAfterReboot);
 
@@ -139,9 +143,10 @@ void setup()
     if(!didWeRestart()){
         esp_restart();
     }
+
     //Tests where we don't check what happens after reset, below here, run once
-    RUN_TEST(multipleSPIFFSFileManagers);
     RUN_TEST(dataIsSavedAndLoadedCorrectly);
+    RUN_TEST(multipleSPIFFSFileManagers);
     UNITY_END(); // stop unit testing
 }
 

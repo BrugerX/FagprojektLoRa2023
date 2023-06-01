@@ -2,11 +2,7 @@
 #include "Arduino.h"
 #include <CryptographicSettings.h>
 #include "esp_dsp.h"
-#include "SPIFFS.h"
 #include <FileManager.cpp>
-#include "FS.h"
-#include "sha/sha_parallel_engine.h"
-#include "TinyGPSPlus-master/src/TinyGPS++.h"
 #include "stddef.h"
 #include "../lib/Utility/Utility.h"
 #include <Cryptographer.cpp>
@@ -18,7 +14,7 @@ static const char* TAG_main = "Main";
 
 
 const char * RSAPubKeyPath = "/RSAPubKey";
-const char * RSAPrivKeyPath = "RSAPrivKey";
+const char * RSAPrivKeyPath = "/RSAPrivKey";
 unsigned char PEMKeyBuffer[256];
 unsigned char pubKey[pubKeyLen];
 unsigned char a[2] = "a";
@@ -59,17 +55,6 @@ int findStartingIndexPEMFile(unsigned char * PEMBuffer,size_t sizeOfBuffer){
 
 
 
-bool assertNotEqualArray(unsigned char * arr1, unsigned char * arr2, size_t nrElements){
-    for(int i = 0; i<nrElements;i++){
-        if(arr1[i] != arr2[i]){
-            return true;
-        }
-    }
-
-    return false;
-}
-
-
 auto * rsa_Cryptographer = new RSACryptographer();
 
 
@@ -87,32 +72,39 @@ void setup(){
 
     //SPIFFS
     auto * spiff = new SPIFFSFileManager();
-    char * STR_FILE_PATH = "/ABC";
-    int SIZE_OF_FILE = 3;
-    unsigned char STR_FILE[SIZE_OF_FILE+1];
-    unsigned char load_buffer[SIZE_OF_FILE+1];
+    unsigned char * pub,*priv;
+    unsigned char * pub_to_load = (unsigned char *) malloc(PEMPubKeyLen * sizeof(unsigned char));
+    unsigned char * priv_to_load = (unsigned char *) malloc(PEMPrivKeyLen * sizeof(unsigned char));
 
-    fill_alphanumeric_unsignedString(STR_FILE,SIZE_OF_FILE);
-    println_unsignedString(STR_FILE,sizeof(STR_FILE),CHR);
+    rsa_Cryptographer->generate_CTRX_context();
+    rsa_Cryptographer->generate_key();
 
-    if(esp_reset_reason() != ESP_RST_SW) {
-        spiff->save_file(STR_FILE_PATH, (unsigned char *) STR_FILE);
-        esp_restart();
-    }
-    else{
-    spiff->load_file(STR_FILE_PATH,load_buffer,(int) sizeof(load_buffer));
-    Serial.print("Loaded file:");
-    println_unsignedString(load_buffer,SIZE_OF_FILE,CHR);
+    rsa_Cryptographer->get_key_pem(&pub,0);
+    rsa_Cryptographer->get_key_pem(&priv,1);
 
-    for(int i = 0; i<sizeof(load_buffer);i++){
-        assert(load_buffer[i] == STR_FILE[i]);
+    spiff->save_file(RSAPubKeyPath,pub);
+    spiff->save_file(RSAPrivKeyPath,priv);
+
+    spiff->load_file(RSAPubKeyPath,pub_to_load);
+    spiff->load_file(RSAPrivKeyPath,priv_to_load);
+    println_unsignedString(priv_to_load,PEMPrivKeyLen,CHR);
+
+    res = rsa_Cryptographer->load_key_pem(pub_to_load,0);
+    if(!isGoodResult(res)){
+        Serial.print("FAILED TO LOAD PUB KEY PEM");
     }
 
-    for(int i = 0; load_buffer[i];i++){
-        Serial.print(load_buffer[i],HEX);
-        Serial.print(",");
+    res = rsa_Cryptographer->load_key_pem(priv_to_load,1);
+    if(!isGoodResult(res)){
+        Serial.print("FAILED TO LOAD PRIV KEY PEM");
     }
+
+    res = rsa_Cryptographer->validate_key();
+    if(!isGoodResult(res)){
+        Serial.print("NONO MISTAH!");
     }
+
+
 
 };
 
