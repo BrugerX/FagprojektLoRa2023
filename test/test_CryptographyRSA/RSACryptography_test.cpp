@@ -182,7 +182,7 @@ void validateIsNotTrueEncryptDecryptWorksnt(){
     //We now fill out the private key with a second context
     temporary_rsa_Cryptographer->generate_key();
 
-    mbedtls_pk_context priv_ctx = temporary_rsa_Cryptographer->get_private_context();
+    mbedtls_pk_context priv_ctx = temporary_rsa_Cryptographer->get_context(1);
 
     TEST_ASSERT_EQUAL(RSABooleanTrue,temporary_rsa_Cryptographer->validate_key());
 

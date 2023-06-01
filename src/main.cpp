@@ -6,8 +6,9 @@
 #include "stddef.h"
 #include "../lib/Utility/Utility.h"
 #include <Cryptographer.cpp>
-
-#include "HardwareMacros.h"
+#include "sha/sha_parallel_engine.h"
+#include "mbedtls/sha256.h"
+#include "Hasher.h"
 
 
 static const char* TAG_main = "Main";
@@ -15,12 +16,8 @@ static const char* TAG_main = "Main";
 
 const char * RSAPubKeyPath = "/RSAPubKey";
 const char * RSAPrivKeyPath = "/RSAPrivKey";
-unsigned char PEMKeyBuffer[256];
-unsigned char pubKey[pubKeyLen];
-unsigned char a[2] = "a";
 unsigned char outputBuf[SHA256_OUTPUT_BUFFERLEN];
 unsigned char ID[IDLen];
-unsigned char outputBufDecrypt[SHA256_OUTPUT_BUFFERLEN];
 
 /**
  * Finds the size of an RSA key formatted in PEM format
@@ -57,12 +54,14 @@ int findStartingIndexPEMFile(unsigned char * PEMBuffer,size_t sizeOfBuffer){
 
 auto * rsa_Cryptographer = new RSACryptographer();
 
+auto * hashishi = new SHA256Hasher();
 
 
 
 void setup(){
     Serial.begin(9600);
 
+    fill_char_unsignedString(ID,IDLen,'A');
 
 
     int res = 0;
@@ -87,7 +86,7 @@ void setup(){
 
     spiff->load_file(RSAPubKeyPath,pub_to_load,PEMPubKeyLen-1);
     spiff->load_file(RSAPrivKeyPath,priv_to_load,PEMPrivKeyLen-1);
-    println_unsignedString(pub_to_load,CHR);
+    println_unsignedString(priv_to_load,CHR);
 
 
     res = rsa_Cryptographer->load_key_pem(pub_to_load,0);
@@ -105,7 +104,11 @@ void setup(){
         Serial.print("NONO MISTAH!");
     }
 
-
+    hashishi->generate_checksum(ID,IDLen,outputBuf);
+    println_unsignedString(outputBuf,SHA256_OUTPUT_BUFFERLEN,HEX);
+    fill_alphanumeric_unsignedString(outputBuf,SHA256_OUTPUT_BUFFERLEN);
+    hashishi->generate_checksum(ID,IDLen,outputBuf);
+    println_unsignedString(outputBuf,SHA256_OUTPUT_BUFFERLEN,HEX);
 
 };
 

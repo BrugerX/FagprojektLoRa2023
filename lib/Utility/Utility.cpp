@@ -14,7 +14,13 @@ void println_unsignedString(unsigned char * unsginedString,int strlen, int base)
         if(chr<10 && base == HEX){ //We print the leading 0's in a hexadecimal number
             Serial.print(0);
         }
+
         Serial.print(chr,base);
+
+        if(base != CHR)
+        {
+            Serial.print(",");
+        }
     }
     Serial.print("\n");
 }
@@ -30,22 +36,15 @@ void println_unsignedString(unsigned char * unsginedString, int base){
             Serial.print(0);
         }
         Serial.print(chr,base);
-    }
-    Serial.print("\n");
-}
 
-void println_unsignedString(const unsigned char * unsginedString,int strlen, int base){
-
-    for(int x = 0; x<strlen;x++){
-        const unsigned char chr = unsginedString[x];
-
-        if(chr<10 && base == HEX){ //We print the leading 0's in a hexadecimal number
-            Serial.print(0);
+        if(base != CHR)
+        {
+            Serial.print(",");
         }
-        Serial.print(chr,base);
     }
     Serial.print("\n");
 }
+
 
 //Generates the following array ReGex [A,B,C,...,z]^(|[A,B,C,...,z]|%(sizeOf))
 void fill_alphanumeric_unsignedString(unsigned char * unsignedString, size_t sizeOf){

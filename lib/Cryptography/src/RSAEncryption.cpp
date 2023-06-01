@@ -6,42 +6,7 @@
 
 
 
-/**
- *                 Depreciated version of calculating the Sha256 hash and storing it in an output buffer.
- *                 We use sha_parallel_engine instead, as it uses the ESP32's hardware accelerator.
- *
- * \param unsignedString The target we wish to hash
- * \param strlen    The length of the target
- * \param outputBuffer The buffer in which we put the hash. Must be at least 256 bits wide.
- *
- * \return         \c 0 on failure.
- * \return         \c 1 on success.
- */
- /*
-int generateSha256Hash(unsigned char * unsignedString, int strLen ,unsigned char * outputBuffer){
-    mbedtls_sha256_context ctx;
-    ctx.mode = ESP_MBEDTLS_SHA256_HARDWARE; //We use the hardware accelerator
 
-    //Init context
-    mbedtls_sha256_init(&ctx);
-
-    //Starts a calculation
-    if(mbedtls_sha256_starts_ret(&ctx,0)){
-        return 0;
-    }
-
-    //Update context
-    if(mbedtls_sha256_update_ret(&ctx,(const unsigned char *) unsignedString,strLen)){
-        return 0;
-    }
-
-    //Finish and store to output
-    mbedtls_sha256_finish(&ctx,outputBuffer);
-
-    //Free context
-    mbedtls_sha256_free(&ctx);
-}
-*/
 
  /**
   *

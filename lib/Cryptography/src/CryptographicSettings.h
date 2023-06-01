@@ -9,12 +9,13 @@
 // Created by DripTooHard on 03-04-2023.
 //
 
+
+
 //Truth values for our RSA functions
 //They're defined as such, because the mbedtls libraries define 0 as success
 #define RSABooleanTrue 0
 #define RSABooleanFalse 1
 
-bool isGoodResult(int res);
 
 //RSA related
 #define RSAPubKeyEXPONENT 65537
@@ -33,7 +34,15 @@ bool isGoodResult(int res);
 #define PEM_ERR_NO_PEM_FILE -69
 #define PEMPubKeyLen 1500 //Size of the arrays used to store the public key PEM arrays
 #define PEMPrivKeyLen 1800
+
 //Hashing related
 #define SHA256_OUTPUT_BUFFERLEN 32 //256 bits
+#define SHA256_ERR_CTX_IS_NULL -53712
 
+
+/**
+ *  FUNCTIONS
+ */
+
+bool isGoodResult(int res);
 #endif //FAGPROJEKTLORA2023_CRYPTOGRAPHICSETTINGS_H

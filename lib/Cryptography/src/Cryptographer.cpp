@@ -54,6 +54,37 @@ protected:
     mbedtls_pk_context RSA_priv_ctx;
 private:
 
+    /**
+ *
+ * @param inputArray : The array which we would like to do our encryption/decryption on
+ * @param inputLen
+ * @param outputArray
+ * @param outLen : The length of the result (not the size of the outputArray)
+ * @param isEncryption : 0 if we're decrypting, 1 if we're encrypting
+ * @return 0 if succesfull, otherwise a specified error code
+ */
+    int use_key(unsigned char * inputArray, size_t inputLen, unsigned char * outputArray,size_t outSize, size_t * outLen, int isEncryption){
+        int res;
+
+        if(isEncryption) {
+            res = mbedtls_pk_encrypt(&this->RSA_pub_ctx, inputArray, inputLen,  outputArray, outLen,
+                                     outSize, mbedtls_ctr_drbg_random, &this->CTR_ctx);
+        }
+        else{
+            res =  mbedtls_pk_decrypt(&this->RSA_priv_ctx, inputArray,inputLen, outputArray, outLen, outSize ,mbedtls_ctr_drbg_random,&this->CTR_ctx);
+        }
+
+        //If our output is larger than the array
+        if(*outLen>outSize){ //2
+            Serial.println("ERROR: Output length exceeds size of the outputArray");
+            Serial.println(*outLen);
+            Serial.println(outSize);
+            return RSA_ERR_OUTPUT_EXCEEDS_OUTPUT_ARRAY_LEN;
+        }
+
+        return res;
+
+    }
 
     mbedtls_pk_context get_public_context(){
         return this->RSA_pub_ctx;
@@ -115,6 +146,7 @@ private:
     }
 
 public:
+
     RSACryptographer()
     {
 
@@ -123,37 +155,7 @@ public:
             ){}
 
 
-    /**
-     *
-     * @param inputArray : The array which we would like to do our encryption/decryption on
-     * @param inputLen
-     * @param outputArray
-     * @param outLen : The length of the result (not the size of the outputArray)
-     * @param isEncryption : 0 if we're decrypting, 1 if we're encrypting
-     * @return 0 if succesfull, otherwise a specified error code
-     */
-    int use_key(unsigned char * inputArray, size_t inputLen, unsigned char * outputArray,size_t outSize, size_t * outLen, int isEncryption){
-        int res;
 
-        if(isEncryption) {
-            res = mbedtls_pk_encrypt(&this->RSA_pub_ctx, inputArray, inputLen,  outputArray, outLen,
-                                     outSize, mbedtls_ctr_drbg_random, &this->CTR_ctx);
-        }
-        else{
-            res =  mbedtls_pk_decrypt(&this->RSA_priv_ctx, inputArray,inputLen, outputArray, outLen, outSize ,mbedtls_ctr_drbg_random,&this->CTR_ctx);
-        }
-
-        //If our output is larger than the array
-        if(*outLen>outSize){ //2
-            Serial.println("ERROR: Output length exceeds size of the outputArray");
-            Serial.println(*outLen);
-            Serial.println(outSize);
-            return RSA_ERR_OUTPUT_EXCEEDS_OUTPUT_ARRAY_LEN;
-        }
-
-        return res;
-
-    }
 
     /**
      * @pre inputLen <= |inputArray| && outputSize<=outputArray
@@ -294,10 +296,17 @@ public:
         int result;
 
         if(getPrivateKey) {
-            return this->get_priv_key_pem(buf);
+            result = get_priv_key_pem(buf);
         }else{
-            return this->get_pub_key_pem(buf);
+            result = get_pub_key_pem(buf);
         }
+
+        //error
+        if(!isGoodResult(result)){
+            Serial.println(-result,HEX);
+            throw std::runtime_error("COULD NOT GET KEY PEM");
+        }
+
 
 
     }
