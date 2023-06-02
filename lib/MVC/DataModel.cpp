@@ -1,5 +1,5 @@
 #include "DataModel.h"
-
+#include <stdexcept>
 
 using namespace std;
 
@@ -32,7 +32,7 @@ char DataModel::getTableIndex(){
 }
 
 char DataModel::getCurrentMemberIndex(){ //maybe this shouldn't be here
-    return tableIndex / 2;
+    return (char) (tableIndex / 2);
 }
 
 void DataModel::changeTableIndex(char userInput, SSD1306_t *dev) {
@@ -77,7 +77,7 @@ void DataModel::setState(char newState){
 }
 
 char DataModel::getNumberOfMembers(){
-    return groupMembers.size();
+    return (char) groupMembers.size();
 }
 
 char * DataModel::getMemberID(char index){
@@ -94,15 +94,22 @@ void DataModel::initializeTable(SSD1306_t * dev){
 }
 
 void DataModel::addGroupMember(Member groupMember){
-    groupMembers.insert(groupMembers.end(), groupMember);
+    if(groupMembers.size() < 255){ //255 because unsigned char max is 255
+        groupMembers.insert(groupMembers.end(), groupMember);
+    }
+    else throw length_error("You have to many members, remove some first if you want to add more");
 }
 
-void DataModel::removeGroupMember(char index) {
+void DataModel::removeGroupMember(char index) {//expects a non-negative index, and a that the vector is non-empty
     groupMembers.erase(groupMembers.begin() + index);
 }
 
 void DataModel::removeGroupMember(Member groupMember) {
-    groupMembers.push_back(groupMember);
+    for(unsigned char i = 0; i < groupMembers.size(); i++){
+        if(groupMembers[i] == groupMember){
+            groupMembers.erase(groupMembers.begin()+i);
+        }
+    }
 }
 
 void DataModel::resetTableIndexes(){

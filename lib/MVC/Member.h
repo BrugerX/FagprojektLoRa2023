@@ -1,4 +1,5 @@
 #include "NavigationData.h"
+#include <string.h>
 using namespace std;
 
 
@@ -17,6 +18,9 @@ class Member {
     char getYLocation();
     char * getID();
     NavigationData getNav();
+    bool operator==(Member &m){
+        return strcmp(this->ID, m.ID) == 0 && strcmp(this->nav.getTimestamp(), m.nav.getTimestamp()) == 0;
+    }
 
 };
 

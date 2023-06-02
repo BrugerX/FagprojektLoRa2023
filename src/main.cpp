@@ -28,6 +28,13 @@ void setup() {
     for(int i = 0; i < 6; i++){
         dataController.addGroupMember(Member(names[i],NavigationData()));
     }
+    Serial.println("Test beginning");
+    char s[] = "Name";
+    Member m1 = Member(s,NavigationData());
+    Member m2 = Member(s,NavigationData());
+    bool result = m1 == m2;
+    Serial.println("The result is: ");
+    Serial.println(result,DEC);
     /*while(Serial.available() != 0){
       char input = Serial.read();
       delay(2);
