@@ -14,8 +14,16 @@ DataView::DataView(){
 
 void DataView::showStartScreen(SSD1306_t * dev) {
     char startText[] = "StartScreen";
+    char userInfo1[] = "For compass";
+    char userInfo2[] = "press w";
+    char userInfo3[] = "For table";
+    char userInfo4[] = "press s";
     ssd1306_clear_screen(dev, 0);
-    ssd1306_display_text(dev, 4, startText, strlen(startText), 0);
+    ssd1306_display_text(dev, 0, startText, strlen(startText), 0);
+    ssd1306_display_text(dev, 2, userInfo1, strlen(userInfo1), 0);
+    ssd1306_display_text(dev, 3, userInfo2, strlen(userInfo2), 0);
+    ssd1306_display_text(dev, 5, userInfo3, strlen(userInfo3), 0);
+    ssd1306_display_text(dev, 6, userInfo4, strlen(userInfo4), 0);
 }
 
 void DataView::drawCircle(int xCenter, int yCenter, int r, SSD1306_t * dev) {
