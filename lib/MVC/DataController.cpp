@@ -3,7 +3,7 @@
 #include "DataController.h"
 #include <ssd1306.h>
 #include <string.h>
-#include <Arduino.h>
+
 
 using namespace std;
 
@@ -15,9 +15,7 @@ DataController::DataController(DataView dataView) : model(0, dataView) {
 void DataController::handleUserInput(char userInput, SSD1306_t * dev){
 switch(this->model.getState()){
     case START_STATE: {
-        char startText[] = "StartScreen";
-        ssd1306_clear_screen(dev, 0);
-        ssd1306_display_text(dev, 4, startText, strlen(startText), 0);
+        view.showStartScreen(dev);
         if (userInput == UP_KEY) {
             this->model.setState(COMPASS_STATE);
             ssd1306_clear_screen(dev, 0);
@@ -27,8 +25,6 @@ switch(this->model.getState()){
             this->model.setState(TABLE_STATE);
             ssd1306_clear_screen(dev, 0);
             model.initializeTable(dev);
-            Serial.print("stateChanging: ");
-            Serial.println(getTableIndex(),DEC);
         }
         break;
     }
@@ -39,8 +35,6 @@ switch(this->model.getState()){
         }
         break;
     case TABLE_STATE:
-        Serial.print("Start of switch: ");
-        Serial.println(getTableIndex(),DEC);
         /*char tableID[4][8];
         char timestamp[4][8];
         unsigned char lowerBound;
@@ -62,11 +56,7 @@ switch(this->model.getState()){
             this->model.setState(START_STATE);
         }
         else {
-            Serial.print("Changing index: ");
-            Serial.println(getTableIndex(),DEC);
             this->model.changeTableIndex(userInput, dev);
-            Serial.print("Changed index: ");
-            Serial.println(getTableIndex(),DEC);
             //go where to where the input decides in the table
         }
         break;
@@ -86,4 +76,16 @@ void DataController::addGroupMember(Member groupMember){
 
 char DataController::getTableIndex(){
     return model.getTableIndex();
+}
+
+void DataController::removeGroupMember(char index){
+    model.removeGroupMember(index);
+}
+
+void DataController::removeGroupMember(Member groupMember){
+    model.removeGroupMember(groupMember);
+}
+
+DataModel DataController::getModel() { //method used for testing
+    return model;
 }

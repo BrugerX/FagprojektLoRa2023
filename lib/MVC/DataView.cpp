@@ -1,19 +1,22 @@
-#include <Arduino.h>
-extern "C" {
 #include "ssd1306.h"
 #include <math.h>
 #include "freertos/task.h"
 #include <string.h>
 #include "esp_log.h"
-}
 #include "DataView.h"
 #include <font8x8_basic.h>
 using namespace std;
 
 #define TAG "DataView"
 
+DataView::DataView(){
+}
 
-DataView::DataView(){}
+void DataView::showStartScreen(SSD1306_t * dev) {
+    char startText[] = "StartScreen";
+    ssd1306_clear_screen(dev, 0);
+    ssd1306_display_text(dev, 4, startText, strlen(startText), 0);
+}
 
 void DataView::drawCircle(int xCenter, int yCenter, int r, SSD1306_t * dev) {
     for (int i = 0; i < 360; i += 1) {
@@ -229,30 +232,31 @@ void DataView::drawRectangle(char x, char y, char length, char height, SSD1306_t
     ESP_LOGD(TAG, "successfully displayed rectangle");
 }
 
-void DataView::scrollTableUp(SSD1306_t * dev, char * ID, char * name){ //only display 8 first characters of string
+void DataView::scrollTableUp(SSD1306_t * dev, char * ID, char * timestamp){ //only display 8 first characters of string
     char clearingString[] = "        ";
     char IDLength = strlen(ID) > 8 ? 8 : strlen(ID);
-    char nameLength = strlen(name) > 8 ? 8 : strlen(name);
+    char tsLength = strlen(timestamp) > 8 ? 8 : strlen(timestamp);
     for(char j = 0; j < 16; j++){
         ssd1306_wrap_arround(dev, SCROLL_UP, 0, 127, 0); //scrolls once start at seg 0 and to seg 127 (the whole line)
     }
     ssd1306_display_text(dev, 6, clearingString, 8, 0);
     drawTextAt(65, 48, clearingString, 8, 0, dev);
     ssd1306_display_text(dev, 6, ID, IDLength, 0);
-    drawTextAt(65, 48, name, nameLength, 0, dev);
+    drawTextAt(65, 48, timestamp, tsLength, 0, dev);
+
 }
 
-void DataView::scrollTableDown(SSD1306_t * dev, char * ID, char * name){ //only display 8 first characters of string
+void DataView::scrollTableDown(SSD1306_t * dev, char * ID, char * timestamp){ //only display 8 first characters of string
     char clearingString[] = "        ";
     char IDLength = strlen(ID) > 8 ? 8 : strlen(ID);
-    char nameLength = strlen(name) > 8 ? 8 : strlen(name);
+    char tsLength = strlen(timestamp) > 8 ? 8 : strlen(timestamp);
     for(char j = 0; j < 16; j++){
         ssd1306_wrap_arround(dev, SCROLL_DOWN, 0, 127, 0); //scrolls once start at seg 0 and to seg 127 (the whole line)
     }
     ssd1306_display_text(dev, 0, clearingString, 8, 0);
     drawTextAt(65, 0, clearingString, 8, 0, dev);
     ssd1306_display_text(dev, 0, ID, IDLength, 0);
-    drawTextAt(65, 0, name, nameLength, 0, dev);
+    drawTextAt(65, 0, timestamp, tsLength, 0, dev);
 }
 
 void DataView::drawIDTable(char startIndex, vector<Member> &members, SSD1306_t * dev){ //only display 8 first characters of string

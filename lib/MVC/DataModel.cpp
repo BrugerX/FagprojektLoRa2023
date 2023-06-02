@@ -1,5 +1,5 @@
 #include "DataModel.h"
-#include "Arduino.h"
+
 
 using namespace std;
 
@@ -19,6 +19,7 @@ char DataModel::findMemberIndex(char * ID){
     for (unsigned char i; i < groupMembers.size(); i++){
         if(groupMembers[i].getID() == ID) return i;
     }
+    return -1;
 }
 
 void DataModel::changeMemberLocation(char x, char y, char memberIndex){

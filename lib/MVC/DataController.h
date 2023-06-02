@@ -1,6 +1,6 @@
 #include "DataView.h"
 #include "DataModel.h"
-#include "Settings.h"
+#include "MVCSettings.h"
 #include <ssd1306.h>
 
 using namespace std;
@@ -20,6 +20,9 @@ public:
     void handleUserInput(char userInput, SSD1306_t * dev);
     char getModelState();
     void addGroupMember(Member groupMember);
+    void removeGroupMember(char index);
+    void removeGroupMember(Member groupMember);
     char getTableIndex();
+    DataModel getModel(); //for testing purposes
 };
 #endif //DATACONTROLLER_H

@@ -1,14 +1,10 @@
 #include <Arduino.h>
 #include <ssd1306.h>
-#include <DataView.h>
-#include <DataController.h>
-#include "settings.h"
+#include "../lib/MVC/DataView.h"
+#include "../lib/MVC/DataController.h"
+#include "../lib/MVC/MVCSettings.h"
 
-#define CONFIG_SDA_GPIO 21
-#define CONFIG_SCL_GPIO 22
-#define CONFIG_RESET_GPIO 15
-
-DataView dataView;
+DataView dataView = DataView();
 DataController dataController = DataController(dataView);
 SSD1306_t dev;
 char names[6][8] = {"Bjarke", "Benny", "Birger", "Bjarne", "Bent", "Birk"};
@@ -16,7 +12,7 @@ char names[6][8] = {"Bjarke", "Benny", "Birger", "Bjarne", "Bent", "Birk"};
 void setup() {
     // put your setup code here, to run once:
     Serial.begin(9600);
-    //delay(2000);
+    delay(2000);
     //Serial.println("Hello world");
     i2c_master_init(&dev, CONFIG_SDA_GPIO, CONFIG_SCL_GPIO, CONFIG_RESET_GPIO);
     //initializing display of size 128x64

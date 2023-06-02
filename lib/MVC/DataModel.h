@@ -1,5 +1,5 @@
 #include "DataView.h"
-#include "Settings.h"
+#include "MVCSettings.h"
 #include "Member.h"
 #include <vector>
 
