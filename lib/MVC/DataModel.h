@@ -24,8 +24,6 @@ private:
 
 public:
     DataModel(char state, DataView dataView);
-    //char tableID[32][8];
-    //char tableName[32][8];
     void changeCurrentLocation(char x, char y);
     char findMemberIndex(char * ID);
     void changeMemberLocation(char x, char y, char memberIndex);

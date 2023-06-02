@@ -94,7 +94,7 @@ void DataModel::initializeTable(SSD1306_t * dev){
 }
 
 void DataModel::addGroupMember(Member groupMember){
-    if(groupMembers.size() < 255){ //255 because unsigned char max is 255
+    if(groupMembers.size() < MAX_NUMBER_OF_MEMBERS){ //we can have a max of 255 members because unsigned char max is 255
         groupMembers.insert(groupMembers.end(), groupMember);
     }
     else throw length_error("You have to many members, remove some first if you want to add more");
