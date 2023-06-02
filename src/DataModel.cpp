@@ -103,3 +103,8 @@ void DataModel::removeGroupMember(char index) {
 void DataModel::removeGroupMember(Member groupMember) {
     groupMembers.push_back(groupMember);
 }
+
+void DataModel::resetTableIndexes(){
+    topTableIndex = 0;
+    tableIndex = 0;
+}

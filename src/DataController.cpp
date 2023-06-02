@@ -58,6 +58,7 @@ switch(this->model.getState()){
             //Show more user info
         }
         else if (userInput == BACK_KEY){
+            model.resetTableIndexes();
             this->model.setState(START_STATE);
         }
         else {

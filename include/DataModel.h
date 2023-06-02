@@ -41,6 +41,7 @@ public:
     void addGroupMember(Member groupMember);
     void removeGroupMember(char index);
     void removeGroupMember(Member groupMember);
+    void resetTableIndexes();
 
 };
 #endif //DATAMODEL_H
