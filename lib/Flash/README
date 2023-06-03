@@ -2,7 +2,7 @@
 
 This library is ESP32 specific and deals with saving to the ESP32's NVM
 
-- currently only the SPLIFFSFileManager - sometimes reffered to in this readme as SPLIFFS-FM - has been implemented, which deals exclusively with the flash.
+- currently only the SPLIFFSFileManager -  reffered to in this readme as SPLIFFS-FM - has been implemented, which deals exclusively with the flash.
 
 #####One SPLIFFSFileManager To Rule Them All:
 
@@ -17,3 +17,12 @@ This was not implemented, and it is therefore necessary for the programmer to ma
 
 This wasn't implemented, as mounting and dismounting is system wide, and it could therefore cause quite a lot of confusion
 and unsuspected errors, which would be hard to pick up on.
+
+#####Error messages
+
+The FS API uses the ESP-IDF native log functions to indicate what caused the error on the serial terminal.
+However, the exceptions are thrown inside the wrapper functions we've made.
+
+#####Not Thread Safe
+
+We have yet to make the SPLIFFS-FM object thread safe.

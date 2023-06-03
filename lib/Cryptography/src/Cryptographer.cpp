@@ -102,8 +102,9 @@ private:
 
         if(!isGoodResult(result)){
             //TODO: Better exceptions
-            //throw "FAILED TO WRITE PUBLIC KEY TO PEM FILE";
             Serial.print(-result,HEX);
+            //throw std::runtime_error("UNABLE TO GET PUBLIC KEY PEM");
+            return result;
         }
 
         *buf = temp;
@@ -307,6 +308,7 @@ public:
             throw std::runtime_error("COULD NOT GET KEY PEM");
         }
 
+        return result;
 
 
     }

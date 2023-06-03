@@ -14,6 +14,7 @@
 #include "mbedtls/sha256.h"
 #include "sha/sha_parallel_engine.h"
 #include <Utility.h>
+#include "stdexcept"
 
 class Cryptographer;
 class RSACryptographer;

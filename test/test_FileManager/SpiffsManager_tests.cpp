@@ -22,8 +22,10 @@ int testInt;
 
 void deleteSaveLoadString(SPIFFSFileManager * spiffsFileManager,const char * PATH_OF_STR,unsigned char * STR_TO_TEST, size_t endIdx){
     unsigned char STR_TO_LOAD[endIdx+1];
-
+    if(spiffsFileManager->exists(PATH_OF_STR))
+    {
     spiffsFileManager->delete_file(PATH_OF_STR);
+    }
     TEST_ASSERT_FALSE(spiffsFileManager->exists(PATH_OF_STR));
     TEST_ASSERT_TRUE(spiffsFileManager->save_file(PATH_OF_STR,STR_TO_TEST));
     TEST_ASSERT_TRUE(spiffsFileManager->load_file(PATH_OF_STR,STR_TO_LOAD,endIdx));
@@ -69,7 +71,8 @@ void dataIsSavedAfterReboot(){
     //After the reset we check to see if it still exists, if we can load it, we then delete it
     else{
         TEST_ASSERT_TRUE(spiffy->exists(TEST_STR_PATH));
-        unsigned char load_result_arr[sizeof(TEST_STR)];
+        unsigned char load_result_arr[sizeof(TEST_STR)/sizeof(TEST_STR[0])];
+        fill_alphanumeric_unsignedString(load_result_arr,sizeof(TEST_STR));
         spiffy->load_file(TEST_STR_PATH,load_result_arr,sizeof(load_result_arr)-1);
 
         //Time to delete it
@@ -104,27 +107,32 @@ void multipleSPIFFSFileManagers(){
     //We now fill the string with the same char
     fill_char_unsignedString(STR_TO_LOAD2,SIZE_OF_STR_2,'A');
 
+
     //We now confirm that spiffy2 cannot load the array
     TEST_ASSERT_FALSE(spiffy2->exists(path2));
-    spiffy2->load_file(path2,STR_TO_LOAD2);
-    TEST_ASSERT_NOT_EQUAL_STRING(STR_TO_TEST2,STR_TO_LOAD2);
+    try{
+        TEST_ASSERT_TRUE(spiffy2->load_file(path2,STR_TO_LOAD2));
+        TEST_FAIL_MESSAGE("IT WAS POSSIBLE TO LOAD THE FILE");
+    }
+    catch (std::logic_error ){};
 
     //We now dismount spiffy, mount spiffy2 again and redo all the operations we did with spiffy this time with spiffy2
     spiffy->dismount();
     spiffy2->mount();
 
     deleteSaveLoadString(spiffy2,path2,STR_TO_TEST2,SIZE_OF_STR_2);
-    fill_char_unsignedString(STR_TO_LOAD2,SIZE_OF_STR_2,'A');
 
 
     //Finally we confirm that spiffy cannot load the array, now that spiffy2 is mounted
     TEST_ASSERT_FALSE(spiffy->exists(path2));
-    spiffy->load_file(path2,STR_TO_LOAD2);
-    TEST_ASSERT_NOT_EQUAL_STRING(STR_TO_TEST2,STR_TO_LOAD2);
+    try{
+        TEST_ASSERT_TRUE(spiffy->load_file(path2,STR_TO_LOAD2));
+        TEST_FAIL_MESSAGE("IT WAS POSSIBLE TO LOAD THE FILE");
+    }
+    catch (std::logic_error ){};
 
     spiffy2->dismount();
     spiffy->mount();
-
 
     delete spiffy2;
 }

@@ -21,7 +21,6 @@ SPIFFSFileManager::SPIFFSFileManager()
 {
     //We have to mount the spiffs
     if(!mount()){
-        Serial.println("COULD NOT MOUNT SPIFFS");
         throw std::runtime_error("COULD NOT MOUNT SPIFFS");
     }
 }
@@ -37,8 +36,7 @@ bool SPIFFSFileManager::save_file(const char *filePath, const unsigned char *dat
 
     //Failed to open
     if(!file){
-        Serial.println("− failed to open file for writing");
-        return false;
+        throw std::logic_error("− failed to open file for writing");
     }
 
     //Written succesfully
@@ -46,13 +44,12 @@ bool SPIFFSFileManager::save_file(const char *filePath, const unsigned char *dat
         Serial.println("− file written");
         return true;
 
-        //Failed to write
-    }else {
-        Serial.println("− frite failed");
-        return false;
+    }
+    else //Failed to write
+    {
+        throw std::runtime_error("− Write failed");
     }
 
-    file.close();
 
 }
 
@@ -65,9 +62,10 @@ bool SPIFFSFileManager::delete_file(const char * filePath){
     if(fileSystem.remove((const char *)filePath)){
         Serial.println("− file deleted");
         return true;
-    } else {
-        Serial.println("− delete failed");
-        return false;
+    }
+    else
+    {
+        throw std::logic_error("− delete failed");
     }
 }
 
@@ -75,8 +73,8 @@ bool SPIFFSFileManager::delete_file(const char * filePath){
 bool SPIFFSFileManager::load_file(const char * filePath, unsigned char * resultArray){
     File f1 = fileSystem.open(filePath);
     if(!f1 || f1.isDirectory()){
-        Serial.println("− failed to open file for reading");
-        return false;
+        log_e("SPIFFSFileManager: Failed to open file %s. You possibly tried to load a directory",filePath);
+        throw std::logic_error("− failed to open file for reading. You possibly tried to load a directory");
     }
 
     int i = 0;
@@ -94,7 +92,7 @@ bool SPIFFSFileManager::load_file(const char * filePath, unsigned char * resultA
 bool SPIFFSFileManager::load_file(const char * filePath, unsigned char * resultArray, size_t endIdx){
     File f1 = fileSystem.open(filePath,FILE_READ);
     if(!f1 || f1.isDirectory()){
-        Serial.println("− failed to open file for reading");
+        throw std::logic_error("− failed to open file for reading. You possibly tried to load a directory");
         return false;
     }
 
@@ -121,5 +119,8 @@ void SPIFFSFileManager::dismount() {
 
 //TODO: Default arguments ift. basepath + partition label
 bool SPIFFSFileManager::mount() {
-    return fileSystem.begin(true);
+    if(!fileSystem.begin(true)){
+        throw std::logic_error("SPIFFS failed to mount");
+    }
+    return true;
 }
