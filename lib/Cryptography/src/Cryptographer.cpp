@@ -76,10 +76,8 @@ private:
 
         //If our output is larger than the array
         if(*outLen>outSize){ //2
-            Serial.println("ERROR: Output length exceeds size of the outputArray");
-            Serial.println(*outLen);
-            Serial.println(outSize);
-            return RSA_ERR_OUTPUT_EXCEEDS_OUTPUT_ARRAY_LEN;
+            log_e("ERROR: Output length exceeds size of the outputArray\n Output length: %i, output array size: %i",*outLen,outSize);
+            throw std::logic_error("OUTPUT LENGTH EXCEEDS SIZE OF THE OUTPUT ARRAY");
         }
 
         return res;
@@ -172,11 +170,8 @@ public:
 
         //The input is larger than what our encryption algorithm can handle
         if(inputLen>RSA_MAX_INPUT_LEN){ //1
-            Serial.print("ERROR: INPUT: \n");
-            println_unsignedString(inputArray,inputLen,CHR);
-            Serial.print("EXCEEDS MAX ENCRYPTION INPUT LEN: ");
-            Serial.print(RSA_MAX_INPUT_LEN);
-            return RSA_ERR_INPUT_EXCEEDS_MAX_LEN;
+            log_e("ERROR: INPUT EXCEEDS MAX ENCRYPTION INPUT LEN %i",RSA_MAX_INPUT_LEN);
+            throw std::logic_error("INPUT EXCEEDS MAX ENCRYPTION INPUT LEN");
         }
 
 
@@ -208,21 +203,27 @@ public:
         mbedtls_pk_init(&RSA_priv_ctx);
 
         int ret = mbedtls_pk_setup(&RSA_ctx, mbedtls_pk_info_from_type(MBEDTLS_PK_RSA));
-        Serial.println("Initializing key context...");
-        ESP_LOGI(TAG_MAIN, "Initializing key context...");
-        if (ret != RSABooleanTrue)
+
+        log_i("Initializing key context...");
+
+        if (ret == MBEDTLS_ERR_PK_BAD_INPUT_DATA)
         {
-            ESP_LOGE(TAG_WORDS, "mbedtls_pk_info_from_type returned %d", ret);
-            return RSABooleanFalse;
+            log_e("Failed to setup pk context in generate_key, returned error BAD INPUT DATA");
+            throw std::logic_error("Could not setup pk context");
+        }
+        else if(ret == MBEDTLS_ERR_PK_ALLOC_FAILED)
+        {
+            log_e("Failed to setup pk context in generate_key, returned error ALLOCATION FAILED");
+            throw std::logic_error("Could not setup pk context");
         }
 
 
-        Serial.println("Generating the private key...");
+        log_i("Generating the private key...");
         ret = mbedtls_rsa_gen_key(mbedtls_pk_rsa(RSA_ctx), mbedtls_ctr_drbg_random, &CTR_ctx, pubKeyLen, RSAPubKeyEXPONENT);
         if (ret != RSABooleanTrue)
         {
-            ESP_LOGE(TAG_WORDS, "mbedtls_rsa_gen_key returned %d", ret);
-            return RSABooleanFalse;
+            log_e("mbedtls_rsa_gen_key returned %x", -ret);
+            throw std::logic_error("Could not generate key for pk context");
         }
 
         //TODO: Turn this into a single function...?
@@ -232,23 +233,14 @@ public:
         PEMpub = (unsigned char * ) malloc(PEMPubKeyLen*sizeof(unsigned char));
         PEMpriv = (unsigned char * ) malloc(PEMPrivKeyLen*sizeof(unsigned char));
 
+        //We can't use get_key_pem here, as the two keys aren't initialized.
         assert(isGoodResult(mbedtls_pk_write_pubkey_pem(&RSA_ctx,PEMpub,PEMPubKeyLen)));
         assert(isGoodResult(mbedtls_pk_write_key_pem(&RSA_ctx,PEMpriv,PEMPrivKeyLen)));
 
         Serial.println("PARSING PEM FILES");
 
-        ret = mbedtls_pk_parse_public_key(&RSA_pub_ctx,PEMpub,PEMPubKeyLen);
-        if(ret != RSABooleanTrue){
-            printf("%x",-ret);
-            assert(false);
-        }
-
-        ret = mbedtls_pk_parse_key(&RSA_priv_ctx,PEMpriv,PEMPrivKeyLen,NULL,0);
-
-        if(ret != RSABooleanTrue){
-            printf("%x",-ret);
-            assert(false);
-        }
+        load_key_pem(PEMpub,0);
+        load_key_pem(PEMpriv,1);
 
         //We malloc'ed the array, so we of course need to delete it afterwards to avoid memory leak ;)
         free (PEMpriv);
@@ -304,8 +296,8 @@ public:
 
         //error
         if(!isGoodResult(result)){
-            Serial.println(-result,HEX);
-            throw std::runtime_error("COULD NOT GET KEY PEM");
+            log_e("%x",-result);
+            throw std::logic_error("COULD NOT GET KEY PEM");
         }
 
         return result;
@@ -325,8 +317,8 @@ public:
 
         //Error
         if(!isGoodResult(operation_result)){
-            Serial.println(-operation_result,HEX);
-            throw std::runtime_error("COULD NOT PARSE KEY");
+            log_e("%x",-operation_result);
+            throw std::logic_error("COULD NOT PARSE KEY");
         }
 
         return RSABooleanTrue;

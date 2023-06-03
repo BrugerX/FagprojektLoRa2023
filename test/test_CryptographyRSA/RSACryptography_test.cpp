@@ -66,8 +66,11 @@ void tearDown(void){
 //The input size is too big for the RSA algorithm
 void inputIsBiggerThanMaxInput(){
     unsigned char INPUT_ARR[RSA_MAX_INPUT_LEN+1];
+    try{
     operation_result = rsa_Cryptographer.encrypt(INPUT_ARR, sizeof(INPUT_ARR), OUTPUT_ARRAY, sizeof(OUTPUT_ARRAY), &oLen);
-    TEST_ASSERT_EQUAL(RSA_ERR_INPUT_EXCEEDS_MAX_LEN,operation_result);
+        TEST_FAIL_MESSAGE("DIDN'T RECEIVE AN ERROR WHEN EXCEEDING THE MAX INPUT LEN");
+    }
+    catch(std::logic_error){}
 
 };
 
@@ -79,9 +82,16 @@ void inputIsSameSizeAsMaxInput(){
 
 //The output length is too big for the RSA algorithm
 void outLenIsBiggerThanOutputArray(){
-    unsigned char TEST_OUT[30];
-    operation_result = rsa_Cryptographer.encrypt(STR_TO_ENCRYPT,sizeof(STR_TO_ENCRYPT), TEST_OUT, sizeof(TEST_OUT), &oLen);
-    TEST_ASSERT_EQUAL(RSA_ERR_OUTPUT_EXCEEDS_OUTPUT_ARRAY_LEN,operation_result);
+    unsigned char TEST_OUT[1];
+    try{
+        rsa_Cryptographer.encrypt(STR_TO_ENCRYPT,sizeof(STR_TO_ENCRYPT), TEST_OUT, sizeof(TEST_OUT)/sizeof(TEST_OUT[0]), &oLen);
+        TEST_ASSERT_TRUE(oLen >= sizeof(TEST_OUT)/sizeof(TEST_OUT[0]));
+        TEST_FAIL_MESSAGE("DID NOT RECEIVE AN ERROR WHEN THE OUTPUT ARRAY SIZE WAS SMALLER THAN THE OUTPUT SIZE");
+    }
+    catch (std::logic_error)
+    {
+
+    }
 }
 
 //Encryption and decryption works if you use one array for storing the encryption, and another for storing the decryption
