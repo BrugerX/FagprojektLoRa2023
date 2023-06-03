@@ -30,4 +30,4 @@ add_custom_target(
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-add_executable(Z_DUMMY_TARGET ${SRC_LIST} lib/Cryptography/src/Hasher.cpp lib/Cryptography/src/Hasher.h)
+add_executable(Z_DUMMY_TARGET ${SRC_LIST} lib/Cryptography/src/Hasher.cpp lib/Cryptography/src/Hasher.h test/test_SHA256Hasher/sha256Hasher.cpp)

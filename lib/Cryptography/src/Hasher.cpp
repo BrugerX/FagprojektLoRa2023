@@ -20,7 +20,7 @@ SHA256Hasher::SHA256Hasher(){
 int SHA256Hasher::init_ctx() {
 
     if(&SHA_ctx == NULL){
-        Serial.println(SHA256_ERR_CTX_IS_NULL);
+        log_e("%i",SHA256_ERR_CTX_IS_NULL);
         throw std::invalid_argument("COULD NOT INIT SHA256 CTX: CTX IS EQUAL TO NULL");
     }
 
@@ -33,8 +33,8 @@ int SHA256Hasher::init_ctx() {
  *
  * \post is_initialized is equal to 0
  *
- * \param unsignedString The target we wish to hash
- * \param strlen    The length of the target
+ * \param unsignedString The input we wish to hash
+ * \param strlen    The number of bytes in the input array
  * \param outputBuffer The buffer in which we put the hash. Must be at least 256 bits wide.
  *
  * \return         0 on success of everything but the initialization of the context else a specific error code
@@ -44,7 +44,6 @@ int SHA256Hasher::generate_checksum(unsigned char *input, size_t strLen, unsigne
     int res;
 
     if(!is_initialized){
-
         //init throws its own error
         init_ctx();
     }
@@ -52,7 +51,7 @@ int SHA256Hasher::generate_checksum(unsigned char *input, size_t strLen, unsigne
     //Starts a calculation
     res = mbedtls_sha256_starts_ret(&SHA_ctx,0);
     if(!isGoodResult(res)){
-        Serial.println(-res,HEX);
+        log_e("Error starting checksum calculation, error code: x%",-res);
         throw std::runtime_error("COULD NOT START SHA256 CHECKSUM CALCULATION");
     }
 
@@ -60,15 +59,15 @@ int SHA256Hasher::generate_checksum(unsigned char *input, size_t strLen, unsigne
     res = mbedtls_sha256_update_ret(&SHA_ctx,(const unsigned char *) input,strLen);
     if(!isGoodResult(res))
     {
-        Serial.println(-res,HEX);
-        throw std::runtime_error("COULD NOT START SHA256 CHECKSUM CALCULATION");
+        log_e("Error updating checksum calculation, error code: x%",-res);
+        throw std::logic_error("COULD NOT UPDATE SHA256 CHECKSUM CALCULATION");
     }
 
     //Finish and store to output
     res = mbedtls_sha256_finish_ret(&SHA_ctx,outputBuffer);
     if(!isGoodResult(res)){
-        Serial.println(-res,HEX);
-        throw std::runtime_error("FAILED TO FINISH CHECKSUM CALCULATIONS");
+        log_e("Error finishing checksum calculation, error code: x%",-res);
+        throw std::logic_error("FAILED TO FINISH CHECKSUM CALCULATIONS");
     }
 
     //When you finish the calculations you have to re-init in order to make a new calculation
