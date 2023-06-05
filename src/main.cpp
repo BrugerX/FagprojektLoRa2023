@@ -25,9 +25,9 @@ void setup() {
     dataController.handleUserInput(LEFT_KEY, &dev); //to initialise startscreen
     //Serial.print((int) dataController.getModelState());
 
-    /*for(int i = 0; i < 6; i++){
+    for(int i = 0; i < 1; i++){
         dataController.addGroupMember(Member(names[i],NavigationData()));
-    }*/
+    }
     /*while(Serial.available() != 0){
       char input = Serial.read();
       delay(2);
