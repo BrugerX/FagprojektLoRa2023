@@ -31,7 +31,7 @@ int RegexUtil::getEndIDX(const unsigned char *data, size_t size, std::regex form
  * @formula The regex formula we will match
  *
  * @return
- *        Returns the index immediately after the start of the match
+ *        Returns the index at the start of the match
  *        Else it returns -1
  */
 

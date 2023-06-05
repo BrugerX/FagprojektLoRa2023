@@ -3,8 +3,6 @@
 //
 
 #include "PEMHandler.h"
-#include <RegexUtility.h>
-#include "CryptographicSettings.h"
 
 void PEMHandler::getStartIDX(unsigned char *PEMFile, int * idx) {
     const char * startKeyFormula = "-----BEGIN (PUBLIC|PRIVATE) KEY-----";

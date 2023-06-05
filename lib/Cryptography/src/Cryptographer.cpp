@@ -70,12 +70,14 @@ private:
             res = mbedtls_pk_encrypt(&this->RSA_pub_ctx, inputArray, inputLen,  outputArray, outLen,
                                      outSize, mbedtls_ctr_drbg_random, &this->CTR_ctx);
         }
-        else{
+        else
+        {
             res =  mbedtls_pk_decrypt(&this->RSA_priv_ctx, inputArray,inputLen, outputArray, outLen, outSize ,mbedtls_ctr_drbg_random,&this->CTR_ctx);
         }
 
         //If our output is larger than the array
-        if(*outLen>outSize){ //2
+        if(*outLen>outSize)
+        {
             log_e("ERROR: Output length exceeds size of the outputArray\n Output length: %i, output array size: %i",*outLen,outSize);
             throw std::logic_error("OUTPUT LENGTH EXCEEDS SIZE OF THE OUTPUT ARRAY");
         }
@@ -99,9 +101,8 @@ private:
         result = mbedtls_pk_write_pubkey_pem(&this->RSA_pub_ctx, temp, PEMPubKeyLen);
 
         if(!isGoodResult(result)){
-            //TODO: Better exceptions
-            Serial.print(-result,HEX);
-            //throw std::runtime_error("UNABLE TO GET PUBLIC KEY PEM");
+            log_e("COULD NOT RETREIVE THE PUBLIC KEY'S PEM FILE, ERROR CODE:%x",-result);
+            throw std::logic_error("UNABLE TO GET PUBLIC KEY PEM");
             return result;
         }
 
@@ -204,6 +205,8 @@ public:
 
         int ret = mbedtls_pk_setup(&RSA_ctx, mbedtls_pk_info_from_type(MBEDTLS_PK_RSA));
 
+
+        //TODO: Turn this into a single function...?
         log_i("Initializing key context...");
 
         if (ret == MBEDTLS_ERR_PK_BAD_INPUT_DATA)
@@ -226,27 +229,26 @@ public:
             throw std::logic_error("Could not generate key for pk context");
         }
 
-        //TODO: Turn this into a single function...?
         //Get PEMfiles in buffers and parse these into their respective keys
         unsigned char * PEMpub, * PEMpriv;
-        Serial.println("GETTING THE PEM FILES FOR EACH KEY");
+        log_i("GETTING THE PEM FILES FOR EACH KEY");
         PEMpub = (unsigned char * ) malloc(PEMPubKeyLen*sizeof(unsigned char));
         PEMpriv = (unsigned char * ) malloc(PEMPrivKeyLen*sizeof(unsigned char));
 
         //We can't use get_key_pem here, as the two keys aren't initialized.
-        assert(isGoodResult(mbedtls_pk_write_pubkey_pem(&RSA_ctx,PEMpub,PEMPubKeyLen)));
-        assert(isGoodResult(mbedtls_pk_write_key_pem(&RSA_ctx,PEMpriv,PEMPrivKeyLen)));
+        assert(isGoodResult(mbedtls_pk_write_pubkey_pem(&RSA_ctx,PEMpub,PEMPubKeyLen))); //<- CANNOT F' UP OR THE WHOLE DAMN THING WON'T WORK BUDDY WUDDY
+        assert(isGoodResult(mbedtls_pk_write_key_pem(&RSA_ctx,PEMpriv,PEMPrivKeyLen))); //^- ...Which is why we have asserts here.
 
-        Serial.println("PARSING PEM FILES");
+        log_i("PARSING PEM FILES");
 
         load_key_pem(PEMpub,0);
         load_key_pem(PEMpriv,1);
 
-        //We malloc'ed the array, so we of course need to delete it afterwards to avoid memory leak ;)
+        //We malloc'ed the array, so we of course need to delete it afterwards to avoid memory leak :)
         free (PEMpriv);
         free (PEMpub);
 
-        Serial.println("SUCCESFULLY GENERATED KEYS");
+        log_i("SUCCESFULLY GENERATED KEYS");
 
         return RSABooleanTrue;
     }
