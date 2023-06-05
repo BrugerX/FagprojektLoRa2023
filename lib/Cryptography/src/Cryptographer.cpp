@@ -101,8 +101,8 @@ private:
         result = mbedtls_pk_write_pubkey_pem(&this->RSA_pub_ctx, temp, PEMPubKeyLen);
 
         if(!isGoodResult(result)){
-            log_e("COULD NOT RETREIVE THE PUBLIC KEY'S PEM FILE, ERROR CODE:%x",-result);
-            throw std::logic_error("UNABLE TO GET PUBLIC KEY PEM");
+            log_e("COULD NOT RETREIVE THE PUBLIC KEY'S PEM FILE. ERROR CODE:%x",-result);
+            throw std::logic_error("UNABLE TO GET PUBLIC KEY'S PEM FILE");
             return result;
         }
 
@@ -117,9 +117,8 @@ private:
         result = mbedtls_pk_write_key_pem(&this->RSA_priv_ctx, temp, PEMPrivKeyLen);
 
         if(!isGoodResult(result)){
-            // TODO: Better exceptions
-            // throw "FAILED TO WRITE PUBLIC KEY TO PEM FILE";
-            Serial.print(-result,HEX);
+            log_e("FAILED TO GET PRIVATE KEY'S PEM FILE. ERROR CODE: %x",-result);
+           throw std::logic_error("FAILED TO GET PRIVATE KEY'S PEM FILE");
         }
 
         *buf = temp;
