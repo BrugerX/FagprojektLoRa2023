@@ -4,7 +4,7 @@
 
 //testing that the different user inputs when in the "start state" are following the desired behavior
 
-void test_pressing_up_key(void) {
+void test_pressing_up_key_start_state(void) {
     DataView dataView = DataView();
     DataController dataController = DataController(dataView);
     SSD1306_t dev;
@@ -14,7 +14,7 @@ void test_pressing_up_key(void) {
     TEST_ASSERT_EQUAL(COMPASS_STATE,dataController.getModelState());
 }
 
-void test_pressing_down_key(void) {
+void test_pressing_down_key_start_state(void) {
     DataView dataView = DataView();
     DataController dataController = DataController(dataView);
     SSD1306_t dev;
@@ -24,7 +24,7 @@ void test_pressing_down_key(void) {
     TEST_ASSERT_EQUAL(TABLE_STATE,dataController.getModelState());
 }
 
-void test_pressing_other_keys(void) {
+void test_pressing_other_keys_start_state(void) {
     DataView dataView = DataView();
     DataController dataController = DataController(dataView);
     SSD1306_t dev;
@@ -41,7 +41,7 @@ void test_pressing_other_keys(void) {
 }
 
 void runStartStateTests(void) {
-    RUN_TEST(test_pressing_other_keys);
-    RUN_TEST(test_pressing_up_key);
-    RUN_TEST(test_pressing_down_key);
+    RUN_TEST(test_pressing_other_keys_start_state);
+    RUN_TEST(test_pressing_up_key_start_state);
+    RUN_TEST(test_pressing_down_key_start_state);
 }
