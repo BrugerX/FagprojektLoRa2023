@@ -2,13 +2,15 @@
 #include "Arduino.h"
 #include <CryptographicSettings.h>
 #include "esp_dsp.h"
-#include <FileManager.cpp>
 #include "stddef.h"
+#include <FileManager.h>
 #include "../lib/Utility/Utility.h"
 #include <Cryptographer.cpp>
 #include "sha/sha_parallel_engine.h"
 #include "mbedtls/sha256.h"
 #include "Hasher.h"
+#include "regex"
+#include <RegexUtility.h>
 
 
 static const char* TAG_main = "Main";
@@ -21,10 +23,11 @@ unsigned char ID[IDLen];
 
 
 
+
+
 auto * rsa_Cryptographer = new RSACryptographer();
 
 auto * hashishi = new SHA256Hasher();
-
 
 
 void setup(){
@@ -71,10 +74,19 @@ void setup(){
     if(!isGoodResult(res)){
         Serial.print("NONO MISTAH!");
     }
+    println_unsignedString(pub_to_load,PEMPubKeyLen,CHR);
 
-    println_unsignedString(ID,IDLen,CHR);
-    hashishi->generate_checksum(ID,IDLen,outputBuf);
-    println_unsignedString(outputBuf,SHA256_OUTPUT_BUFFERLEN,CHR);
+    int startingIdx = RegexUtil::getEndIDX(pub_to_load,PEMPubKeyLen,std::regex("-----BEGIN (PUBLIC|PRIVATE) KEY-----"));
+
+    int endIdx = RegexUtil::getStartIDX(pub_to_load,PEMPubKeyLen,std::regex("-----END (PUBLIC|PRIVATE) KEY-----"));
+    if(startingIdx>-1)
+    {
+        println_unsignedString(pub_to_load+startingIdx,PEMPubKeyLen - (PEMPubKeyLen-endIdx) - (startingIdx+1),CHR);
+    }
+    else{
+        Serial.println("Huh??!");
+    }
+
 
 };
 

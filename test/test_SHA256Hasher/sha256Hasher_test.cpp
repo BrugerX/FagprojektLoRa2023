@@ -19,8 +19,8 @@
 
 auto * rsa_Cryptographer = new RSACryptographer();
 auto * shaHasher = new SHA256Hasher();
-unsigned char * CHECKSUM_ARR;
-unsigned char * TEST_PEM_PUB;
+unsigned char * CHECKSUM_ARR = (unsigned char *) malloc(SHA256_OUTPUT_BUFFERLEN * sizeof(unsigned char));
+unsigned char * TEST_PEM_PUB = (unsigned char *) malloc(PEMPubKeyLen*sizeof(unsigned char));
 
 void setUp(void) {
     // set stuff up here
@@ -77,8 +77,6 @@ void setup()
     UNITY_BEGIN(); //Define stuff after this
     rsa_Cryptographer->generate_CTRX_context();
     rsa_Cryptographer->generate_key();
-    CHECKSUM_ARR = (unsigned char *) malloc(SHA256_OUTPUT_BUFFERLEN * sizeof(unsigned char));
-    TEST_PEM_PUB = (unsigned char *) malloc(PEMPubKeyLen*sizeof(unsigned char));
     RUN_TEST(sameStringSameChecksum);
     RUN_TEST(differentHashersSameInputSameChecksum);
     UNITY_END(); // stop unit testing
