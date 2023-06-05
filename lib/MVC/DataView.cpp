@@ -270,8 +270,10 @@ void DataView::scrollTableDown(SSD1306_t * dev, char * ID, char * timestamp){ //
 void DataView::drawIDTable(char startIndex, vector<Member> &members, SSD1306_t * dev){ //only display 8 first characters of string
     drawTable(2, 4, dev);
     //fill the table
-    signed char i;
-    for(i = 0; i < 4; i++){
+    char i;
+    unsigned char vlen = members.size();
+    unsigned char top = vlen > 4 ? 4 : vlen;
+    for(i = 0; i < top; i++){
         char index = (char) std::abs((int)((i+startIndex) % members.size()));
         char * ID = members[index].getID();
         char * timestamp = members[index].getNav().getTimestamp();

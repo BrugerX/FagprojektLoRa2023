@@ -1,5 +1,6 @@
 #include "DataModel.h"
 #include <stdexcept>
+#include <Arduino.h>
 
 using namespace std;
 
@@ -36,7 +37,7 @@ char DataModel::getCurrentMemberIndex(){ //maybe this shouldn't be here
 }
 
 void DataModel::changeTableIndex(char userInput, SSD1306_t *dev) {
-    //should probably remove highlight of previously highlighted message
+    if(groupMembers.size() == 0) return;
     char * currentText = (tableIndex % 2 == 0) ? groupMembers[getCurrentMemberIndex()].getID() : groupMembers[getCurrentMemberIndex()].getNav().getTimestamp();
     view.highlightTableCell(getCurrentMemberIndex()-topTableIndex, tableIndex % 2, currentText, 0, dev);
     if(userInput == UP_KEY){
@@ -89,8 +90,14 @@ char * DataModel::getMemberTimestamp(char index){
 }
 
 void DataModel::initializeTable(SSD1306_t * dev){
+    Serial.println("Initialise table called");
     view.drawIDTable(topTableIndex, groupMembers, dev);
-    view.highlightTableCell(0, 0, groupMembers[0].getID(), 1, dev);
+    Serial.println("draw table called");
+    if(groupMembers.size() > 0){
+        view.highlightTableCell(0, 0, groupMembers[0].getID(), 1, dev);
+        Serial.println("Highlight called");
+    }
+    Serial.println("Initialise table finished");
 }
 
 void DataModel::addGroupMember(Member groupMember){

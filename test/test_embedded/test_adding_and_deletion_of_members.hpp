@@ -13,13 +13,6 @@ DataController dataController = DataController(dataView);
 char ID2[] = "AddTwo";
 Member m2 = Member(ID2,NavigationData());
 
-void setUp(void) {
-}
-
-void tearDown(void) {
-    // clean stuff up here
-}
-
 void test_adding_members(void) {
     int startingNumberOfMembers = dataController.getModel().getNumberOfMembers();
     TEST_ASSERT_EQUAL(0, startingNumberOfMembers);
@@ -61,17 +54,10 @@ void test_adding_to_many_members(void) {
 }
 
 
-int runUnityTests(void) {
-    UNITY_BEGIN();
+void runTestsAddAndDelOfMembers(void) {
+    //UNITY_BEGIN();
     RUN_TEST(test_adding_members);
     RUN_TEST(test_deleting_members);
     RUN_TEST(test_adding_to_many_members);
-    return UNITY_END();
+    //return UNITY_END();
 }
-
-void setup() {
-    delay(2000);
-
-    runUnityTests();
-}
-void loop() {}
