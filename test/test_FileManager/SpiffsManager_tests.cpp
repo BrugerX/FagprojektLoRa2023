@@ -149,6 +149,7 @@ void setup()
 
     //Tests that need to be resat are placed above this and run twice
     if(!didWeRestart()){
+        log_i("REBOOTING THE SPIFFSMANAGER TEST NOW");
         esp_restart();
     }
 

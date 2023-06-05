@@ -11,6 +11,7 @@
 #include "Hasher.h"
 #include "regex"
 #include <RegexUtility.h>
+#include <RSAPEMHandler.h>
 
 
 static const char* TAG_main = "Main";
@@ -28,6 +29,8 @@ unsigned char ID[IDLen];
 auto * rsa_Cryptographer = new RSACryptographer();
 
 auto * hashishi = new SHA256Hasher();
+
+auto * PEMHandler = new RSAPEMHandler();
 
 
 void setup(){
@@ -76,9 +79,14 @@ void setup(){
     }
     println_unsignedString(pub_to_load,PEMPubKeyLen,CHR);
 
-    int startingIdx = RegexUtil::getEndIDX(pub_to_load,PEMPubKeyLen,std::regex("-----BEGIN (PUBLIC|PRIVATE) KEY-----"));
+    int IDXs[2];
+    PEMHandler->getIDXs(pub_to_load,PEMPubKeyLen,IDXs);
+    int startingIdx = IDXs[0];
+    int endIdx = IDXs[1];
 
-    int endIdx = RegexUtil::getStartIDX(pub_to_load,PEMPubKeyLen,std::regex("-----END (PUBLIC|PRIVATE) KEY-----"));
+    unsigned char * source;
+    size_t source_size;
+
     if(startingIdx>-1)
     {
         println_unsignedString(pub_to_load+startingIdx,PEMPubKeyLen - (PEMPubKeyLen-endIdx) - (startingIdx+1),CHR);
@@ -86,6 +94,9 @@ void setup(){
     else{
         Serial.println("Huh??!");
     }
+
+    PEMHandler->getSource(pub_to_load,PEMPubKeyLen,&source,&source_size);
+    println_unsignedString(source,source_size,CHR);
 
 
 };
