@@ -2,34 +2,30 @@
 #include "../../lib/MVC/DataController.h"
 #include <Arduino.h>
 
+DataView dataViewCS = DataView();
+DataController dataControllerCS = DataController(dataViewCS);
+SSD1306_t devCS;
+
 void test_pressing_back_key_compass_state(void) {
-    DataView dataView = DataView();
-    DataController dataController = DataController(dataView);
-    SSD1306_t dev;
-    dataController.handleUserInput(UP_KEY,&dev);
-    //start of test
-    TEST_ASSERT_EQUAL(COMPASS_STATE,dataController.getModelState());
-    dataController.handleUserInput(BACK_KEY,&dev);
-    TEST_ASSERT_EQUAL(START_STATE,dataController.getModelState());
+    TEST_ASSERT_EQUAL(COMPASS_STATE,dataControllerCS.getModelState());
+    dataControllerCS.handleUserInput(BACK_KEY,&devCS);
+    TEST_ASSERT_EQUAL(START_STATE,dataControllerCS.getModelState());
 }
 
 void test_pressing_other_keys_compass_state(void) {
-    DataView dataView = DataView();
-    DataController dataController = DataController(dataView);
-    SSD1306_t dev;
-    dataController.handleUserInput(UP_KEY,&dev);
+    dataControllerCS.setState(COMPASS_STATE);
     //start of test
-    TEST_ASSERT_EQUAL(COMPASS_STATE,dataController.getModelState());
-    dataController.handleUserInput(LEFT_KEY,&dev);
-    TEST_ASSERT_EQUAL(COMPASS_STATE,dataController.getModelState());
-    dataController.handleUserInput(RIGHT_KEY,&dev);
-    TEST_ASSERT_EQUAL(COMPASS_STATE,dataController.getModelState());
-    dataController.handleUserInput(UP_KEY,&dev);
-    TEST_ASSERT_EQUAL(COMPASS_STATE,dataController.getModelState());
-    dataController.handleUserInput(DOWN_KEY,&dev);
-    TEST_ASSERT_EQUAL(COMPASS_STATE,dataController.getModelState());
-    dataController.handleUserInput(ENTER_KEY,&dev);
-    TEST_ASSERT_EQUAL(COMPASS_STATE,dataController.getModelState());
+    TEST_ASSERT_EQUAL(COMPASS_STATE,dataControllerCS.getModelState());
+    dataControllerCS.handleUserInput(LEFT_KEY,&devCS);
+    TEST_ASSERT_EQUAL(COMPASS_STATE,dataControllerCS.getModelState());
+    dataControllerCS.handleUserInput(RIGHT_KEY,&devCS);
+    TEST_ASSERT_EQUAL(COMPASS_STATE,dataControllerCS.getModelState());
+    dataControllerCS.handleUserInput(UP_KEY,&devCS);
+    TEST_ASSERT_EQUAL(COMPASS_STATE,dataControllerCS.getModelState());
+    dataControllerCS.handleUserInput(DOWN_KEY,&devCS);
+    TEST_ASSERT_EQUAL(COMPASS_STATE,dataControllerCS.getModelState());
+    dataControllerCS.handleUserInput(ENTER_KEY,&devCS);
+    TEST_ASSERT_EQUAL(COMPASS_STATE,dataControllerCS.getModelState());
 }
 
 void runCompassStateTests(void) {

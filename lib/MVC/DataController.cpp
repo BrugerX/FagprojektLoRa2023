@@ -89,3 +89,15 @@ void DataController::removeGroupMember(Member groupMember){
 DataModel DataController::getModel() { //method used for testing
     return model;
 }
+
+void DataController::setTableIndex(char newIndex) {
+    model.setTableIndex(newIndex);
+}
+
+void DataController::setTopTableIndex(char newIndex) {
+    model.setTopTableIndex(newIndex);
+}
+
+void DataController::setState(char newState) {
+    model.setState(newState);
+}

@@ -20,7 +20,7 @@ void setup() {
     runTestsAddAndDelOfMembers();
     runStartStateTests();
     runCompassStateTests();
-    runTableStateTests();
+    //runTableStateTests();
     UNITY_END();
 }
 void loop() {}

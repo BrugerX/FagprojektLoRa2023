@@ -122,3 +122,11 @@ void DataModel::resetTableIndexes(){
 char DataModel::getTopTableIndex() { //for testing
     return topTableIndex;
 }
+
+void DataModel::setTableIndex(char newIndex) {
+    this->tableIndex = newIndex;
+}
+
+void DataModel::setTopTableIndex(char newIndex) {
+    this->topTableIndex = newIndex;
+}

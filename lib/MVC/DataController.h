@@ -23,6 +23,10 @@ public:
     void removeGroupMember(char index);
     void removeGroupMember(Member groupMember);
     char getTableIndex();
-    DataModel getModel(); //for testing purposes
+    //for testing purposes
+    DataModel getModel();
+    void setTopTableIndex(char newIndex);
+    void setTableIndex(char newIndex);
+    void setState(char newState);
 };
 #endif //DATACONTROLLER_H
