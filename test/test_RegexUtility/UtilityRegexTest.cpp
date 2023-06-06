@@ -33,7 +33,10 @@ void tearDown(void) {
 }
 
 void endIDXGetsIDXAfterPattern(){
+    //At the beginning of the array
     TEST_ASSERT_EQUAL(2,RegexUtil::getEndIDX((unsigned char *) TEST_STR,SIZE_OF_TEST_STR,std::regex("AB")));
+
+    //In the middle of the array
     TEST_ASSERT_EQUAL(5,RegexUtil::getEndIDX((unsigned char *) TEST_STR,SIZE_OF_TEST_STR,std::regex("DE")));
 }
 
