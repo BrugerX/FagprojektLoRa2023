@@ -118,3 +118,7 @@ void DataModel::resetTableIndexes(){
     topTableIndex = 0;
     tableIndex = 0;
 }
+
+char DataModel::getTopTableIndex() { //for testing
+    return topTableIndex;
+}

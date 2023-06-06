@@ -40,6 +40,7 @@ public:
     void removeGroupMember(char index);
     void removeGroupMember(Member groupMember);
     void resetTableIndexes();
+    char getTopTableIndex(); //for testing
 
 };
 #endif //DATAMODEL_H

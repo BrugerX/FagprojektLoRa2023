@@ -16,7 +16,7 @@ private:
     void updateModel(char input); //many more methods
 
 public:
-    DataController(DataView dataView); //DataModel datamodel, DataView dataView
+    DataController(DataView dataView); //DataModel datamodel, DataView dataViewet
     void handleUserInput(char userInput, SSD1306_t * dev);
     char getModelState();
     void addGroupMember(Member groupMember);
