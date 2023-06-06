@@ -46,6 +46,7 @@ public:
     /**
      * @param
      *       PEMFile [IN] the PEM file we would like to get the source of
+     *       PEMFile_len [IN] the number of elements in the PEM file
      *       sourceAarray [OUT] Where we store the source of the PEM file
      *       sourceLen [OUT] The size of the source
      */

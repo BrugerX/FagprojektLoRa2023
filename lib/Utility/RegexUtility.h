@@ -10,8 +10,8 @@
 
 class RegexUtil{
 public:
-    static int getEndIDX (const unsigned char *data, size_t size, std::regex formula);
-    static int getStartIDX(const unsigned char *data, size_t size, std::regex formula);
+    static int getEndIDX (const unsigned char *data, int size, std::regex formula);
+    static int getStartIDX(const unsigned char *data, int size, std::regex formula);
 };
 
 #endif //FAGPROJEKTLORA2023_REGEXUTILITY_H
