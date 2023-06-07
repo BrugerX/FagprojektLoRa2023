@@ -1,7 +1,3 @@
-//
-// Created by bruger on 17-04-2023.
-//
-
 #ifndef FAGPROJEKTLORA2023_MVCSETTINGS_H
 #define FAGPROJEKTLORA2023_MVCSETTINGS_H
 
@@ -17,7 +13,9 @@
 #define START_STATE 0
 #define COMPASS_STATE 1
 #define TABLE_STATE 2
+#define NAV_OVERVIEW_STATE 3
 
+//pins for setup of i2c with display
 #define CONFIG_SDA_GPIO 21
 #define CONFIG_SCL_GPIO 22
 #define CONFIG_RESET_GPIO 15
