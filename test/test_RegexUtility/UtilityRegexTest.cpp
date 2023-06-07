@@ -53,6 +53,11 @@ void endIDXNoMatch(){
     TEST_ASSERT_EQUAL(-1,RegexUtil::getEndIDX((unsigned char *) TEST_STR,SIZE_OF_TEST_STR,std::regex("ACB")));
 }
 
+void nullTerminatorsIncluded(){
+    //TODO: CREATE A TEST WHERE WE INCLUDENULL TERMINATORS AND TEST THAT THE REGEX TAKES THOSE AS WELL
+    //TODO: Ala end_idx("ABC\0","ABC") = \0
+}
+
 void endIDXOutOfBounds(){
     try{
         RegexUtil::getEndIDX((unsigned char *) TEST_STR,SIZE_OF_TEST_STR,std::regex("DEFG"));

@@ -12,11 +12,11 @@ bool isGoodPEMResult(int result){
 void RSAPEMHandler::getBeginIDX(unsigned char *PEMFile, size_t PEMFile_len, int * idx) {
 
 
-    int result = RegexUtil::getEndIDX(PEMFile,PEMFile_len,std::regex(this->beginning_header_pattern));;
+    int result = RegexUtil::getEndIDX(PEMFile,PEMFile_len,std::regex(this->regex_beginning_header_pattern));;
 
     if(!isGoodPEMResult(result))
     {
-        log_e("FAILED TO FIND STARTING IDX OF PEM FILE\nPattern we tried to match the string with: %s\nThe string: %s",beginning_header_pattern,PEMFile);
+        log_e("FAILED TO FIND STARTING IDX OF PEM FILE\nPattern we tried to match the string with: %s\nThe string: %s", regex_beginning_header_pattern, PEMFile);
         throw std::logic_error("FAILED TO FIND STARTING IDX OF PEM FILE");
     }
 
@@ -25,11 +25,11 @@ void RSAPEMHandler::getBeginIDX(unsigned char *PEMFile, size_t PEMFile_len, int 
 
 void RSAPEMHandler::getEndIDX(unsigned char *PEMFile,size_t PEMFile_len, int *idx)  {
 
-    int result = RegexUtil::getStartIDX(PEMFile,PEMFile_len,std::regex(this->ending_header_pattern));;
+    int result = RegexUtil::getStartIDX(PEMFile,PEMFile_len,std::regex(this->regex_ending_header_pattern));;
 
     if(!isGoodPEMResult(result))
     {
-        log_e("FAILED TO FIND STARTING IDX OF PEM FILE\nPattern we tried to match the string with: %s\nThe string: %s",ending_header_pattern,PEMFile);
+        log_e("FAILED TO FIND STARTING IDX OF PEM FILE\nPattern we tried to match the string with: %s\nThe string: %s", regex_ending_header_pattern, PEMFile);
         throw std::logic_error("FAILED TO FIND STARTING IDX OF PEM FILE");
     }
 
@@ -51,6 +51,8 @@ void RSAPEMHandler::getIDXs(unsigned char* PEMFile,size_t PEMFile_len, int IDXTu
     IDXTuple[1] = end_idx;
 }
 
+//TODO: Currently it ignores null terminators, we need to fix this, so it just takes the string literal
+//Example: BEGIN\0SRC\0END => SRC, not SRC\0
 void RSAPEMHandler::getSource(unsigned char *PEMFile,size_t PEMFile_len, unsigned char **sourceArrayPTR, size_t *sourceLen) {
     int IDXs[2], beginIDX,endIDX;
     getIDXs(PEMFile,PEMFile_len,IDXs);
@@ -58,13 +60,39 @@ void RSAPEMHandler::getSource(unsigned char *PEMFile,size_t PEMFile_len, unsigne
     beginIDX = IDXs[0];
     endIDX = IDXs[1];
 
+    //Gets the size of the source
     getSourceLen(PEMFile_len,beginIDX,endIDX,sourceLen);
 
     *sourceArrayPTR = (unsigned char *) malloc( *sourceLen * sizeof(unsigned char));
 
+    //we iterate over the original array and add
     for(int i = 0; i<*sourceLen;i++){
         (*sourceArrayPTR)[i] = PEMFile[i + beginIDX];
     }
 
 }
 
+void RSAPEMHandler::addPEMHeaders(unsigned char * source,size_t source_size,unsigned char ** PEMFile,size_t PEM_size, bool isPrivate){
+    unsigned char * PEMFile_arr = (unsigned char *) malloc(sizeof(unsigned char) * (source_size + pub_beginning_header_size +pub_ending_header_size + 1)); //+1 for the null terminator
+
+    //First we add the beginning header
+    for(int i = 0; i<pub_beginning_header_size;i++){
+
+    }
+}
+
+void RSAPEMHandler::addPublicBeginHeader(unsigned char *PEMFile) {
+
+}
+
+void RSAPEMHandler::addPublicEndHeader(unsigned char *PEMFile, size_t src_size) {
+
+}
+
+
+void RSAPEMHandler::addPrivateBeginHeader(unsigned char *PEMFile)
+{}
+
+void RSAPEMHandler::addPrivateEndHeader(unsigned char *PEMFile, size_t src_size) {}
+
+void RSAPEMHandler::addSrc(unsigned char *PEMFile, size_t src_size) {}

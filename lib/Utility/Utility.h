@@ -24,4 +24,8 @@ void fill_alphanumeric_unsignedString(unsigned char * unsignedString, size_t siz
 
 void fill_char_unsignedString(unsigned char * unsignedString, size_t sizeOf,unsigned char chosenChar);
 
+void get_size(unsigned char * unsignedString, size_t * toPutSize);
+
+void get_size(unsigned char * unsignedString, int * toPutSize);
+
 #endif //UNTITLED1_UTILITY_H
