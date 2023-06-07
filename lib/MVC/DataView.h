@@ -36,5 +36,7 @@ public:
     void scrollTableUp(SSD1306_t * dev, char * ID, char * timestamp);
     void scrollTableDown(SSD1306_t * dev, char * ID, char * timestamp);
     void showStartScreen(SSD1306_t * dev);
+    void displayNavOverview(char x, char y, bool highlighted, SSD1306_t * dev);
+    void updateNavOverview(bool highlighted, SSD1306_t * dev);
 };
 #endif //DATAVIEW_H

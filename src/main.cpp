@@ -21,10 +21,11 @@ void setup() {
 
     //dataViewet.drawCompass(&dev);
     //dataControlleren.handleUserInput(UP_KEY, &dev);
-    dataController.handleUserInput(LEFT_KEY, &dev); //to initialise startscreen
+    //dataController.handleUserInput(LEFT_KEY, &dev); //to initialise startscreen
+    dataView.showStartScreen(&dev);
     //Serial.print((int) dataControlleren.getModelState());
 
-    for(int i = 0; i < 3; i++){
+    for(int i = 0; i < 6; i++){
         dataController.addGroupMember(Member(names[i], NavigationData()));
     }
     /*while(Serial.available() != 0){

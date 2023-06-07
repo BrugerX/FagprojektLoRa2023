@@ -40,6 +40,8 @@ public:
     void removeGroupMember(char index);
     void removeGroupMember(Member groupMember);
     void resetTableIndexes();
+    void giveOverview(SSD1306_t *dev);
+    void updateOverview(SSD1306_t *dev);
     //for testing
     char getTopTableIndex();
     void setTopTableIndex(char newIndex);

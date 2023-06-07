@@ -4,10 +4,11 @@ using namespace std;
 Member::Member(char * ID, NavigationData nav){
     this->ID = ID;
     this->nav = nav;
+    highlighted = false;
 }
 
 void Member::ChangeLocation(char x, char y){
-    //nav.changelocation
+    //nav.changeLocation()
 }
 
 char Member::getXLocation(){
@@ -26,4 +27,12 @@ char * Member::getID(){
 
 NavigationData Member::getNav() {
     return this->nav;
+}
+
+void Member::changeHighlight() {
+    highlighted = !highlighted;
+}
+
+bool Member::getHighlight() {
+    return highlighted;
 }

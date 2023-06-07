@@ -114,6 +114,16 @@ void DataModel::removeGroupMember(Member groupMember) {
     }
 }
 
+void DataModel::giveOverview(SSD1306_t *dev) {
+    Member currentMem = groupMembers[getCurrentMemberIndex()];
+    view.displayNavOverview(currentMem.getXLocation(), currentMem.getYLocation(), currentMem.getHighlight(),dev);
+}
+
+void DataModel::updateOverview(SSD1306_t *dev) {
+    groupMembers[getCurrentMemberIndex()].changeHighlight();
+    view.updateNavOverview(groupMembers[getCurrentMemberIndex()].getHighlight(),dev);
+}
+
 void DataModel::resetTableIndexes(){
     topTableIndex = 0;
     tableIndex = 0;

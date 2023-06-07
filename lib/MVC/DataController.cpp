@@ -15,44 +15,36 @@ DataController::DataController(DataView dataView) : model(0, dataView) {
 void DataController::handleUserInput(char userInput, SSD1306_t * dev){
 switch(this->model.getState()){
     case START_STATE: {
-        view.showStartScreen(dev);
         if (userInput == UP_KEY) {
-            this->model.setState(COMPASS_STATE);
             ssd1306_clear_screen(dev, 0);
             this->view.drawCompass(dev);
+            this->model.setState(COMPASS_STATE);
         }
         else if (userInput == DOWN_KEY){
-            this->model.setState(TABLE_STATE);
             ssd1306_clear_screen(dev, 0);
             model.initializeTable(dev);
+            this->model.setState(TABLE_STATE);
         }
         break;
     }
     case COMPASS_STATE:
         if(userInput == BACK_KEY) {
-            //go back in state (will probably no nothing in the future)
+            //go back in state
+            ssd1306_clear_screen(dev, 0);
+            view.showStartScreen(dev);
             this->model.setState(START_STATE);
         }
         break;
     case TABLE_STATE:
-        /*char tableID[4][8];
-        char timestamp[4][8];
-        unsigned char lowerBound;
-        model.getCurrentMemberIndex() + 4 > model.getNumberOfMembers() ? lowerBound = model.getNumberOfMembers()-4 : model.getCurrentMemberIndex();
-        for(lowerBound; lowerBound < lowerBound+4; lowerBound++){
-            char * IDString = model.getMemberID(lowerBound);
-            char * timestampString = model.getMemberTimestamp(lowerBound);
-            for(unsigned char i=0; i < 8; i++){
-                tableID[lowerBound % 4][i] = IDString[i];
-                timestamp[lowerBound][i] = timestampString[i];
-            }
-        }
-        this->view.drawIDTable(tableID, timestamp, dev); */
         if(userInput == ENTER_KEY) {
-            //Show more user info
+            ssd1306_clear_screen(dev, 0);
+            model.giveOverview(dev);
+            model.setState(NAV_OVERVIEW_STATE);
         }
         else if (userInput == BACK_KEY){
             model.resetTableIndexes();
+            ssd1306_clear_screen(dev, 0);
+            view.showStartScreen(dev);
             this->model.setState(START_STATE);
         }
         else {
@@ -60,6 +52,16 @@ switch(this->model.getState()){
             //go where to where the input decides in the table
         }
         break;
+    case NAV_OVERVIEW_STATE:
+        if(userInput == ENTER_KEY){
+            model.updateOverview(dev);
+        }
+        else if(userInput == BACK_KEY){
+            ssd1306_clear_screen(dev, 0);
+            model.resetTableIndexes();
+            model.initializeTable(dev);
+            model.setState(TABLE_STATE);
+        }
     default:
     //do nothing
         break;

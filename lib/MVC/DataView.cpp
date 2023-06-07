@@ -314,3 +314,21 @@ void DataView::highlightTableCell(char row, char column, char *text, char highli
         ssd1306_display_text(dev, row*2, text, length, highlight);
     }
 }
+
+void DataView::displayNavOverview(char x, char y, bool highlighted, SSD1306_t *dev) {
+    string xText = "x: " + to_string(x);
+    string yText = "y: " + to_string(y);
+    string suffix = highlighted ? "Yes" : "No";
+    string hl = "Highlighted: " + suffix;
+    ssd1306_display_text(dev, 0, (char *) xText.data(), xText.length(), 0);
+    ssd1306_display_text(dev, 2, (char *) yText.data(), yText.length(), 0);
+    ssd1306_display_text(dev, 4, (char *) hl.data(), hl.length(), 0);
+}
+
+void DataView::updateNavOverview(bool highlighted, SSD1306_t *dev) {
+    char clearingString[] = "                ";
+    ssd1306_display_text(dev, 4, clearingString, 16, 0);
+    string suffix = highlighted ? "Yes" : "No";
+    string hl = "Highlighted: " + suffix;
+    ssd1306_display_text(dev, 4, (char *) hl.data(), hl.length(), 0);
+}
