@@ -125,23 +125,23 @@ private:
         return result;
     }
 
-    int load_priv_key(unsigned char * key_pem){
+    int load_priv_key(unsigned char * key_pem,size_t keyLen){
         if(!&RSA_priv_ctx){
             mbedtls_pk_free(&RSA_priv_ctx);
         }
 
         mbedtls_pk_init(&RSA_priv_ctx);
 
-        return mbedtls_pk_parse_key(&this->RSA_priv_ctx,key_pem,PEMPrivKeyLen,NULL,0);
+        return mbedtls_pk_parse_key(&this->RSA_priv_ctx,key_pem,keyLen,NULL,0);
     }
 
-    int load_pub_key(unsigned char * key_pem){
+    int load_pub_key(unsigned char * key_pem,size_t keylen){
         if(!&RSA_pub_ctx){
             mbedtls_pk_free(&RSA_pub_ctx);
         }
         mbedtls_pk_init(&RSA_pub_ctx);
 
-        return mbedtls_pk_parse_public_key(&this->RSA_pub_ctx,key_pem,PEMPubKeyLen);
+        return mbedtls_pk_parse_public_key(&this->RSA_pub_ctx,key_pem,keylen);
     }
 
 public:
@@ -310,10 +310,30 @@ public:
         int operation_result;
 
         if(isPrivateKeyPem){
-            operation_result = load_priv_key(key_pem);
+            operation_result = load_priv_key(key_pem,PEMPrivKeyLen);
         }
         else{
-            operation_result = load_pub_key(key_pem);
+            operation_result = load_pub_key(key_pem,PEMPubKeyLen);
+        }
+
+        //Error
+        if(!isGoodResult(operation_result)){
+            log_e("%x",-operation_result);
+            throw std::logic_error("COULD NOT PARSE KEY");
+        }
+
+        return RSABooleanTrue;
+
+    }
+
+    int load_key_pem(unsigned char * key_pem, bool isPrivateKeyPem,size_t PEMLen){
+        int operation_result;
+
+        if(isPrivateKeyPem){
+            operation_result = load_priv_key(key_pem,PEMLen);
+        }
+        else{
+            operation_result = load_pub_key(key_pem,PEMLen);
         }
 
         //Error

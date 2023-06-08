@@ -42,8 +42,8 @@ void tearDown(void) {
 void getIDXsWorks(){
     int IDXs[2];
     PEMHandler->getIDXs((unsigned char*) NORMAL_PUB_KEY_FILE,NORMAL_PUB_KEY_SIZE,IDXs);
-    TEST_ASSERT_EQUAL(HEADER_PUB_BEGIN_SIZE-1,IDXs[0]);
-    TEST_ASSERT_EQUAL(HEADER_PUB_BEGIN_SIZE + SRC_SIZE -2,IDXs[1]);
+    TEST_ASSERT_EQUAL(HEADER_PUB_BEGIN_SIZE-1,IDXs[0]); //|BEGIN\0| =n, PEMFile = |Begin\0Src...| => |BEGIN| = n - 1 => idx(S) = |BEGIN| + 1 -1 = n - 1
+    TEST_ASSERT_EQUAL(HEADER_PUB_BEGIN_SIZE + SRC_SIZE -3,IDXs[1]); // |BEGIN\0| = n, |SRC\0| = m => |BEGIN| = n -1, |SRC| = m -1 => |BEGIN+SRC| = n + m -2 => index(C) = |BEGIN+SRC| -1 =n + m - 3
 }
 
 /**
@@ -57,10 +57,25 @@ void normalPubKey(){
     PEMHandler->getSource((unsigned char*) NORMAL_PUB_KEY_FILE, NORMAL_PUB_KEY_SIZE, &source_arr, (size_t *) &source_size);
     TEST_ASSERT_EQUAL(SRC_SIZE - 1,source_size); //-1 for \0
 
+    log_e("%i",SRC_SIZE);
+    //If we have as many elements as the SRC - \0 and all elements match in the same indices, we must have SRC - \0.
     for(int i =0; i<source_size;i++)
     {
         TEST_ASSERT_EQUAL(SRC[i],source_arr[i]);
     }
+}
+
+/**
+ *
+ */
+void nullCharInSource()
+{
+
+}
+
+void nullCharAtEndOfSource()
+{
+
 }
 
 void setup()
@@ -72,6 +87,7 @@ void setup()
 
     //RUN_TEST(getIDXsWorks);
     RUN_TEST(normalPubKey);
+    RUN_TEST(getIDXsWorks);
 
     UNITY_END(); // stop unit testing
 

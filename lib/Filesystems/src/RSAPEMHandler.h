@@ -20,8 +20,8 @@ class RSAPEMHandler{
     const char * regex_ending_header_pattern = "-----END (PUBLIC|PRIVATE) KEY-----";
     const char * pub_beginning_header = "-----BEGIN PUBLIC KEY-----";
     const char * pub_ending_header = "-----END PUBLIC KEY-----";
-    size_t pub_beginning_header_size = 26;
-    size_t pub_ending_header_size = 24;
+    size_t pub_beginning_header_size = 26; //Size of the header minus the null terminating string
+    size_t pub_ending_header_size = 24; //Same here, although we manually add the null terminating character later - it is better to keep it consistent and explicit
 
 private:
     /**
@@ -44,15 +44,17 @@ private:
 
     void getSourceLen(size_t PEMFile_original_len, int beginIDX, int endIDX, size_t * new_len);
 
-    void addPublicBeginHeader(unsigned char * PEMFile);
-    void addPublicEndHeader(unsigned char * PEMFile,size_t src_size);
+
 
     void addPrivateBeginHeader(unsigned char * PEMFile);
     void addPrivateEndHeader(unsigned char * PEMFile,size_t src_size);
 
-    void addSrc(unsigned char * PEMFile, size_t src_size);
 
 public:
+
+    void addPublicBeginHeader(unsigned char * PEMFile);
+    void addPublicEndHeader(unsigned char * PEMFile,size_t src_size);
+    void addSrc(unsigned char *PEMFile, size_t src_size, unsigned char * source);
 
     void getIDXs(unsigned char* PEMFile,size_t PEMFile_len, int IDXTuple[2]);
 
@@ -65,7 +67,16 @@ public:
      */
     void getSource(unsigned char *PEMFile,size_t PEMFile_len, unsigned char **sourceArray, size_t *sourceLen);
 
-    void addPEMHeaders(unsigned char * source,size_t source_size,unsigned char ** PEMFile,size_t PEM_size, bool isPrivate);
+    /**
+     *
+     * @param source [IN] The source we wish to add the PEM headers to
+     * @param source_size [IN] The number of elements in the source array
+     * @param PEMFile [OUT] The source array plus the beginning and ending PEM header
+     * @param PEM_size [OUT] The number of elements in the output
+     * @param isPrivate [IN] Do we wish to add private or public PEM headers?
+     */
+
+    void addPEMHeaders(unsigned char * source,size_t source_size,unsigned char ** PEMFile,size_t * PEM_size, bool isPrivate);
 };
 
 

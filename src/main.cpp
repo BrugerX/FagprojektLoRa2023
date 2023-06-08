@@ -63,6 +63,7 @@ void setup(){
     spiff->load_file(RSAPrivKeyPath,priv_to_load,PEMPrivKeyLen-1);
 
 
+
     res = rsa_Cryptographer->load_key_pem(pub_to_load,0);
     if(!isGoodResult(res)){
         Serial.print("FAILED TO LOAD PUB KEY PEM");
@@ -77,7 +78,6 @@ void setup(){
     if(!isGoodResult(res)){
         Serial.print("NONO MISTAH!");
     }
-    println_unsignedString(pub_to_load,PEMPubKeyLen,CHR);
 
     int IDXs[2];
     PEMHandler->getIDXs(pub_to_load,PEMPubKeyLen,IDXs);
@@ -89,15 +89,21 @@ void setup(){
 
     if(startingIdx>-1)
     {
-        println_unsignedString(pub_to_load+startingIdx,PEMPubKeyLen - (PEMPubKeyLen-endIdx) - (startingIdx+1),CHR);
+
     }
     else{
         Serial.println("Huh??!");
     }
 
+    unsigned char * PEMFile;
+    size_t PEMLen;
     PEMHandler->getSource(pub_to_load,PEMPubKeyLen,&source,&source_size);
-    println_unsignedString(source,source_size,CHR);
-
+    PEMHandler->addPEMHeaders(source,source_size,&PEMFile,&PEMLen,0);
+    Serial.print("Starting PEMFile2\n");
+    println_unsignedString(PEMFile,PEMLen,CHR);
+    Serial.print("END OF PEMFILE2\n");
+    rsa_Cryptographer->load_key_pem(PEMFile,0,PEMLen);
+    log_e("%i",rsa_Cryptographer->validate_key());
 };
 
 void loop(){

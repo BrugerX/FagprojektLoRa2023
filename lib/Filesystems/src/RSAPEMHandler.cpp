@@ -72,21 +72,21 @@ void RSAPEMHandler::getSource(unsigned char *PEMFile,size_t PEMFile_len, unsigne
 
 }
 
-void RSAPEMHandler::addPEMHeaders(unsigned char * source,size_t source_size,unsigned char ** PEMFile,size_t PEM_size, bool isPrivate){
-    unsigned char * PEMFile_arr = (unsigned char *) malloc(sizeof(unsigned char) * (source_size + pub_beginning_header_size +pub_ending_header_size + 1)); //+1 for the null terminator
 
-    //First we add the beginning header
-    for(int i = 0; i<pub_beginning_header_size;i++){
-
-    }
-}
 
 void RSAPEMHandler::addPublicBeginHeader(unsigned char *PEMFile) {
+    for(int i = 0; i<pub_beginning_header_size;i++)
+    {
+        PEMFile[i] = (unsigned char) pub_beginning_header[i];
+    }
 
 }
 
 void RSAPEMHandler::addPublicEndHeader(unsigned char *PEMFile, size_t src_size) {
-
+    for(int i = 0;i<pub_ending_header_size;i++)
+    {
+        PEMFile[i + src_size + pub_beginning_header_size] = (unsigned char) pub_ending_header[i];
+    }
 }
 
 
@@ -95,4 +95,33 @@ void RSAPEMHandler::addPrivateBeginHeader(unsigned char *PEMFile)
 
 void RSAPEMHandler::addPrivateEndHeader(unsigned char *PEMFile, size_t src_size) {}
 
-void RSAPEMHandler::addSrc(unsigned char *PEMFile, size_t src_size) {}
+void RSAPEMHandler::addSrc(unsigned char *PEMFile, size_t src_size, unsigned char * source)
+{
+    for(int i = 0; i<src_size;i++)
+    {
+        PEMFile[pub_beginning_header_size + i] = source[i];
+    }
+}
+
+void RSAPEMHandler::addPEMHeaders(unsigned char * source,size_t source_size,unsigned char ** PEMFile,size_t * PEM_size, bool isPrivate){
+    unsigned char * PEMFile_arr;
+
+
+    if(isPrivate)
+    {
+
+    }
+
+    else
+    {
+        *PEM_size = source_size + pub_beginning_header_size +pub_ending_header_size + 1;
+        PEMFile_arr = (unsigned char *) malloc(sizeof(unsigned char) * (*PEM_size)); //+1 for the null terminator
+        addPublicBeginHeader(PEMFile_arr);
+        addSrc(PEMFile_arr,source_size,source);
+        addPublicEndHeader(PEMFile_arr,source_size);
+    }
+
+    PEMFile_arr[*PEM_size] = (unsigned char) '\0';
+
+    *PEMFile = PEMFile_arr;
+}
