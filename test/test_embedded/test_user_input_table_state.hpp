@@ -10,6 +10,7 @@ char names[5][8] = {"Bjarke", "Benny", "Birger", "Bjarne", "Bent"};
 
 //first testing if there are no members in the model
 void test_pressing_up_key_empty_table(void) {
+    dataControllerTS.setState(TABLE_STATE);
     //start of test
     TEST_ASSERT_EQUAL(TABLE_STATE,dataControllerTS.getModelState());
     TEST_ASSERT_EQUAL(0,dataControllerTS.getModel().getTableIndex());
@@ -183,6 +184,7 @@ void test_pressing_back_key_no_change_of_index_table_state(void) {
 }
 
 void test_pressing_back_key_change_of_index_table_state(void) {//testing if index when changed down or left is reset after
+    dataControllerTS.setState(TABLE_STATE);
     //start of test
     TEST_ASSERT_EQUAL(TABLE_STATE,dataControllerTS.getModelState());
     TEST_ASSERT_EQUAL(0,dataControllerTS.getModel().getTableIndex());
@@ -200,11 +202,10 @@ void test_pressing_enter_key_table_state(void) {
     //start of test
     TEST_ASSERT_EQUAL(TABLE_STATE,dataControllerTS.getModelState());
     dataControllerTS.handleUserInput(ENTER_KEY,&devTS);
-    TEST_ASSERT_EQUAL(TABLE_STATE,dataControllerTS.getModelState());
+    TEST_ASSERT_EQUAL(NAV_OVERVIEW_STATE,dataControllerTS.getModelState());
 }
 
 void runTableStateTests(void) {
-    RUN_TEST(test_pressing_enter_key_table_state);
     RUN_TEST(test_pressing_up_key_empty_table);
     RUN_TEST(test_pressing_down_key_empty_table);
     RUN_TEST(test_pressing_left_key_empty_table);
@@ -214,6 +215,7 @@ void runTableStateTests(void) {
     RUN_TEST(test_pressing_down_key_non_full_table);
     RUN_TEST(test_pressing_left_key_non_full_table);
     RUN_TEST(test_pressing_right_key_non_full_table);
+    RUN_TEST(test_pressing_enter_key_table_state);
     RUN_TEST(test_pressing_back_key_change_of_index_table_state);
     RUN_TEST(test_pressing_up_key_full_table);
     RUN_TEST(test_pressing_down_key_full_table);
