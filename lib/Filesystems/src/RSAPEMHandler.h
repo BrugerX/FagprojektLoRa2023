@@ -20,10 +20,11 @@ class RSAPEMHandler{
     const char * regex_ending_header_pattern = "-----END (PUBLIC|PRIVATE) KEY-----";
     const char * pub_beginning_header = "-----BEGIN PUBLIC KEY-----";
     const char * pub_ending_header = "-----END PUBLIC KEY-----\n";
-    size_t pub_beginning_header_size = 26;
+
 
 private:
-    //Size of the header minus the null terminating string
+    size_t pub_beginning_header_size = 26;  //Size of the header minus the null terminating string
+
     size_t pub_ending_header_size = 26; //We include the null terminating string here, as it indicates the end of the PEM file
 
 private:
@@ -31,7 +32,7 @@ private:
      * Gets the beginning index of the source of the PEM file
      * That is, the PEM file minus the beginning header starts including that index
      */
-    void getBeginIDX(unsigned char *PEMFile, size_t PEMFile_len, int * idx);
+    void get_begin_source_IDX(unsigned char *PEMFile, size_t PEMFile_len, int * idx);
 
     /**
      * Gets the end index of the source of the PEM file
@@ -43,24 +44,33 @@ private:
      *
      */
 
-    void getEndIDX(unsigned char * PEMFile,size_t PEMFile_len, int * idx);
+    void get_end_source_IDX(unsigned char * PEMFile, size_t PEMFile_len, int * idx);
 
-    void getSourceLen(size_t PEMFile_original_len, int beginIDX, int endIDX, size_t * new_len);
+    void get_source_len(size_t PEMFile_original_len, int beginIDX, int endIDX, size_t * new_len);
 
 
-    void addPublicBeginHeader(unsigned char * PEMFile);
-    void addPublicEndHeader(unsigned char * PEMFile,size_t src_size);
+    void add_public_begin_header(unsigned char * PEMFile);
+    void add_public_end_header(unsigned char * PEMFile, size_t src_size);
 
-    void addPrivateBeginHeader(unsigned char * PEMFile);
-    void addPrivateEndHeader(unsigned char * PEMFile,size_t src_size);
+    __attribute__((unused)) void addPrivateBeginHeader(unsigned char * PEMFile);
 
-    void addSrc(unsigned char *PEMFile, size_t src_size, unsigned char * source);
+    __attribute__((unused)) void addPrivateEndHeader(unsigned char * PEMFile,size_t src_size);
+
+    void add_src(unsigned char *PEMFile, size_t src_size, unsigned char * source);
 
 
 public:
+    /**
+     * @pre The PEM file in PEMFile_array must start at the index 0 and be contiguous
+     * - that is, there can be no element in the indices [0;PEMFile_size-1] which are not a part of the PEM file
+     *
+     * @param PEMFile_array [IN] The array containing the PEM file
+     * @param PEMFile_size  [OUT] The number of elements in the PEM file = last index of the PEM file + 1
+     *
+     */
+    void get_PEM_length(unsigned char * PEMFile_array, size_t * PEMFile_size);
 
-
-    void getIDXs(unsigned char* PEMFile,size_t PEMFile_len, int IDXTuple[2]);
+    void get_IDXs(unsigned char* PEMFile, size_t PEMFile_len, int IDXTuple[2]);
 
     /**
      * @param
@@ -69,7 +79,7 @@ public:
      *       sourceAarray [OUT] Where we store the source of the PEM file
      *       sourceLen [OUT] The size of the source
      */
-    void getSource(unsigned char *PEMFile,size_t PEMFile_len, unsigned char **sourceArray, size_t *sourceLen);
+    void get_source(unsigned char *PEMFile, size_t PEMFile_len, unsigned char **sourceArray, size_t *sourceLen);
 
     /**
      *
@@ -80,11 +90,11 @@ public:
      * @param isPrivate [IN] Do we wish to add private or public PEM headers?
      */
 
-    void addPEMHeaders(unsigned char * source,size_t source_size,unsigned char ** PEMFile,size_t * PEM_size, bool isPrivate);
+    void add_PEM_headers(unsigned char * source, size_t source_size, unsigned char ** PEMFile, size_t * PEM_size, bool isPrivate);
 
-    void getPubBeginningHeaderSize(size_t * pub_beginning_header_size_carrier);
+    void get_pub_beginning_header_size(size_t * pub_beginning_header_size_carrier);
 
-    void getPubEndingHeaderSize(size_t * pub_ending_header_size_carrier);
+    void get_pub_ending_header_size(size_t * pub_ending_header_size_carrier);
 };
 
 

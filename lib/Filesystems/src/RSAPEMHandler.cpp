@@ -9,21 +9,21 @@ bool isGoodPEMResult(int result){
     return result != BAD_PEM_RESULT;
 }
 
-void RSAPEMHandler::getBeginIDX(unsigned char *PEMFile, size_t PEMFile_len, int * idx) {
+void RSAPEMHandler::get_begin_source_IDX(unsigned char *PEMFile, size_t PEMFile_len, int * idx) {
 
 
     int result = RegexUtil::getEndIDX(PEMFile,PEMFile_len,std::regex(this->regex_beginning_header_pattern));;
 
     if(!isGoodPEMResult(result))
     {
-        log_e("FAILED TO FIND STARTING IDX OF PEM FILE\nPattern we tried to match the string with: %s\nThe string: %s", regex_beginning_header_pattern, PEMFile);
-        throw std::logic_error("FAILED TO FIND STARTING IDX OF PEM FILE");
+        log_e("FAILED TO FIND STARTING IDX OF PEM FILE SOURCE\nPattern we tried to match the string with: %s\nThe string: %s", regex_beginning_header_pattern, PEMFile);
+        throw std::logic_error("FAILED TO FIND STARTING IDX OF PEM FILE SOURCE");
     }
 
     *idx = result;
 }
 
-void RSAPEMHandler::getEndIDX(unsigned char *PEMFile,size_t PEMFile_len, int *idx)  {
+void RSAPEMHandler::get_end_source_IDX(unsigned char *PEMFile, size_t PEMFile_len, int *idx)  {
 
     int result = RegexUtil::getStartIDX(PEMFile,PEMFile_len,std::regex(this->regex_ending_header_pattern));;
 
@@ -38,14 +38,14 @@ void RSAPEMHandler::getEndIDX(unsigned char *PEMFile,size_t PEMFile_len, int *id
 
 }
 
-void RSAPEMHandler::getSourceLen(size_t PEMFile_original_len, int beginIDX, int endIDX, size_t * new_len){
+void RSAPEMHandler::get_source_len(size_t PEMFile_original_len, int beginIDX, int endIDX, size_t * new_len){
     *new_len = PEMFile_original_len - beginIDX - (PEMFile_original_len - endIDX - 1);
 }
 
-void RSAPEMHandler::getIDXs(unsigned char* PEMFile,size_t PEMFile_len, int IDXTuple[2]) {
+void RSAPEMHandler::get_IDXs(unsigned char* PEMFile, size_t PEMFile_len, int IDXTuple[2]) {
     int start_idx,end_idx;
-    getBeginIDX(PEMFile,PEMFile_len, &start_idx);
-    getEndIDX(PEMFile,PEMFile_len,&end_idx);
+    get_begin_source_IDX(PEMFile, PEMFile_len, &start_idx);
+    get_end_source_IDX(PEMFile, PEMFile_len, &end_idx);
 
     IDXTuple[0] = start_idx;
     IDXTuple[1] = end_idx;
@@ -53,28 +53,28 @@ void RSAPEMHandler::getIDXs(unsigned char* PEMFile,size_t PEMFile_len, int IDXTu
 
 //TODO: Currently it ignores null terminators, we need to fix this, so it just takes the string literal
 //Example: BEGIN\0SRC\0END => SRC, not SRC\0
-void RSAPEMHandler::getSource(unsigned char *PEMFile,size_t PEMFile_len, unsigned char **sourceArrayPTR, size_t *sourceLen) {
+void RSAPEMHandler::get_source(unsigned char *PEMFile, size_t PEMFile_len, unsigned char **sourceArray, size_t *sourceLen) {
     int IDXs[2], beginIDX,endIDX;
-    getIDXs(PEMFile,PEMFile_len,IDXs);
+    get_IDXs(PEMFile, PEMFile_len, IDXs);
 
     beginIDX = IDXs[0];
     endIDX = IDXs[1];
 
     //Gets the size of the source
-    getSourceLen(PEMFile_len,beginIDX,endIDX,sourceLen);
+    get_source_len(PEMFile_len, beginIDX, endIDX, sourceLen);
 
-    *sourceArrayPTR = (unsigned char *) malloc( *sourceLen * sizeof(unsigned char));
+    *sourceArray = (unsigned char *) malloc(*sourceLen * sizeof(unsigned char));
 
     //we iterate over the original array and add
     for(int i = 0; i<*sourceLen;i++){
-        (*sourceArrayPTR)[i] = PEMFile[i + beginIDX];
+        (*sourceArray)[i] = PEMFile[i + beginIDX];
     }
 
 }
 
 
 
-void RSAPEMHandler::addPublicBeginHeader(unsigned char *PEMFile) {
+void RSAPEMHandler::add_public_begin_header(unsigned char *PEMFile) {
     for(int i = 0; i<pub_beginning_header_size;i++)
     {
         PEMFile[i] = (unsigned char) pub_beginning_header[i];
@@ -82,7 +82,7 @@ void RSAPEMHandler::addPublicBeginHeader(unsigned char *PEMFile) {
 
 }
 
-void RSAPEMHandler::addPublicEndHeader(unsigned char *PEMFile, size_t src_size) {
+void RSAPEMHandler::add_public_end_header(unsigned char *PEMFile, size_t src_size) {
     for(int i = 0;i<pub_ending_header_size;i++)
     {
         PEMFile[i + src_size + pub_beginning_header_size] = (unsigned char) pub_ending_header[i];
@@ -90,12 +90,12 @@ void RSAPEMHandler::addPublicEndHeader(unsigned char *PEMFile, size_t src_size) 
 }
 
 
-void RSAPEMHandler::addPrivateBeginHeader(unsigned char *PEMFile)
+__attribute__((unused)) void RSAPEMHandler::addPrivateBeginHeader(unsigned char *PEMFile)
 {}
 
-void RSAPEMHandler::addPrivateEndHeader(unsigned char *PEMFile, size_t src_size) {}
+__attribute__((unused)) void RSAPEMHandler::addPrivateEndHeader(unsigned char *PEMFile, size_t src_size) {}
 
-void RSAPEMHandler::addSrc(unsigned char *PEMFile, size_t src_size, unsigned char * source)
+void RSAPEMHandler::add_src(unsigned char *PEMFile, size_t src_size, unsigned char * source)
 {
     for(int i = 0; i<src_size;i++)
     {
@@ -103,7 +103,7 @@ void RSAPEMHandler::addSrc(unsigned char *PEMFile, size_t src_size, unsigned cha
     }
 }
 
-void RSAPEMHandler::addPEMHeaders(unsigned char * source,size_t source_size,unsigned char ** PEMFile,size_t * PEM_size, bool isPrivate){
+void RSAPEMHandler::add_PEM_headers(unsigned char * source, size_t source_size, unsigned char ** PEMFile, size_t * PEM_size, bool isPrivate){
     unsigned char * PEMFile_arr;
 
 
@@ -116,18 +116,39 @@ void RSAPEMHandler::addPEMHeaders(unsigned char * source,size_t source_size,unsi
     {
         *PEM_size = source_size + pub_beginning_header_size +pub_ending_header_size;
         PEMFile_arr = (unsigned char *) malloc(sizeof(unsigned char) * (*PEM_size)); //+1 for the null terminator
-        addPublicBeginHeader(PEMFile_arr);
-        addSrc(PEMFile_arr,source_size,source);
-        addPublicEndHeader(PEMFile_arr,source_size);
+        add_public_begin_header(PEMFile_arr);
+        add_src(PEMFile_arr, source_size, source);
+        add_public_end_header(PEMFile_arr, source_size);
     }
 
     *PEMFile = PEMFile_arr;
 }
 
-void RSAPEMHandler::getPubBeginningHeaderSize(size_t * pub_beginning_header_size_carrier) {
+void RSAPEMHandler::get_pub_beginning_header_size(size_t * pub_beginning_header_size_carrier) {
     *pub_beginning_header_size_carrier = pub_beginning_header_size;
 }
 
-void RSAPEMHandler::getPubEndingHeaderSize(size_t * pub_ending_header_size_carrier) {
+void RSAPEMHandler::get_pub_ending_header_size(size_t * pub_ending_header_size_carrier) {
     *pub_ending_header_size_carrier = pub_ending_header_size;
+}
+
+void RSAPEMHandler::get_PEM_length(unsigned char *PEMFile_array, size_t *PEMFile_size) {
+    size_t IDXs[2],src_start_IDX,src_end_IDX;
+
+    //We assume that all arrays are |PEMFile_array| <= PEMPubKeyLen
+    get_IDXs(PEMFile_array,PEMPubKeyLen,(int*)&IDXs);
+    src_start_IDX = IDXs[0];
+    src_end_IDX = IDXs[1];
+
+    //We check to see if the starting index of the beginning header is 0
+    if(src_start_IDX - pub_beginning_header_size + 1 != 0 )
+    {
+        log_e("STARTING INDEX OF PEM FILE IS %i NOT 0\nTHE PRECONDITION FOR THIS FUNCTION IS THAT THE STARTING INDEX OF THE PEM FILE IS 0 AND THE PEM FILE IS CONTIGUOUS");
+        throw std::invalid_argument("PRECONDITION NOT MET - STARTING INDEX OF THE PEM FILE IS NOT 0");
+    }
+
+    //Assuming the preconditions hold, we can calculate the PEMFile size easily
+    *PEMFile_size = src_end_IDX + pub_ending_header_size;
+
+
 }

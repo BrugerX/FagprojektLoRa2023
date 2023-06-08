@@ -41,7 +41,7 @@ void tearDown(void) {
 
 void getIDXsWorks(){
     int IDXs[2];
-    PEMHandler->getIDXs((unsigned char*) NORMAL_PUB_KEY_FILE,NORMAL_PUB_KEY_SIZE,IDXs);
+    PEMHandler->get_IDXs((unsigned char *) NORMAL_PUB_KEY_FILE, NORMAL_PUB_KEY_SIZE, IDXs);
     TEST_ASSERT_EQUAL(HEADER_PUB_BEGIN_SIZE-1,IDXs[0]); //|BEGIN\0| =n, PEMFile = |Begin\0Src...| => |BEGIN| = n - 1 => idx(S) = |BEGIN| + 1 -1 = n - 1
     TEST_ASSERT_EQUAL(HEADER_PUB_BEGIN_SIZE + SRC_SIZE -3,IDXs[1]); // |BEGIN\0| = n, |SRC\0| = m => |BEGIN| = n -1, |SRC| = m -1 => |BEGIN+SRC| = n + m -2 => index(C) = |BEGIN+SRC| -1 =n + m - 3
 }
@@ -54,7 +54,8 @@ void getIDXsWorks(){
 void normalPubKey(){
     size_t source_size;
     unsigned char * source_arr;
-    PEMHandler->getSource((unsigned char*) NORMAL_PUB_KEY_FILE, NORMAL_PUB_KEY_SIZE, &source_arr, (size_t *) &source_size);
+    PEMHandler->get_source((unsigned char *) NORMAL_PUB_KEY_FILE, NORMAL_PUB_KEY_SIZE, &source_arr,
+                           (size_t *) &source_size);
     TEST_ASSERT_EQUAL(SRC_SIZE - 1,source_size); //-1 for \0
 
     log_e("%i",SRC_SIZE);
@@ -77,6 +78,15 @@ void nullCharAtEndOfSource()
 {
 
 }
+
+void getSource()
+{}
+
+void get_PEM_lengt()
+{}
+
+void add_PEM_headers_to_source()
+{}
 
 void setup()
 {

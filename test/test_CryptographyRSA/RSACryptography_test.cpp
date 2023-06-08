@@ -172,7 +172,7 @@ void validateIsNotTrueEncryptDecryptWorksnt(){
     operation_result = temporary_rsa_Cryptographer->get_key_pem(&pub,0);
 
     if(!isGoodResult(operation_result)){
-        Serial.print(-operation_result,HEX);
+        log_e("%x",-operation_result);
         TEST_FAIL_MESSAGE("COULD NOT GET PUBLIC KEY PEM FILE");
     }
 
