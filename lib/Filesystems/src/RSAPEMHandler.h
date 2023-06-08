@@ -20,8 +20,11 @@ class RSAPEMHandler{
     const char * regex_ending_header_pattern = "-----END (PUBLIC|PRIVATE) KEY-----";
     const char * pub_beginning_header = "-----BEGIN PUBLIC KEY-----";
     const char * pub_ending_header = "-----END PUBLIC KEY-----\n";
-    size_t pub_beginning_header_size = 26; //Size of the header minus the null terminating string
-    size_t pub_ending_header_size = 26; //Same here, although we manually add the null terminating character later - it is better to keep it consistent and explicit
+    size_t pub_beginning_header_size = 26;
+
+private:
+    //Size of the header minus the null terminating string
+    size_t pub_ending_header_size = 26; //We include the null terminating string here, as it indicates the end of the PEM file
 
 private:
     /**
@@ -45,16 +48,17 @@ private:
     void getSourceLen(size_t PEMFile_original_len, int beginIDX, int endIDX, size_t * new_len);
 
 
+    void addPublicBeginHeader(unsigned char * PEMFile);
+    void addPublicEndHeader(unsigned char * PEMFile,size_t src_size);
 
     void addPrivateBeginHeader(unsigned char * PEMFile);
     void addPrivateEndHeader(unsigned char * PEMFile,size_t src_size);
 
+    void addSrc(unsigned char *PEMFile, size_t src_size, unsigned char * source);
+
 
 public:
 
-    void addPublicBeginHeader(unsigned char * PEMFile);
-    void addPublicEndHeader(unsigned char * PEMFile,size_t src_size);
-    void addSrc(unsigned char *PEMFile, size_t src_size, unsigned char * source);
 
     void getIDXs(unsigned char* PEMFile,size_t PEMFile_len, int IDXTuple[2]);
 
@@ -77,6 +81,10 @@ public:
      */
 
     void addPEMHeaders(unsigned char * source,size_t source_size,unsigned char ** PEMFile,size_t * PEM_size, bool isPrivate);
+
+    void getPubBeginningHeaderSize(size_t * pub_beginning_header_size_carrier);
+
+    void getPubEndingHeaderSize(size_t * pub_ending_header_size_carrier);
 };
 
 

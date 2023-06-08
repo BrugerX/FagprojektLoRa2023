@@ -123,3 +123,11 @@ void RSAPEMHandler::addPEMHeaders(unsigned char * source,size_t source_size,unsi
 
     *PEMFile = PEMFile_arr;
 }
+
+void RSAPEMHandler::getPubBeginningHeaderSize(size_t * pub_beginning_header_size_carrier) {
+    *pub_beginning_header_size_carrier = pub_beginning_header_size;
+}
+
+void RSAPEMHandler::getPubEndingHeaderSize(size_t * pub_ending_header_size_carrier) {
+    *pub_ending_header_size_carrier = pub_ending_header_size;
+}
