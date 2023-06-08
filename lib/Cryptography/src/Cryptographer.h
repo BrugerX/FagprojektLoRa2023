@@ -15,6 +15,7 @@
 #include "sha/sha_parallel_engine.h"
 #include <Utility.h>
 #include "stdexcept"
+#include <RSAPEMHandler.h>
 
 class Cryptographer;
 class RSACryptographer;

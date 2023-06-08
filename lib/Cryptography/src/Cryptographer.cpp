@@ -55,6 +55,21 @@ protected:
 private:
 
     /**
+     * @WARNING USE THIS METHOD TO CREATE PEM ARRAYS AS WE INITIALIZE THE ARRAYS THIS WAY
+     *
+     * @param PEM_arr [OUT] A pointer to the PEM array
+     * @param arr_size [IN] The size you wish the final array to have
+     */
+    void create_PEM_arr(unsigned char ** PEM_arr,size_t arr_size)
+    {
+        unsigned char * temp = (unsigned char *) malloc(sizeof(unsigned char) *arr_size);
+
+        //We initialize it in case a previous PEM file occuppies the same memory space
+        fill_char_unsignedString(temp,arr_size,PEM_EMPTY_PLACEHOLDER);
+        *PEM_arr = temp;
+    }
+
+    /**
  *
  * @param inputArray : The array which we would like to do our encryption/decryption on
  * @param inputLen
@@ -97,7 +112,9 @@ private:
     int get_pub_key_pem(unsigned char ** buf){
         int result;
 
-        unsigned char * temp = (unsigned char *) malloc(PEMPubKeyLen * sizeof(unsigned char));
+        unsigned char * temp;
+        create_PEM_arr(&temp,PEMPubKeyLen);
+
         result = mbedtls_pk_write_pubkey_pem(&this->RSA_pub_ctx, temp, PEMPubKeyLen);
 
         if(!isGoodResult(result)){
@@ -113,7 +130,12 @@ private:
     int get_priv_key_pem(unsigned char ** buf){
         int result;
 
-        unsigned char * temp = (unsigned char *) malloc(PEMPrivKeyLen * sizeof(unsigned char));
+        unsigned char * temp;
+
+
+        //We initialize the array - ensuring nothing else is written on it
+        create_PEM_arr(&temp,PEMPrivKeyLen);
+
         result = mbedtls_pk_write_key_pem(&this->RSA_priv_ctx, temp, PEMPrivKeyLen);
 
         if(!isGoodResult(result)){
@@ -143,6 +165,8 @@ private:
 
         return mbedtls_pk_parse_public_key(&this->RSA_pub_ctx,key_pem,keylen);
     }
+
+    RSAPEMHandler * rsapem_handler = new RSAPEMHandler();
 
 public:
 
@@ -231,8 +255,8 @@ public:
         //Get PEMfiles in buffers and parse these into their respective keys
         unsigned char * PEMpub, * PEMpriv;
         log_i("GETTING THE PEM FILES FOR EACH KEY");
-        PEMpub = (unsigned char * ) malloc(PEMPubKeyLen*sizeof(unsigned char));
-        PEMpriv = (unsigned char * ) malloc(PEMPrivKeyLen*sizeof(unsigned char));
+        create_PEM_arr(&PEMpub,PEMPubKeyLen);
+        create_PEM_arr(&PEMpriv,PEMPrivKeyLen);
 
         //We can't use get_key_pem here, as the two keys aren't initialized.
         assert(isGoodResult(mbedtls_pk_write_pubkey_pem(&RSA_ctx,PEMpub,PEMPubKeyLen))); //<- CANNOT F' UP OR THE WHOLE DAMN THING WON'T WORK BUDDY WUDDY
