@@ -46,6 +46,7 @@ public:
     char getTopTableIndex();
     void setTopTableIndex(char newIndex);
     void setTableIndex(char newIndex);
+    bool getMemberHighlight();
 
 
 };

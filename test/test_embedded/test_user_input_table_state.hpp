@@ -204,6 +204,7 @@ void test_pressing_enter_key_table_state(void) {
     dataControllerTS.handleUserInput(ENTER_KEY,&devTS);
     TEST_ASSERT_EQUAL(NAV_OVERVIEW_STATE,dataControllerTS.getModelState());
 }
+//maybe test that indexes are kept when pressing enter.
 
 void runTableStateTests(void) {
     RUN_TEST(test_pressing_up_key_empty_table);

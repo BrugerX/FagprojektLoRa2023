@@ -144,3 +144,7 @@ void DataModel::setTableIndex(char newIndex) {
 void DataModel::setTopTableIndex(char newIndex) {
     this->topTableIndex = newIndex;
 }
+
+bool DataModel::getMemberHighlight() {
+    return groupMembers[getCurrentMemberIndex()].getHighlight();
+}
