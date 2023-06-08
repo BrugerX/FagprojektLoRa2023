@@ -114,14 +114,12 @@ void RSAPEMHandler::addPEMHeaders(unsigned char * source,size_t source_size,unsi
 
     else
     {
-        *PEM_size = source_size + pub_beginning_header_size +pub_ending_header_size + 1;
+        *PEM_size = source_size + pub_beginning_header_size +pub_ending_header_size;
         PEMFile_arr = (unsigned char *) malloc(sizeof(unsigned char) * (*PEM_size)); //+1 for the null terminator
         addPublicBeginHeader(PEMFile_arr);
         addSrc(PEMFile_arr,source_size,source);
         addPublicEndHeader(PEMFile_arr,source_size);
     }
-
-    PEMFile_arr[*PEM_size] = (unsigned char) '\0';
 
     *PEMFile = PEMFile_arr;
 }

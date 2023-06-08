@@ -19,9 +19,9 @@ class RSAPEMHandler{
     const char * regex_beginning_header_pattern = "-----BEGIN (PUBLIC|PRIVATE) KEY-----";
     const char * regex_ending_header_pattern = "-----END (PUBLIC|PRIVATE) KEY-----";
     const char * pub_beginning_header = "-----BEGIN PUBLIC KEY-----";
-    const char * pub_ending_header = "-----END PUBLIC KEY-----";
+    const char * pub_ending_header = "-----END PUBLIC KEY-----\n";
     size_t pub_beginning_header_size = 26; //Size of the header minus the null terminating string
-    size_t pub_ending_header_size = 24; //Same here, although we manually add the null terminating character later - it is better to keep it consistent and explicit
+    size_t pub_ending_header_size = 26; //Same here, although we manually add the null terminating character later - it is better to keep it consistent and explicit
 
 private:
     /**

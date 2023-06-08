@@ -338,7 +338,7 @@ public:
 
         //Error
         if(!isGoodResult(operation_result)){
-            log_e("%x",-operation_result);
+            log_e("FAILED TO LOAD KEY PEM WITH ERROR: %x",-operation_result);
             throw std::logic_error("COULD NOT PARSE KEY");
         }
 

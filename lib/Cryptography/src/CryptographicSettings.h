@@ -30,7 +30,7 @@
 //If we iterate over a PEM file and it's "7"
 #define PEM_EMPTY_PLACEHOLDER 100
 #define PEM_ERR_NO_PEM_FILE -69
-#define PEMPubKeyLen 1500 //Size of the arrays used to store the public key PEM arrays
+#define PEMPubKeyLen 1500 //Default size of the arrays used to store the public key PEM arrays
 #define PEMPrivKeyLen 1800
 
 //Hashing related
