@@ -128,6 +128,10 @@ void DataModel::updateOverview(SSD1306_t *dev) {
     view.updateNavOverview(groupMembers[getCurrentMemberIndex()].getHighlight(),dev);
 }
 
+void DataModel::drawMembersOnCompass(SSD1306_t *dev) {
+    view.drawMembersOnCompass(groupMembers, dev);
+}
+
 void DataModel::resetTableIndexes(){
     topTableIndex = 0;
     tableIndex = 0;

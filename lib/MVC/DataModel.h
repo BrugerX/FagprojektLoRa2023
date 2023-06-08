@@ -42,6 +42,7 @@ public:
     void resetTableIndexes();
     void giveOverview(SSD1306_t *dev);
     void updateOverview(SSD1306_t *dev);
+    void drawMembersOnCompass(SSD1306_t * dev);
     //for testing
     char getTopTableIndex();
     void setTopTableIndex(char newIndex);

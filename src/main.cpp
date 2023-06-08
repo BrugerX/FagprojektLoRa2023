@@ -3,6 +3,7 @@
 #include "../lib/MVC/DataView.h"
 #include "../lib/MVC/DataController.h"
 #include "../lib/MVC/MVCSettings.h"
+#include <cstdlib>
 
 DataView dataView = DataView();
 DataController dataController = DataController(dataView);
@@ -23,6 +24,7 @@ void setup() {
 
 
     for(int i = 0; i < 6; i++){
+        srand(i);
         dataController.addGroupMember(Member(names[i], NavigationData()));
     }
     /*while(Serial.available() != 0){

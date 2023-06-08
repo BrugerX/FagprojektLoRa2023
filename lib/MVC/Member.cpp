@@ -13,12 +13,12 @@ void Member::ChangeLocation(char x, char y){
 
 char Member::getXLocation(){
     //nav.getX
-    return 0;
+    return 10 + (rand() % 109);//64;
 }
 
 char Member::getYLocation(){
     //nav.getY
-    return 0;
+    return 5 + (rand() % 55);//32;
 }
 
 char * Member::getID(){

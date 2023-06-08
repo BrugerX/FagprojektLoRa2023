@@ -38,5 +38,6 @@ public:
     void showStartScreen(SSD1306_t * dev);
     void displayNavOverview(char x, char y, bool highlighted, SSD1306_t * dev);
     void updateNavOverview(bool highlighted, SSD1306_t * dev);
+    void drawMembersOnCompass(vector<Member> & members, SSD1306_t * dev);
 };
 #endif //DATAVIEW_H

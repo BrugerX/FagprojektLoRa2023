@@ -18,6 +18,7 @@ switch(this->model.getState()){
         if (userInput == UP_KEY) {
             ssd1306_clear_screen(dev, 0);
             this->view.drawCompass(dev);
+            model.drawMembersOnCompass(dev);
             this->model.setState(COMPASS_STATE);
         }
         else if (userInput == DOWN_KEY){

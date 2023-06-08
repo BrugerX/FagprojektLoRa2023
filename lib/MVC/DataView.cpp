@@ -332,3 +332,14 @@ void DataView::updateNavOverview(bool highlighted, SSD1306_t *dev) {
     string hl = "Highlighted: " + suffix;
     ssd1306_display_text(dev, 4, (char *) hl.data(), hl.length(), 0);
 }
+
+void DataView::drawMembersOnCompass(vector<Member> &members, SSD1306_t *dev) {
+    for(Member m : members){
+        if(m.getHighlight()){
+            highlightCircle(m.getXLocation(),m.getYLocation(),MEMBER_CIRCLE_SIZE,dev);
+        }
+        else{
+            drawCircle(m.getXLocation(),m.getYLocation(),MEMBER_CIRCLE_SIZE,dev);
+        }
+    }
+}
