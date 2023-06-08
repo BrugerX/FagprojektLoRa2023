@@ -1,5 +1,6 @@
 #include "DataModel.h"
 #include <stdexcept>
+#include <Arduino.h>
 
 using namespace std;
 
@@ -89,9 +90,12 @@ char * DataModel::getMemberTimestamp(char index){
 }
 
 void DataModel::initializeTable(SSD1306_t * dev){
+    Serial.print("Drawing table with topTableIndex =");
+    Serial.println(topTableIndex,DEC);
     view.drawIDTable(topTableIndex, groupMembers, dev);
     if(groupMembers.size() > 0){
-        view.highlightTableCell(0, 0, groupMembers[0].getID(), 1, dev);
+        char * text = tableIndex % 2 ? groupMembers[getCurrentMemberIndex()].getNav().getTimestamp() : groupMembers[getCurrentMemberIndex()].getID();
+        view.highlightTableCell(tableIndex/2-topTableIndex, tableIndex % 2, text, 1, dev);
     }
 }
 

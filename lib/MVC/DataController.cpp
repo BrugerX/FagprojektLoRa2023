@@ -58,7 +58,7 @@ switch(this->model.getState()){
         }
         else if(userInput == BACK_KEY){
             ssd1306_clear_screen(dev, 0);
-            model.resetTableIndexes();
+            //model.resetTableIndexes();
             model.initializeTable(dev);
             model.setState(TABLE_STATE);
         }

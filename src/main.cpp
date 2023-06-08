@@ -19,11 +19,8 @@ void setup() {
     ssd1306_contrast(&dev, 0xc3);
     ssd1306_clear_screen(&dev, false);
 
-    //dataViewet.drawCompass(&dev);
-    //dataControlleren.handleUserInput(UP_KEY, &dev);
-    //dataController.handleUserInput(LEFT_KEY, &dev); //to initialise startscreen
-    dataView.showStartScreen(&dev);
-    //Serial.print((int) dataControlleren.getModelState());
+    dataView.showStartScreen(&dev); //to initialise start screen
+
 
     for(int i = 0; i < 6; i++){
         dataController.addGroupMember(Member(names[i], NavigationData()));
