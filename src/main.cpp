@@ -14,11 +14,7 @@ void setup() {
     // put your setup code here, to run once:
     Serial.begin(9600);
     delay(2000);
-    i2c_master_init(&dev, CONFIG_SDA_GPIO, CONFIG_SCL_GPIO, CONFIG_RESET_GPIO);
-    //initializing display of size 128x64
-    ssd1306_init(&dev, 128, 64);
-    ssd1306_contrast(&dev, 0xc3);
-    ssd1306_clear_screen(&dev, false);
+    dataView.initialiseView(&dev);
 
     dataView.showStartScreen(&dev); //to initialise start screen
 

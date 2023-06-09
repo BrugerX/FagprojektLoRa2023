@@ -343,3 +343,11 @@ void DataView::drawMembersOnCompass(vector<Member> &members, SSD1306_t *dev) {
         }
     }
 }
+
+void DataView::initialiseView(SSD1306_t *dev) {
+    i2c_master_init(dev, CONFIG_SDA_GPIO, CONFIG_SCL_GPIO, CONFIG_RESET_GPIO);
+    //initializing display of size 128x64
+    ssd1306_init(dev, 128, 64);
+    ssd1306_contrast(dev, 0xc3);
+    ssd1306_clear_screen(dev, false);
+}
