@@ -6,7 +6,7 @@
 #define FAGPROJEKTLORA2023_TEST_USER_INPUT_NAV_OVERVIEW_STATE_H
 
 DataView dataViewNS = DataView();
-DataController dataControllerNS = DataController(dataViewNS);
+DataController dataControllerNS = DataController(&dataViewNS);
 SSD1306_t devNS;
 char namesNS[5][8] = {"Bjarke", "Benny", "Birger", "Bjarne", "Bent"};
 

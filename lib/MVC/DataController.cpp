@@ -7,7 +7,7 @@
 
 using namespace std;
 
-DataController::DataController(DataView dataView) : model(0, dataView) {
+DataController::DataController(DataView * dataView) : model(0, dataView) {
     //this->model = model;
     this->view = dataView;
 }
@@ -17,7 +17,7 @@ switch(this->model.getState()){
     case START_STATE: {
         if (userInput == UP_KEY) {
             ssd1306_clear_screen(dev, 0);
-            this->view.drawCompass(dev);
+            this->view->drawCompass(dev);
             model.drawMembersOnCompass(dev);
             this->model.setState(COMPASS_STATE);
         }
@@ -32,7 +32,7 @@ switch(this->model.getState()){
         if(userInput == BACK_KEY) {
             //go back in state
             ssd1306_clear_screen(dev, 0);
-            view.showStartScreen(dev);
+            view->showStartScreen(dev);
             this->model.setState(START_STATE);
         }
         break;
@@ -45,7 +45,7 @@ switch(this->model.getState()){
         else if (userInput == BACK_KEY){
             model.resetTableIndexes();
             ssd1306_clear_screen(dev, 0);
-            view.showStartScreen(dev);
+            view->showStartScreen(dev);
             this->model.setState(START_STATE);
         }
         else {

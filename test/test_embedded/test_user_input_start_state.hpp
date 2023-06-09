@@ -5,7 +5,7 @@
 //testing that the different user inputs when in the "start state" are following the desired behavior
 
 DataView dataViewSS = DataView();
-DataController dataControllerSS = DataController(dataViewSS);
+DataController dataControllerSS = DataController(&dataViewSS);
 SSD1306_t devSS;
 
 void test_pressing_up_key_start_state(void) {

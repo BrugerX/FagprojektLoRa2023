@@ -3,7 +3,7 @@
 #include <Arduino.h>
 
 DataView dataViewTS = DataView();
-DataController dataControllerTS = DataController(dataViewTS);
+DataController dataControllerTS = DataController(&dataViewTS);
 SSD1306_t devTS;
 char names[5][8] = {"Bjarke", "Benny", "Birger", "Bjarne", "Bent"};
 

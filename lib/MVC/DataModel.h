@@ -12,7 +12,7 @@ using namespace std;
 //then probably rename this to group
 class DataModel{
 private:
-    DataView view;
+    DataView * view;
     char state;
     //char numberOfGroupMembers;
     char tableIndex;
@@ -23,7 +23,7 @@ private:
 
 
 public:
-    DataModel(char state, DataView dataView);
+    DataModel(char state, DataView * dataView);
     void changeCurrentLocation(char x, char y);
     char findMemberIndex(char * ID);
     void changeMemberLocation(char x, char y, char memberIndex);
@@ -48,7 +48,5 @@ public:
     void setTopTableIndex(char newIndex);
     void setTableIndex(char newIndex);
     bool getMemberHighlight();
-
-
 };
 #endif //DATAMODEL_H

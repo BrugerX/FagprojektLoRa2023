@@ -3,7 +3,7 @@
 #include <Arduino.h>
 
 DataView dataViewCS = DataView();
-DataController dataControllerCS = DataController(dataViewCS);
+DataController dataControllerCS = DataController(&dataViewCS);
 SSD1306_t devCS;
 
 void test_pressing_back_key_compass_state(void) {

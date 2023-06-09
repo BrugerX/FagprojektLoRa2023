@@ -9,7 +9,7 @@
 //    getNumberOfMembers();
 
 DataView dataViewet = DataView();
-DataModel model = DataModel(0, dataViewet);
+DataModel model = DataModel(0, &dataViewet);
 char ID2[] = "AddTwo";
 Member m2 = Member(ID2,NavigationData());
 

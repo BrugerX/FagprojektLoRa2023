@@ -6,7 +6,7 @@
 #include <cstdlib>
 
 DataView dataView = DataView();
-DataController dataController = DataController(dataView);
+DataController dataController = DataController(&dataView);
 SSD1306_t dev;
 char names[6][8] = {"Bjarke", "Benny", "Birger", "Bjarne", "Bent", "Birk"};
 
@@ -21,7 +21,6 @@ void setup() {
     ssd1306_clear_screen(&dev, false);
 
     dataView.showStartScreen(&dev); //to initialise start screen
-
 
     for(int i = 0; i < 6; i++){
         srand(i);

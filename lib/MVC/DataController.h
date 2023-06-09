@@ -12,11 +12,11 @@ using namespace std;
 class DataController{
 private:
     DataModel model;
-    DataView view;
+    DataView * view;
     void updateModel(char input); //many more methods
 
 public:
-    DataController(DataView dataView); //DataModel datamodel, DataView dataViewet
+    explicit DataController(DataView * dataView); //DataModel datamodel, DataView dataViewet
     void handleUserInput(char userInput, SSD1306_t * dev);
     char getModelState();
     void addGroupMember(Member groupMember);
