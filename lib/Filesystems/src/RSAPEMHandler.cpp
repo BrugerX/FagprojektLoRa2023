@@ -9,6 +9,22 @@ bool isGoodPEMResult(int result){
     return result != BAD_PEM_RESULT;
 }
 
+
+/**
+ * @WARNING USE THIS METHOD TO CREATE PEM ARRAYS AS WE INITIALIZE THE ARRAYS THIS WAY
+ *
+ * @param PEM_arr [OUT] A pointer to the PEM array
+ * @param arr_size [IN] The size you wish the final array to have
+ */
+void create_PEM_arr(unsigned char ** PEM_arr,size_t arr_size)
+{
+    unsigned char * temp = (unsigned char *) malloc(sizeof(unsigned char) *arr_size);
+
+    //We initialize it in case a previous PEM file occuppies the same memory space
+    fill_char_unsignedString(temp,arr_size,PEM_EMPTY_PLACEHOLDER);
+    *PEM_arr = temp;
+}
+
 void RSAPEMHandler::get_begin_source_IDX(unsigned char *PEMFile, size_t PEMFile_len, int * idx) {
 
 

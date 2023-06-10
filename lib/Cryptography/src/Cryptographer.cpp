@@ -54,20 +54,6 @@ protected:
     mbedtls_pk_context RSA_priv_ctx;
 private:
 
-    /**
-     * @WARNING USE THIS METHOD TO CREATE PEM ARRAYS AS WE INITIALIZE THE ARRAYS THIS WAY
-     *
-     * @param PEM_arr [OUT] A pointer to the PEM array
-     * @param arr_size [IN] The size you wish the final array to have
-     */
-    void create_PEM_arr(unsigned char ** PEM_arr,size_t arr_size)
-    {
-        unsigned char * temp = (unsigned char *) malloc(sizeof(unsigned char) *arr_size);
-
-        //We initialize it in case a previous PEM file occuppies the same memory space
-        fill_char_unsignedString(temp,arr_size,PEM_EMPTY_PLACEHOLDER);
-        *PEM_arr = temp;
-    }
 
     /**
  *
@@ -147,7 +133,7 @@ private:
         return result;
     }
 
-    int load_priv_key(unsigned char * key_pem,size_t keyLen){
+    int parse_priv_key(unsigned char * key_pem, size_t keyLen){
         if(!&RSA_priv_ctx){
             mbedtls_pk_free(&RSA_priv_ctx);
         }
@@ -157,7 +143,7 @@ private:
         return mbedtls_pk_parse_key(&this->RSA_priv_ctx,key_pem,keyLen,NULL,0);
     }
 
-    int load_pub_key(unsigned char * key_pem,size_t keylen){
+    int parse_pub_key(unsigned char * key_pem, size_t keylen){
         if(!&RSA_pub_ctx){
             mbedtls_pk_free(&RSA_pub_ctx);
         }
@@ -264,8 +250,8 @@ public:
 
         log_i("PARSING PEM FILES");
 
-        load_key_pem(PEMpub,0);
-        load_key_pem(PEMpriv,1);
+        parse_key_pem(PEMpub, 0);
+        parse_key_pem(PEMpriv, 1);
 
         //We malloc'ed the array, so we of course need to delete it afterwards to avoid memory leak :)
         free (PEMpriv);
@@ -330,14 +316,14 @@ public:
 
     }
 
-    int load_key_pem(unsigned char * key_pem, bool isPrivateKeyPem){
+    int parse_key_pem(unsigned char * key_pem, bool isPrivateKeyPem){
         int operation_result;
 
         if(isPrivateKeyPem){
-            operation_result = load_priv_key(key_pem,PEMPrivKeyLen);
+            operation_result = parse_priv_key(key_pem, PEMPrivKeyLen);
         }
         else{
-            operation_result = load_pub_key(key_pem,PEMPubKeyLen);
+            operation_result = parse_pub_key(key_pem, PEMPubKeyLen);
         }
 
         //Error
@@ -350,14 +336,14 @@ public:
 
     }
 
-    int load_key_pem(unsigned char * key_pem, bool isPrivateKeyPem,size_t PEMLen){
+    int parse_key_pem(unsigned char * key_pem, bool isPrivateKeyPem, size_t PEMLen){
         int operation_result;
 
         if(isPrivateKeyPem){
-            operation_result = load_priv_key(key_pem,PEMLen);
+            operation_result = parse_priv_key(key_pem, PEMLen);
         }
         else{
-            operation_result = load_pub_key(key_pem,PEMLen);
+            operation_result = parse_pub_key(key_pem, PEMLen);
         }
 
         //Error

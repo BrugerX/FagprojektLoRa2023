@@ -347,8 +347,8 @@ void loadingNewKeysAreValid(){
     rsa_Cryptographer.get_key_pem(&pubPEM,0);
     rsa_Cryptographer.get_key_pem(&privPEM,1);
 
-    temporary_rsa_cryptographer->load_key_pem(pubPEM,0);
-    temporary_rsa_cryptographer->load_key_pem(privPEM,1);
+    temporary_rsa_cryptographer->parse_key_pem(pubPEM, 0);
+    temporary_rsa_cryptographer->parse_key_pem(privPEM, 1);
     /*
      * We now check to see if their encryption is the same
      */
@@ -362,6 +362,15 @@ void loadingNewKeysAreValid(){
     free(privPEM);
     free(pubPEM);
     delete(temporary_rsa_cryptographer);
+}
+
+
+void automaticKeySizeDetection()
+{}
+
+void loadingSource()
+{
+
 }
 
 void setup()

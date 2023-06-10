@@ -7,13 +7,16 @@
 
 #include <RegexUtility.h>
 #include <CryptographicSettings.h>
+#include <utility.h>
 
 #define BAD_PEM_RESULT -1
+
+void create_PEM_arr(unsigned char ** PEM_arr,size_t arr_size);
 
 bool isGoodPEMResult(int result);
 
 /**
- *  The purpose of the RSAPEMHandler is responsible for extracting and modifying data regarding MbedTLS RSA PEM files
+ *  The purpose of the RSAPEMHandler is responsible for reading and writing PEM data files, allowing for communication of data in PEM format
  */
 class RSAPEMHandler{
     const char * regex_beginning_header_pattern = "-----BEGIN (PUBLIC|PRIVATE) KEY-----";
