@@ -7,16 +7,15 @@
 
 DataView dataView = DataView();
 DataController dataController = DataController(&dataView);
-SSD1306_t dev;
 char names[6][8] = {"Bjarke", "Benny", "Birger", "Bjarne", "Bent", "Birk"};
 
 void setup() {
     // put your setup code here, to run once:
     Serial.begin(9600);
     delay(2000);
-    dataView.initialiseView(&dev);
+    dataView.initialiseView();
 
-    dataView.showStartScreen(&dev); //to initialise start screen
+    dataView.showStartScreen(); //to initialise start screen
 
     for(int i = 0; i < 6; i++){
         srand(i);
@@ -41,7 +40,7 @@ void loop() {
         if(input != 10){
             Serial.print("char is: " );
             Serial.println(input);
-            dataController.handleUserInput(input, &dev);
+            dataController.handleUserInput(input);
         }
    }
 }

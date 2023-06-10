@@ -36,10 +36,10 @@ char DataModel::getCurrentMemberIndex(){ //maybe this shouldn't be here
     return (char) (tableIndex / 2);
 }
 
-void DataModel::changeTableIndex(char userInput, SSD1306_t *dev) {
+void DataModel::changeTableIndex(char userInput) {
     if(groupMembers.size() == 0) return;
     char * currentText = (tableIndex % 2 == 0) ? groupMembers[getCurrentMemberIndex()].getID() : groupMembers[getCurrentMemberIndex()].getNav().getTimestamp();
-    view->highlightTableCell(getCurrentMemberIndex()-topTableIndex, tableIndex % 2, currentText, 0, dev);
+    view->highlightTableCell(getCurrentMemberIndex()-topTableIndex, tableIndex % 2, currentText, 0);
     if(userInput == UP_KEY){
         getCurrentMemberIndex() == 0 ? /*tableIndex = (groupMembers.size()*2-2 + tableIndex % 2)*/ : tableIndex-= 2;
     }
@@ -57,16 +57,16 @@ void DataModel::changeTableIndex(char userInput, SSD1306_t *dev) {
         topTableIndex++;
         char * newName = groupMembers[getCurrentMemberIndex()].getID();
         char * newTimestamp = groupMembers[getCurrentMemberIndex()].getNav().getTimestamp();
-        view->scrollTableUp(dev, newName, newTimestamp);
+        view->scrollTableUp(newName, newTimestamp);
     }
     else if (getCurrentMemberIndex() < topTableIndex){
         topTableIndex--;
         char * newName = groupMembers[getCurrentMemberIndex()].getID();
         char * newTimestamp = groupMembers[getCurrentMemberIndex()].getNav().getTimestamp();
-        view->scrollTableDown(dev, newName, newTimestamp);
+        view->scrollTableDown(newName, newTimestamp);
     }
     char * newHighlightedText =(tableIndex % 2 == 0) ? groupMembers[getCurrentMemberIndex()].getID() : groupMembers[getCurrentMemberIndex()].getNav().getTimestamp();
-    view->highlightTableCell(getCurrentMemberIndex()-topTableIndex, tableIndex % 2, newHighlightedText, 1, dev);
+    view->highlightTableCell(getCurrentMemberIndex()-topTableIndex, tableIndex % 2, newHighlightedText, 1);
 }
 
 char DataModel::getState(){
@@ -89,13 +89,13 @@ char * DataModel::getMemberTimestamp(char index){
     return groupMembers[index].getNav().getTimestamp();
 }
 
-void DataModel::initializeTable(SSD1306_t * dev){
+void DataModel::initializeTable(){
     Serial.print("Drawing table with topTableIndex =");
     Serial.println(topTableIndex,DEC);
-    view->drawIDTable(topTableIndex, groupMembers, dev);
+    view->drawIDTable(topTableIndex, groupMembers);
     if(groupMembers.size() > 0){
         char * text = tableIndex % 2 ? groupMembers[getCurrentMemberIndex()].getNav().getTimestamp() : groupMembers[getCurrentMemberIndex()].getID();
-        view->highlightTableCell(tableIndex/2-topTableIndex, tableIndex % 2, text, 1, dev);
+        view->highlightTableCell(tableIndex/2-topTableIndex, tableIndex % 2, text, 1);
     }
 }
 
@@ -118,18 +118,18 @@ void DataModel::removeGroupMember(Member groupMember) {
     }
 }
 
-void DataModel::giveOverview(SSD1306_t *dev) {
+void DataModel::giveOverview() {
     Member currentMem = groupMembers[getCurrentMemberIndex()];
-    view->displayNavOverview(currentMem.getXLocation(), currentMem.getYLocation(), currentMem.getHighlight(),dev);
+    view->displayNavOverview(currentMem.getXLocation(), currentMem.getYLocation(), currentMem.getHighlight());
 }
 
-void DataModel::updateOverview(SSD1306_t *dev) {
+void DataModel::updateOverview() {
     groupMembers[getCurrentMemberIndex()].changeHighlight();
-    view->updateNavOverview(groupMembers[getCurrentMemberIndex()].getHighlight(),dev);
+    view->updateNavOverview(groupMembers[getCurrentMemberIndex()].getHighlight());
 }
 
-void DataModel::drawMembersOnCompass(SSD1306_t *dev) {
-    view->drawMembersOnCompass(groupMembers, dev);
+void DataModel::drawMembersOnCompass() {
+    view->drawMembersOnCompass(groupMembers);
 }
 
 void DataModel::resetTableIndexes(){

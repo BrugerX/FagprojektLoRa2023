@@ -7,7 +7,6 @@
 
 DataView dataViewNS = DataView();
 DataController dataControllerNS = DataController(&dataViewNS);
-SSD1306_t devNS;
 char namesNS[5][8] = {"Bjarke", "Benny", "Birger", "Bjarne", "Bent"};
 
 void test_pressing_other_keys_nav_state(void) {
@@ -18,13 +17,13 @@ void test_pressing_other_keys_nav_state(void) {
     }
     //start of test
     TEST_ASSERT_EQUAL(NAV_OVERVIEW_STATE,dataControllerNS.getModelState());
-    dataControllerTS.handleUserInput(UP_KEY,&devNS);
+    dataControllerTS.handleUserInput(UP_KEY);
     TEST_ASSERT_EQUAL(NAV_OVERVIEW_STATE,dataControllerNS.getModelState());
-    dataControllerTS.handleUserInput(DOWN_KEY,&devNS);
+    dataControllerTS.handleUserInput(DOWN_KEY);
     TEST_ASSERT_EQUAL(NAV_OVERVIEW_STATE,dataControllerNS.getModelState());
-    dataControllerTS.handleUserInput(LEFT_KEY,&devNS);
+    dataControllerTS.handleUserInput(LEFT_KEY);
     TEST_ASSERT_EQUAL(NAV_OVERVIEW_STATE,dataControllerNS.getModelState());
-    dataControllerTS.handleUserInput(RIGHT_KEY,&devNS);
+    dataControllerTS.handleUserInput(RIGHT_KEY);
 }
 
 void test_pressing_back_key_with_changed_index_nav_state(void){
@@ -37,7 +36,7 @@ void test_pressing_back_key_with_changed_index_nav_state(void){
     TEST_ASSERT_EQUAL(NAV_OVERVIEW_STATE,dataControllerNS.getModelState());
     TEST_ASSERT_EQUAL(ti,dataControllerNS.getTableIndex());
     TEST_ASSERT_EQUAL(tti,dataControllerNS.getModel().getTopTableIndex());
-    dataControllerNS.handleUserInput(BACK_KEY,&devNS);
+    dataControllerNS.handleUserInput(BACK_KEY);
     TEST_ASSERT_EQUAL(TABLE_STATE,dataControllerNS.getModelState());
     TEST_ASSERT_EQUAL(ti,dataControllerNS.getTableIndex());
     TEST_ASSERT_EQUAL(tti,dataControllerNS.getModel().getTopTableIndex());
@@ -47,7 +46,7 @@ void test_pressing_back_key_with_same_index_nav_state(void){
     TEST_ASSERT_EQUAL(NAV_OVERVIEW_STATE,dataControllerNS.getModelState());
     TEST_ASSERT_EQUAL(0,dataControllerNS.getTableIndex());
     TEST_ASSERT_EQUAL(0,dataControllerNS.getModel().getTopTableIndex());
-    dataControllerNS.handleUserInput(BACK_KEY,&devNS);
+    dataControllerNS.handleUserInput(BACK_KEY);
     TEST_ASSERT_EQUAL(TABLE_STATE,dataControllerNS.getModelState());
     TEST_ASSERT_EQUAL(0,dataControllerNS.getModel().getTopTableIndex());
     TEST_ASSERT_EQUAL(0,dataControllerNS.getTableIndex());
@@ -56,10 +55,10 @@ void test_pressing_back_key_with_same_index_nav_state(void){
 void test_pressing_enter_key_nav_state(void){
     TEST_ASSERT_EQUAL(NAV_OVERVIEW_STATE,dataControllerNS.getModelState());
     TEST_ASSERT(!dataControllerNS.getModel().getMemberHighlight()); //it should be false
-    dataControllerNS.handleUserInput(ENTER_KEY, &devNS);
+    dataControllerNS.handleUserInput(ENTER_KEY);
     TEST_ASSERT_EQUAL(NAV_OVERVIEW_STATE,dataControllerNS.getModelState());
     TEST_ASSERT(dataControllerNS.getModel().getMemberHighlight());
-    dataControllerNS.handleUserInput(ENTER_KEY, &devNS); //pressing again makes it false again
+    dataControllerNS.handleUserInput(ENTER_KEY); //pressing again makes it false again
     TEST_ASSERT_EQUAL(NAV_OVERVIEW_STATE,dataControllerNS.getModelState());
     TEST_ASSERT(!dataControllerNS.getModel().getMemberHighlight()); //it should be false
 }

@@ -4,7 +4,6 @@
 
 DataView dataViewTS = DataView();
 DataController dataControllerTS = DataController(&dataViewTS);
-SSD1306_t devTS;
 char names[5][8] = {"Bjarke", "Benny", "Birger", "Bjarne", "Bent"};
 
 
@@ -15,7 +14,7 @@ void test_pressing_up_key_empty_table(void) {
     TEST_ASSERT_EQUAL(TABLE_STATE,dataControllerTS.getModelState());
     TEST_ASSERT_EQUAL(0,dataControllerTS.getModel().getTableIndex());
     TEST_ASSERT_EQUAL(0,dataControllerTS.getModel().getTopTableIndex());
-    dataControllerTS.handleUserInput(UP_KEY,&devTS);
+    dataControllerTS.handleUserInput(UP_KEY);
     TEST_ASSERT_EQUAL(TABLE_STATE,dataControllerTS.getModelState());
     TEST_ASSERT_EQUAL(0,dataControllerTS.getModel().getTableIndex());
     TEST_ASSERT_EQUAL(0,dataControllerTS.getModel().getTopTableIndex());
@@ -26,7 +25,7 @@ void test_pressing_down_key_empty_table(void) {
     TEST_ASSERT_EQUAL(TABLE_STATE,dataControllerTS.getModelState());
     TEST_ASSERT_EQUAL(0,dataControllerTS.getModel().getTableIndex());
     TEST_ASSERT_EQUAL(0,dataControllerTS.getModel().getTopTableIndex());
-    dataControllerTS.handleUserInput(DOWN_KEY,&devTS);
+    dataControllerTS.handleUserInput(DOWN_KEY);
     TEST_ASSERT_EQUAL(TABLE_STATE,dataControllerTS.getModelState());
     TEST_ASSERT_EQUAL(0,dataControllerTS.getModel().getTableIndex());
     TEST_ASSERT_EQUAL(0,dataControllerTS.getModel().getTopTableIndex());
@@ -38,7 +37,7 @@ void test_pressing_left_key_empty_table(void) {
     TEST_ASSERT_EQUAL(TABLE_STATE,dataControllerTS.getModelState());
     TEST_ASSERT_EQUAL(0,dataControllerTS.getModel().getTableIndex());
     TEST_ASSERT_EQUAL(0,dataControllerTS.getModel().getTopTableIndex());
-    dataControllerTS.handleUserInput(LEFT_KEY,&devTS);
+    dataControllerTS.handleUserInput(LEFT_KEY);
     TEST_ASSERT_EQUAL(TABLE_STATE,dataControllerTS.getModelState());
     TEST_ASSERT_EQUAL(0,dataControllerTS.getModel().getTableIndex());
     TEST_ASSERT_EQUAL(0,dataControllerTS.getModel().getTopTableIndex());
@@ -49,7 +48,7 @@ void test_pressing_right_key_empty_table(void) {
     TEST_ASSERT_EQUAL(TABLE_STATE,dataControllerTS.getModelState());
     TEST_ASSERT_EQUAL(0,dataControllerTS.getModel().getTableIndex());
     TEST_ASSERT_EQUAL(0,dataControllerTS.getModel().getTopTableIndex());
-    dataControllerTS.handleUserInput(RIGHT_KEY,&devTS);
+    dataControllerTS.handleUserInput(RIGHT_KEY);
     TEST_ASSERT_EQUAL(TABLE_STATE,dataControllerTS.getModelState());
     TEST_ASSERT_EQUAL(0,dataControllerTS.getModel().getTableIndex());
     TEST_ASSERT_EQUAL(0,dataControllerTS.getModel().getTopTableIndex());
@@ -66,7 +65,7 @@ void test_pressing_up_key_non_full_table(void) {
     TEST_ASSERT_EQUAL(TABLE_STATE,dataControllerTS.getModelState());
     TEST_ASSERT_EQUAL(0,dataControllerTS.getModel().getTableIndex());
     TEST_ASSERT_EQUAL(0,dataControllerTS.getModel().getTopTableIndex());
-    dataControllerTS.handleUserInput(UP_KEY,&devTS);
+    dataControllerTS.handleUserInput(UP_KEY);
     TEST_ASSERT_EQUAL(TABLE_STATE,dataControllerTS.getModelState());
     TEST_ASSERT_EQUAL(0,dataControllerTS.getModel().getTableIndex());
     TEST_ASSERT_EQUAL(0,dataControllerTS.getModel().getTopTableIndex());
@@ -75,7 +74,7 @@ void test_pressing_up_key_non_full_table(void) {
     TEST_ASSERT_EQUAL(TABLE_STATE,dataControllerTS.getModelState());
     TEST_ASSERT_EQUAL(2,dataControllerTS.getModel().getTableIndex());
     TEST_ASSERT_EQUAL(0,dataControllerTS.getModel().getTopTableIndex());
-    dataControllerTS.handleUserInput(UP_KEY,&devTS);
+    dataControllerTS.handleUserInput(UP_KEY);
     TEST_ASSERT_EQUAL(TABLE_STATE,dataControllerTS.getModelState());
     TEST_ASSERT_EQUAL(0,dataControllerTS.getModel().getTableIndex());
     TEST_ASSERT_EQUAL(0,dataControllerTS.getModel().getTopTableIndex());
@@ -86,12 +85,12 @@ void test_pressing_down_key_non_full_table(void) {
     TEST_ASSERT_EQUAL(TABLE_STATE,dataControllerTS.getModelState());
     TEST_ASSERT_EQUAL(0,dataControllerTS.getModel().getTableIndex());
     TEST_ASSERT_EQUAL(0,dataControllerTS.getModel().getTopTableIndex());
-    dataControllerTS.handleUserInput(DOWN_KEY,&devTS);
+    dataControllerTS.handleUserInput(DOWN_KEY);
     TEST_ASSERT_EQUAL(TABLE_STATE,dataControllerTS.getModelState());
     TEST_ASSERT_EQUAL(2,dataControllerTS.getModel().getTableIndex());
     TEST_ASSERT_EQUAL(0,dataControllerTS.getModel().getTopTableIndex());
     //test if at the bottom
-    dataControllerTS.handleUserInput(DOWN_KEY,&devTS);
+    dataControllerTS.handleUserInput(DOWN_KEY);
     TEST_ASSERT_EQUAL(TABLE_STATE,dataControllerTS.getModelState());
     TEST_ASSERT_EQUAL(2,dataControllerTS.getModel().getTableIndex());
     TEST_ASSERT_EQUAL(0,dataControllerTS.getModel().getTopTableIndex());
@@ -103,11 +102,11 @@ void test_pressing_left_key_non_full_table(void) {
     TEST_ASSERT_EQUAL(TABLE_STATE,dataControllerTS.getModelState());
     TEST_ASSERT_EQUAL(0,dataControllerTS.getModel().getTableIndex());
     TEST_ASSERT_EQUAL(0,dataControllerTS.getModel().getTopTableIndex());
-    dataControllerTS.handleUserInput(LEFT_KEY,&devTS);
+    dataControllerTS.handleUserInput(LEFT_KEY);
     TEST_ASSERT_EQUAL(TABLE_STATE,dataControllerTS.getModelState());
     TEST_ASSERT_EQUAL(1,dataControllerTS.getModel().getTableIndex());
     TEST_ASSERT_EQUAL(0,dataControllerTS.getModel().getTopTableIndex());
-    dataControllerTS.handleUserInput(LEFT_KEY,&devTS);
+    dataControllerTS.handleUserInput(LEFT_KEY);
     TEST_ASSERT_EQUAL(TABLE_STATE,dataControllerTS.getModelState());
     TEST_ASSERT_EQUAL(0,dataControllerTS.getModel().getTableIndex());
     TEST_ASSERT_EQUAL(0,dataControllerTS.getModel().getTopTableIndex());
@@ -118,11 +117,11 @@ void test_pressing_right_key_non_full_table(void) {
     TEST_ASSERT_EQUAL(TABLE_STATE,dataControllerTS.getModelState());
     TEST_ASSERT_EQUAL(0,dataControllerTS.getModel().getTableIndex());
     TEST_ASSERT_EQUAL(0,dataControllerTS.getModel().getTopTableIndex());
-    dataControllerTS.handleUserInput(RIGHT_KEY,&devTS);
+    dataControllerTS.handleUserInput(RIGHT_KEY);
     TEST_ASSERT_EQUAL(TABLE_STATE,dataControllerTS.getModelState());
     TEST_ASSERT_EQUAL(1,dataControllerTS.getModel().getTableIndex());
     TEST_ASSERT_EQUAL(0,dataControllerTS.getModel().getTopTableIndex());
-    dataControllerTS.handleUserInput(RIGHT_KEY,&devTS);
+    dataControllerTS.handleUserInput(RIGHT_KEY);
     TEST_ASSERT_EQUAL(TABLE_STATE,dataControllerTS.getModelState());
     TEST_ASSERT_EQUAL(0,dataControllerTS.getModel().getTableIndex());
     TEST_ASSERT_EQUAL(0,dataControllerTS.getModel().getTopTableIndex());
@@ -139,7 +138,7 @@ void test_pressing_up_key_full_table(void) {
     TEST_ASSERT_EQUAL(TABLE_STATE,dataControllerTS.getModelState());
     TEST_ASSERT_EQUAL(0,dataControllerTS.getModel().getTableIndex());
     TEST_ASSERT_EQUAL(0,dataControllerTS.getModel().getTopTableIndex());
-    dataControllerTS.handleUserInput(UP_KEY,&devTS);
+    dataControllerTS.handleUserInput(UP_KEY);
     TEST_ASSERT_EQUAL(TABLE_STATE,dataControllerTS.getModelState());
     TEST_ASSERT_EQUAL(0,dataControllerTS.getModel().getTableIndex());
     TEST_ASSERT_EQUAL(0,dataControllerTS.getModel().getTopTableIndex());
@@ -149,7 +148,7 @@ void test_pressing_up_key_full_table(void) {
     TEST_ASSERT_EQUAL(TABLE_STATE,dataControllerTS.getModelState());
     TEST_ASSERT_EQUAL(0,dataControllerTS.getModel().getTableIndex());
     TEST_ASSERT_EQUAL(1,dataControllerTS.getModel().getTopTableIndex());
-    dataControllerTS.handleUserInput(UP_KEY,&devTS);
+    dataControllerTS.handleUserInput(UP_KEY);
     TEST_ASSERT_EQUAL(TABLE_STATE,dataControllerTS.getModelState());
     TEST_ASSERT_EQUAL(0,dataControllerTS.getModel().getTableIndex());
     TEST_ASSERT_EQUAL(0,dataControllerTS.getModel().getTopTableIndex());
@@ -161,12 +160,12 @@ void test_pressing_down_key_full_table(void) {
     TEST_ASSERT_EQUAL(TABLE_STATE,dataControllerTS.getModelState());
     TEST_ASSERT_EQUAL(6,dataControllerTS.getModel().getTableIndex());
     TEST_ASSERT_EQUAL(0,dataControllerTS.getModel().getTopTableIndex());
-    dataControllerTS.handleUserInput(DOWN_KEY,&devTS);
+    dataControllerTS.handleUserInput(DOWN_KEY);
     TEST_ASSERT_EQUAL(TABLE_STATE,dataControllerTS.getModelState());
     TEST_ASSERT_EQUAL(8,dataControllerTS.getModel().getTableIndex());
     TEST_ASSERT_EQUAL(1,dataControllerTS.getModel().getTopTableIndex());
     //test if at bottom so the table can not scroll down
-    dataControllerTS.handleUserInput(DOWN_KEY,&devTS);
+    dataControllerTS.handleUserInput(DOWN_KEY);
     TEST_ASSERT_EQUAL(TABLE_STATE,dataControllerTS.getModelState());
     TEST_ASSERT_EQUAL(8,dataControllerTS.getModel().getTableIndex());
     TEST_ASSERT_EQUAL(1,dataControllerTS.getModel().getTopTableIndex());
@@ -177,7 +176,7 @@ void test_pressing_back_key_no_change_of_index_table_state(void) {
     TEST_ASSERT_EQUAL(TABLE_STATE,dataControllerTS.getModelState());
     TEST_ASSERT_EQUAL(0,dataControllerTS.getModel().getTableIndex());
     TEST_ASSERT_EQUAL(0,dataControllerTS.getModel().getTopTableIndex());
-    dataControllerTS.handleUserInput(BACK_KEY,&devTS);
+    dataControllerTS.handleUserInput(BACK_KEY);
     TEST_ASSERT_EQUAL(START_STATE,dataControllerTS.getModelState());
     TEST_ASSERT_EQUAL(0,dataControllerTS.getModel().getTableIndex());
     TEST_ASSERT_EQUAL(0,dataControllerTS.getModel().getTopTableIndex());
@@ -191,7 +190,7 @@ void test_pressing_back_key_change_of_index_table_state(void) {//testing if inde
     TEST_ASSERT_EQUAL(0,dataControllerTS.getModel().getTopTableIndex());
     dataControllerTS.setTableIndex(3); //changing to non-zero number
     dataControllerTS.setTopTableIndex(1); // changing to non-zero number
-    dataControllerTS.handleUserInput(BACK_KEY,&devTS);
+    dataControllerTS.handleUserInput(BACK_KEY);
     TEST_ASSERT_EQUAL(START_STATE,dataControllerTS.getModelState());
     TEST_ASSERT_EQUAL(0,dataControllerTS.getModel().getTableIndex());
     TEST_ASSERT_EQUAL(0,dataControllerTS.getModel().getTopTableIndex());
@@ -201,7 +200,7 @@ void test_pressing_enter_key_table_state(void) {
     dataControllerTS.setState(TABLE_STATE);
     //start of test
     TEST_ASSERT_EQUAL(TABLE_STATE,dataControllerTS.getModelState());
-    dataControllerTS.handleUserInput(ENTER_KEY,&devTS);
+    dataControllerTS.handleUserInput(ENTER_KEY);
     TEST_ASSERT_EQUAL(NAV_OVERVIEW_STATE,dataControllerTS.getModelState());
 }
 //maybe test that indexes are kept when pressing enter.

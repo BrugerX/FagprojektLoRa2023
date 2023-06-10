@@ -29,20 +29,20 @@ public:
     void changeMemberLocation(char x, char y, char memberIndex);
     char getTableIndex();
     char getCurrentMemberIndex();
-    void changeTableIndex(char userInput, SSD1306_t *dev);
+    void changeTableIndex(char userInput);
     char getState();
     void setState(char newState);
     char getNumberOfMembers();
     char * getMemberID(char index);
     char * getMemberTimestamp(char index);
-    void initializeTable(SSD1306_t * dev);
+    void initializeTable();
     void addGroupMember(Member groupMember);
     void removeGroupMember(char index);
     void removeGroupMember(Member groupMember);
     void resetTableIndexes();
-    void giveOverview(SSD1306_t *dev);
-    void updateOverview(SSD1306_t *dev);
-    void drawMembersOnCompass(SSD1306_t * dev);
+    void giveOverview();
+    void updateOverview();
+    void drawMembersOnCompass();
     //for testing
     char getTopTableIndex();
     void setTopTableIndex(char newIndex);

@@ -18,28 +18,29 @@ class DataView {
 private:
     NavigationViewer compassViewer;
     TableViewer tableViewer;
-    void scrollTextUp(SSD1306_t * dev, char * text, char length);
-    void scrollTextDown(SSD1306_t * dev, char * text, char length);
+    SSD1306_t dev;
+    void scrollTextUp(char * text, char length);
+    void scrollTextDown(char * text, char length);
 
 public:
     DataView();
-    void initialiseView(SSD1306_t * dev);
-    void clearScreen(SSD1306_t * dev);
-    void drawCircle(int xCenter, int yCenter, int r, SSD1306_t * dev);
-    void highlightCircle(int xCenter, int yCenter, int r, SSD1306_t * dev);
-    void drawCompass(SSD1306_t * dev);
-    void displayText(char *text, SSD1306_t * dev);
-    void drawTextAt(char x, char y, char *text, char length, bool invert, SSD1306_t *dev);
-    void highlightRectangle(char x, char y, char length, char height, SSD1306_t * dev);
-    void drawRectangle(char x, char y, char length, char height, SSD1306_t * dev);
-    void drawIDTable(char startIndex, vector<Member> & members, SSD1306_t * dev);
-    void highlightTableCell(char row, char column, char * text, char highlight, SSD1306_t * dev);
-    void drawTable(char columns, char rows, SSD1306_t * dev);
-    void scrollTableUp(SSD1306_t * dev, char * ID, char * timestamp);
-    void scrollTableDown(SSD1306_t * dev, char * ID, char * timestamp);
-    void showStartScreen(SSD1306_t * dev);
-    void displayNavOverview(char x, char y, bool highlighted, SSD1306_t * dev);
-    void updateNavOverview(bool highlighted, SSD1306_t * dev);
-    void drawMembersOnCompass(vector<Member> & members, SSD1306_t * dev);
+    void initialiseView();
+    void clearScreen();
+    void drawCircle(int xCenter, int yCenter, int r);
+    void highlightCircle(int xCenter, int yCenter, int r);
+    void drawCompass();
+    void displayText(char *text);
+    void drawTextAt(char x, char y, char *text, char length, bool invert);
+    void highlightRectangle(char x, char y, char length, char height);
+    void drawRectangle(char x, char y, char length, char height);
+    void drawIDTable(char startIndex, vector<Member> & members);
+    void highlightTableCell(char row, char column, char * text, char highlight);
+    void drawTable(char columns, char rows);
+    void scrollTableUp(char * ID, char * timestamp);
+    void scrollTableDown(char * ID, char * timestamp);
+    void showStartScreen();
+    void displayNavOverview(char x, char y, bool highlighted);
+    void updateNavOverview(bool highlighted);
+    void drawMembersOnCompass(vector<Member> & members);
 };
 #endif //DATAVIEW_H

@@ -17,7 +17,7 @@ private:
 
 public:
     explicit DataController(DataView * dataView); //DataModel datamodel, DataView dataViewet
-    void handleUserInput(char userInput, SSD1306_t * dev);
+    void handleUserInput(char userInput);
     char getModelState();
     void addGroupMember(Member groupMember);
     void removeGroupMember(char index);

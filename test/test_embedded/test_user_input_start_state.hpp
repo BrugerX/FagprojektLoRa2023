@@ -6,13 +6,12 @@
 
 DataView dataViewSS = DataView();
 DataController dataControllerSS = DataController(&dataViewSS);
-SSD1306_t devSS;
 
 void test_pressing_up_key_start_state(void) {
     dataControllerSS.setState(START_STATE);
     //start of test
     TEST_ASSERT_EQUAL(START_STATE,dataControllerSS.getModelState());
-    dataControllerSS.handleUserInput(UP_KEY,&devSS);
+    dataControllerSS.handleUserInput(UP_KEY);
     TEST_ASSERT_EQUAL(COMPASS_STATE,dataControllerSS.getModelState());
 }
 
@@ -20,20 +19,20 @@ void test_pressing_down_key_start_state(void) {
     dataControllerSS.setState(START_STATE);
     //start of test
     TEST_ASSERT_EQUAL(START_STATE,dataControllerSS.getModelState());
-    dataControllerSS.handleUserInput(DOWN_KEY,&devSS);
+    dataControllerSS.handleUserInput(DOWN_KEY);
     TEST_ASSERT_EQUAL(TABLE_STATE,dataControllerSS.getModelState());
 }
 
 void test_pressing_other_keys_start_state(void) {
     //start of test
     TEST_ASSERT_EQUAL(START_STATE,dataControllerSS.getModelState());
-    dataControllerSS.handleUserInput(LEFT_KEY,&devSS);
+    dataControllerSS.handleUserInput(LEFT_KEY);
     TEST_ASSERT_EQUAL(START_STATE,dataControllerSS.getModelState());
-    dataControllerSS.handleUserInput(RIGHT_KEY,&devSS);
+    dataControllerSS.handleUserInput(RIGHT_KEY);
     TEST_ASSERT_EQUAL(START_STATE,dataControllerSS.getModelState());
-    dataControllerSS.handleUserInput(BACK_KEY,&devSS);
+    dataControllerSS.handleUserInput(BACK_KEY);
     TEST_ASSERT_EQUAL(START_STATE,dataControllerSS.getModelState());
-    dataControllerSS.handleUserInput(ENTER_KEY,&devSS);
+    dataControllerSS.handleUserInput(ENTER_KEY);
     TEST_ASSERT_EQUAL(START_STATE,dataControllerSS.getModelState());
 }
 

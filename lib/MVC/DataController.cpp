@@ -12,18 +12,18 @@ DataController::DataController(DataView * dataView) : model(0, dataView) {
     this->view = dataView;
 }
 
-void DataController::handleUserInput(char userInput, SSD1306_t * dev){
+void DataController::handleUserInput(char userInput){
 switch(this->model.getState()){
     case START_STATE: {
         if (userInput == UP_KEY) {
-            view->clearScreen(dev);
-            this->view->drawCompass(dev);
-            model.drawMembersOnCompass(dev);
+            view->clearScreen();
+            this->view->drawCompass();
+            model.drawMembersOnCompass();
             this->model.setState(COMPASS_STATE);
         }
         else if (userInput == DOWN_KEY){
-            view->clearScreen(dev);
-            model.initializeTable(dev);
+            view->clearScreen();
+            model.initializeTable();
             this->model.setState(TABLE_STATE);
         }
         break;
@@ -31,36 +31,36 @@ switch(this->model.getState()){
     case COMPASS_STATE:
         if(userInput == BACK_KEY) {
             //go back in state
-            view->clearScreen(dev);
-            view->showStartScreen(dev);
+            view->clearScreen();
+            view->showStartScreen();
             this->model.setState(START_STATE);
         }
         break;
     case TABLE_STATE:
         if(userInput == ENTER_KEY) {
-            view->clearScreen(dev);
-            model.giveOverview(dev);
+            view->clearScreen();
+            model.giveOverview();
             model.setState(NAV_OVERVIEW_STATE);
         }
         else if (userInput == BACK_KEY){
             model.resetTableIndexes();
-            view->clearScreen(dev);
-            view->showStartScreen(dev);
+            view->clearScreen();
+            view->showStartScreen();
             this->model.setState(START_STATE);
         }
         else {
-            this->model.changeTableIndex(userInput, dev);
+            this->model.changeTableIndex(userInput);
             //go where to where the input decides in the table
         }
         break;
     case NAV_OVERVIEW_STATE:
         if(userInput == ENTER_KEY){
-            model.updateOverview(dev);
+            model.updateOverview();
         }
         else if(userInput == BACK_KEY){
-            view->clearScreen(dev);
+            view->clearScreen();
             //model.resetTableIndexes();
-            model.initializeTable(dev);
+            model.initializeTable();
             model.setState(TABLE_STATE);
         }
     default:
