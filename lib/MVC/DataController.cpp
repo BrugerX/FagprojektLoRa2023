@@ -16,13 +16,13 @@ void DataController::handleUserInput(char userInput, SSD1306_t * dev){
 switch(this->model.getState()){
     case START_STATE: {
         if (userInput == UP_KEY) {
-            ssd1306_clear_screen(dev, 0);
+            view->clearScreen(dev);
             this->view->drawCompass(dev);
             model.drawMembersOnCompass(dev);
             this->model.setState(COMPASS_STATE);
         }
         else if (userInput == DOWN_KEY){
-            ssd1306_clear_screen(dev, 0);
+            view->clearScreen(dev);
             model.initializeTable(dev);
             this->model.setState(TABLE_STATE);
         }
@@ -31,20 +31,20 @@ switch(this->model.getState()){
     case COMPASS_STATE:
         if(userInput == BACK_KEY) {
             //go back in state
-            ssd1306_clear_screen(dev, 0);
+            view->clearScreen(dev);
             view->showStartScreen(dev);
             this->model.setState(START_STATE);
         }
         break;
     case TABLE_STATE:
         if(userInput == ENTER_KEY) {
-            ssd1306_clear_screen(dev, 0);
+            view->clearScreen(dev);
             model.giveOverview(dev);
             model.setState(NAV_OVERVIEW_STATE);
         }
         else if (userInput == BACK_KEY){
             model.resetTableIndexes();
-            ssd1306_clear_screen(dev, 0);
+            view->clearScreen(dev);
             view->showStartScreen(dev);
             this->model.setState(START_STATE);
         }
@@ -58,7 +58,7 @@ switch(this->model.getState()){
             model.updateOverview(dev);
         }
         else if(userInput == BACK_KEY){
-            ssd1306_clear_screen(dev, 0);
+            view->clearScreen(dev);
             //model.resetTableIndexes();
             model.initializeTable(dev);
             model.setState(TABLE_STATE);

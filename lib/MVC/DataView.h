@@ -24,6 +24,7 @@ private:
 public:
     DataView();
     void initialiseView(SSD1306_t * dev);
+    void clearScreen(SSD1306_t * dev);
     void drawCircle(int xCenter, int yCenter, int r, SSD1306_t * dev);
     void highlightCircle(int xCenter, int yCenter, int r, SSD1306_t * dev);
     void drawCompass(SSD1306_t * dev);

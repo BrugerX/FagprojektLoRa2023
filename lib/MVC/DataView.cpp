@@ -351,3 +351,7 @@ void DataView::initialiseView(SSD1306_t *dev) {
     ssd1306_contrast(dev, 0xc3);
     ssd1306_clear_screen(dev, false);
 }
+
+void DataView::clearScreen(SSD1306_t *dev) {
+    ssd1306_clear_screen(dev, 0);
+}
