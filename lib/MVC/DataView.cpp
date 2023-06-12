@@ -31,7 +31,7 @@ void DataView::drawCircle(int xCenter, int yCenter, int r) {
         double xCord = xCenter + r * cos(i * M_PI/180);
         double yCord = yCenter + r * sin(i * M_PI/180);
         _ssd1306_pixel(&dev, round(xCord),  round(yCord), 0);
-        vTaskDelay(1/1000);
+        vTaskDelay(1/1000); //delay is necessary for hardware to work
     }
     ESP_LOGD(TAG, "successfully added circle shape to buffer");
     ssd1306_show_buffer(&dev);
@@ -65,31 +65,16 @@ void DataView::drawTable(char columns, char rows) {
 }
 
 void DataView::drawCompass() {
-    /*uint8_t N[7] = {0xff,0x06,0x0c,0x18,0x30,0x60,0xff};
-    uint8_t S[7] = {0x42,0x85,0x8d,0x99,0xb1,0xa1,0x42};
-    uint8_t E_top[7] = {0xf0,0xf0,0xb0,0xb0,0xb0,0xb0,0x30};
-    uint8_t E_bottom[7] = {0x0f,0x0f,0x0d,0x0d,0x0d,0x0d,0x0c};
-    uint8_t W_top[7] = {0xf0,0xf0,0x00,0x00,0x00,0xf0,0xf0};
-    uint8_t W_bottom[7] = {0x0f,0x0f,0x06,0x03,0x06,0x0f,0x0f};*/
-    //char width = 7;
     drawTextAt(61, 0, (char *) "N", 1, 0);
     drawTextAt(61, 56, (char *) "S", 1, 0);
     drawTextAt(25, 28, (char *) "W", 1, 0);
     drawTextAt(97, 28, (char *) "E", 1, 0);
     drawCircle(64, 32, 31);
     drawCircle(64, 32, 15);
-    //ssd1306_show_buffer(dev);
-
-    /*ssd1306_display_image(dev, 0, (int) 64-width/2, N, width);
-    ssd1306_display_image(dev, 7, (int) 64-width/2, S, width);
-    ssd1306_display_image(dev, 3, 32-width, W_top, width);
-    ssd1306_display_image(dev, 4, 32-width, W_bottom, width);
-    ssd1306_display_image(dev, 3, 97, E_top, width);
-    ssd1306_display_image(dev, 4, 97, E_bottom, width);*/
     ESP_LOGD(TAG, "successfully drew compass on display");
 }
 
-//scrolls the current text up (what the user would call scroll down) and inserts new text below.
+//scrolls the current text up (what the user would call scroll down on screen) and inserts new text below.
 void DataView::scrollTextUp(char * text, char length) {
     for(char i = 0; i < 8; i++){
         ssd1306_wrap_arround(&dev, SCROLL_UP, 0, 127, 0); //scrolls once start at seg 0 and to seg 127 (the whole line)
@@ -159,7 +144,7 @@ void DataView::displayText(char *text) {
         ESP_LOGD(TAG, "successfully showing first part of long text, that fits on the display");
         vTaskDelay(1000);
         int subIndexStart = 128;
-        char neededPages = ceil((double) (length-subIndexStart)/ (double) 16); //division by 16 could be bitshifting?
+        char neededPages = ceil((double) (length-subIndexStart)/ (double) 16);
         for(char i = 0; i < neededPages-1; i++) {
             char newBottomString[16];
             for (signed char j = 0; j < 16; j++) {
@@ -180,19 +165,10 @@ void DataView::displayText(char *text) {
     }
 }
 
-//Draws text starting at the specified location, does not make you all text fits on screen.
+//Draws text starting at the specified location, does not make sure all text fits on screen.
 //this method expects 0 <= x <= 127 and 0 <= y <= 63 but will not fail it not satisfied.
 //If text is too long, then it overflows 1 pixel down, from the other side.
 void DataView::drawTextAt(char x, char y, char *text, char length, bool invert) {
-    /*char page = y >> 3; //integer division by 8
-    char yOffset = y - (page << 3);
-    ssd1306_display_text(dev, page, text, strlen(text), 0);
-    for(char i = 0; i < yOffset; i++){
-        ssd1306_wrap_arround(dev, SCROLL_DOWN, 0, 127, 0);
-    }
-    for(char i = 0; i < x; i++){
-        ssd1306_wrap_arround(dev, SCROLL_RIGHT, 0, 63, 0); //scrolls once start at seg 0 and to seg 127 (the whole line)
-    }*/
     int textLength = length;
     char offset = 0;
     for(int i = 0; i < textLength; i++){
@@ -204,7 +180,7 @@ void DataView::drawTextAt(char x, char y, char *text, char length, bool invert) 
                 if(invert) bit = !bit;
                 //if bit = 1, meaning it should be there (if no invert), then we add it.
                 _ssd1306_pixel(&dev, j+x+offset, k+y, !bit);
-                vTaskDelay(1/1000);
+                vTaskDelay(1/1000); //delay necessary for hardware to work
             }
         }
         offset += 8;
@@ -217,7 +193,7 @@ void DataView::highlightRectangle(char x, char y, char length, char height){
     for(char i = x; i <= length + x; i++){
         for(char j = y; j <= y + height; j++){
             _ssd1306_pixel(&dev, i, j, 0);
-            vTaskDelay(1/1000);
+            vTaskDelay(1/1000); //delay necessary for hardware to work
         }
     }
     ssd1306_show_buffer(&dev);
@@ -282,27 +258,8 @@ void DataView::drawIDTable(char startIndex, vector<Member> &members){ //only dis
         ssd1306_display_text(&dev, i*2, ID, IDLength, 0);
         drawTextAt(65, i * 16, timestamp, tsLength, 0);
     }
-    /*vTaskDelay(1000);
-    //if everything doesn't fit on the table
-    for(; i < 32; i ++) {
-        if(strlen(IDs[i]) > 0){
-            scrollTableUp(dev, IDs[i], timestamps[i]);
-            //vTaskDelay(1/1000);
-        }
-        else {
-            break;
-        }
-    }
+
     ESP_LOGD(TAG, "successfully drew data Table");
-}
-//works for ID table
-void DataView::highlightTableCell(char row, char column, char * text, SSD1306_t * dev){
-    if(column){
-        drawTextAt(65, row * 16, text, 8,1, dev);
-    }
-    else{
-        ssd1306_display_text(dev, row*2, text, strlen(text), 1);
-    }*/
 }
 
 void DataView::highlightTableCell(char row, char column, char *text, char highlight) {

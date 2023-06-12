@@ -8,16 +8,13 @@ using namespace std;
 #ifndef DATAMODEL_H
 #define DATAMODEL_H
 
-//maybe make a class for groupmembers containing ID, name, location and so on
-//then probably rename this to group
+//A model containing all members in the group, as well as information about states and position in the table
 class DataModel{
 private:
     DataView * view;
     char state;
-    //char numberOfGroupMembers;
     char tableIndex;
     char topTableIndex;
-    //char coordinates[32][2];
     vector<Member> groupMembers;
 
 

@@ -8,7 +8,6 @@
 using namespace std;
 
 DataController::DataController(DataView * dataView) : model(0, dataView) {
-    //this->model = model;
     this->view = dataView;
 }
 
@@ -59,7 +58,6 @@ switch(this->model.getState()){
         }
         else if(userInput == BACK_KEY){
             view->clearScreen();
-            //model.resetTableIndexes();
             model.initializeTable();
             model.setState(TABLE_STATE);
         }
@@ -89,7 +87,8 @@ void DataController::removeGroupMember(Member groupMember){
     model.removeGroupMember(groupMember);
 }
 
-DataModel DataController::getModel() { //method used for testing
+//methods used for testing
+DataModel DataController::getModel() {
     return model;
 }
 

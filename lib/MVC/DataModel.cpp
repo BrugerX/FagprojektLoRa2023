@@ -9,7 +9,6 @@ DataModel::DataModel(char state, DataView * dataView){
     this->view = dataView;
     tableIndex = 0;
     topTableIndex = 0;
-    //constructor
 }
 
 void DataModel::changeCurrentLocation(char x, char y){
@@ -24,7 +23,6 @@ char DataModel::findMemberIndex(char * ID){
 }
 
 void DataModel::changeMemberLocation(char x, char y, char memberIndex){
-    //potentially coordinates need to be changed
     groupMembers[memberIndex].ChangeLocation(x, y);
 }
 
@@ -32,7 +30,7 @@ char DataModel::getTableIndex(){
     return tableIndex;
 }
 
-char DataModel::getCurrentMemberIndex(){ //maybe this shouldn't be here
+char DataModel::getCurrentMemberIndex(){
     return (char) (tableIndex / 2);
 }
 
@@ -41,10 +39,10 @@ void DataModel::changeTableIndex(char userInput) {
     char * currentText = (tableIndex % 2 == 0) ? groupMembers[getCurrentMemberIndex()].getID() : groupMembers[getCurrentMemberIndex()].getNav().getTimestamp();
     view->highlightTableCell(getCurrentMemberIndex()-topTableIndex, tableIndex % 2, currentText, 0);
     if(userInput == UP_KEY){
-        getCurrentMemberIndex() == 0 ? /*tableIndex = (groupMembers.size()*2-2 + tableIndex % 2)*/ : tableIndex-= 2;
+        getCurrentMemberIndex() == 0 ? : tableIndex-= 2;
     }
     else if(userInput == DOWN_KEY){
-        getCurrentMemberIndex() == groupMembers.size()-1 ? /*tableIndex = (0 + tableIndex % 2)*/ : tableIndex+= 2;
+        getCurrentMemberIndex() == groupMembers.size()-1 ? : tableIndex+= 2;
     }
     else if(userInput == LEFT_KEY){
         (tableIndex % 2) == 0 ? tableIndex++ : tableIndex--;
@@ -100,7 +98,7 @@ void DataModel::initializeTable(){
 }
 
 void DataModel::addGroupMember(Member groupMember){
-    if(groupMembers.size() < MAX_NUMBER_OF_MEMBERS){ //we can have a max of 255 members because unsigned char max is 255
+    if(groupMembers.size() < MAX_NUMBER_OF_MEMBERS){ //we can have a max of 127 members because signed char max is 127
         groupMembers.insert(groupMembers.end(), groupMember);
     }
     else throw length_error("You have to many members, remove some first if you want to add more");
@@ -137,7 +135,8 @@ void DataModel::resetTableIndexes(){
     tableIndex = 0;
 }
 
-char DataModel::getTopTableIndex() { //for testing
+//for testing
+char DataModel::getTopTableIndex() {
     return topTableIndex;
 }
 
