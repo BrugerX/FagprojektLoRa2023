@@ -34,7 +34,7 @@ public:
     char * getMemberTimestamp(char index);
     void initializeTable();
     void addGroupMember(Member groupMember);
-    void removeGroupMember(char index);
+    void removeGroupMember(signed char index);
     void removeGroupMember(Member groupMember);
     void resetTableIndexes();
     void giveOverview();

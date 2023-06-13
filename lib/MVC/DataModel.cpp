@@ -104,8 +104,20 @@ void DataModel::addGroupMember(Member groupMember){
     else throw length_error("You have to many members, remove some first if you want to add more");
 }
 
-void DataModel::removeGroupMember(char index) {//expects a non-negative index, and a that the vector is non-empty
-    groupMembers.erase(groupMembers.begin() + index);
+//this method uses signed char because the test framework we use interpret the type "char" by default as unsigned char thus
+//making it impossible to test negative indexes, unless we specify it here as taking signed char
+//This  however makes no difference otherwise as the c++ compiler has char as signed char by default.
+void DataModel::removeGroupMember(signed char index) {
+    if(index < 0) {
+        throw out_of_range("The index has to be non-negative");
+    }
+    else if(groupMembers.empty()){
+        throw length_error("There are no members, you can not delete any");
+    }
+    else{
+        groupMembers.erase(groupMembers.begin() + index);
+    }
+
 }
 
 void DataModel::removeGroupMember(Member groupMember) {

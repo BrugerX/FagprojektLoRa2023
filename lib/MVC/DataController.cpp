@@ -3,6 +3,7 @@
 #include "DataController.h"
 #include <ssd1306.h>
 #include <string.h>
+#include <Arduino.h>
 
 
 using namespace std;
@@ -49,7 +50,7 @@ switch(this->model.getState()){
         }
         else {
             this->model.changeTableIndex(userInput);
-            //go where to where the input decides in the table
+            //go to where the input decides in the table
         }
         break;
     case NAV_OVERVIEW_STATE:
@@ -72,7 +73,12 @@ char DataController::getModelState(){
 }
 
 void DataController::addGroupMember(Member groupMember){
-    model.addGroupMember(groupMember);
+    try {
+        model.addGroupMember(groupMember);
+    }
+    catch (const exception& e){
+        Serial.println(e.what()); //for now just printing on serial monitor.
+    }
 }
 
 char DataController::getTableIndex(){
@@ -80,7 +86,12 @@ char DataController::getTableIndex(){
 }
 
 void DataController::removeGroupMember(char index){
-    model.removeGroupMember(index);
+    try{
+        model.removeGroupMember(index);
+    }
+    catch (const exception& e){
+        Serial.println(e.what()); //for now just printing on serial monitor.
+    }
 }
 
 void DataController::removeGroupMember(Member groupMember){
