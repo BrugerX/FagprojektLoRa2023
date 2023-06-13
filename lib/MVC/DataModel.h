@@ -46,4 +46,4 @@ public:
     void setTableIndex(char newIndex);
     bool getMemberHighlight();
 };
-#endif //DATAMODEL_H
+#endif // DATAMODEL_H

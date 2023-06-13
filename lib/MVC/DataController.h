@@ -29,4 +29,4 @@ public:
     void setTableIndex(char newIndex);
     void setState(char newState);
 };
-#endif //DATACONTROLLER_H
+#endif // DATACONTROLLER_H

@@ -47,4 +47,4 @@ public:
     void displayNavOverview(char x, char y, bool highlighted);
     void updateNavOverview(bool highlighted);
 };
-#endif //DATAVIEW_H
+#endif // DATAVIEW_H
