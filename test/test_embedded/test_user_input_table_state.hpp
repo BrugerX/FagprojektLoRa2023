@@ -2,6 +2,8 @@
 #include "../../lib/MVC/DataController.h"
 #include <Arduino.h>
 
+#ifndef TEST_USER_INPUT_TABLE_STATE_HPP
+#define TEST_USER_INPUT_TABLE_STATE_HPP
 DataView dataViewTS = DataView();
 DataController dataControllerTS = DataController(&dataViewTS);
 char names[5][8] = {"Bjarke", "Benny", "Birger", "Bjarne", "Bent"};
@@ -220,3 +222,5 @@ void runTableStateTests(void) {
     RUN_TEST(test_pressing_up_key_full_table);
     RUN_TEST(test_pressing_down_key_full_table);
 }
+
+#endif

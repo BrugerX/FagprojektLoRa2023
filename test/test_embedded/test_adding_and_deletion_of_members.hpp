@@ -7,7 +7,8 @@
 //    removeGroupMember(char index);
 //    removeGroupMember(Member groupMember);
 //    getNumberOfMembers();
-
+#ifndef TEST_ADDING_AND_DELETION_OF_MEMBERS_HPP
+#define TEST_ADDING_AND_DELETION_OF_MEMBERS_HPP
 DataView dataViewet = DataView();
 DataModel model = DataModel(0, &dataViewet);
 char ID2[] = "AddTwo";
@@ -59,3 +60,5 @@ void runTestsAddAndDelOfMembers(void) {
     RUN_TEST(test_deleting_members);
     RUN_TEST(test_adding_to_many_members);
 }
+
+#endif

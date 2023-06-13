@@ -2,6 +2,8 @@
 #include "../../lib/MVC/DataController.h"
 #include <Arduino.h>
 
+#ifndef TEST_USER_INPUT_COMPASS_STATE_HPP
+#define TEST_USER_INPUT_COMPASS_STATE_HPP
 DataView dataViewCS = DataView();
 DataController dataControllerCS = DataController(&dataViewCS);
 
@@ -31,3 +33,5 @@ void runCompassStateTests(void) {
     RUN_TEST(test_pressing_other_keys_compass_state);
     RUN_TEST(test_pressing_back_key_compass_state);
 }
+
+#endif
