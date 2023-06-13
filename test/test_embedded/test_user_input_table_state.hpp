@@ -56,7 +56,7 @@ void test_pressing_right_key_empty_table(void) {
     TEST_ASSERT_EQUAL(0,dataControllerTS.getModel().getTopTableIndex());
 }
 
-//testing with 1-4 members, that is without scrolling
+//testing for between 1-4 members (we use 2), that is without scrolling
 void test_pressing_up_key_non_full_table(void) {
     Member mem1 = Member(names[0],NavigationData());
     Member mem2 = Member(names[1],NavigationData());
