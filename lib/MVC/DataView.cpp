@@ -189,33 +189,6 @@ void DataView::drawTextAt(char x, char y, char *text, char length, bool invert) 
     ESP_LOGD(TAG, "successfully displayed text at %d, %d", x, y);
 }
 
-void DataView::highlightRectangle(char x, char y, char length, char height){
-    for(char i = x; i <= length + x; i++){
-        for(char j = y; j <= y + height; j++){
-            _ssd1306_pixel(&dev, i, j, 0);
-            vTaskDelay(1/1000); //delay necessary for hardware to work
-        }
-    }
-    ssd1306_show_buffer(&dev);
-    ESP_LOGD(TAG, "successfully displayed highlighted rectangle");
-}
-
-//is maybe not needed
-void DataView::drawRectangle(char x, char y, char length, char height){
-    for(char i = x; i <= length + x; i++){
-        _ssd1306_pixel(&dev, i, y, 0);
-        _ssd1306_pixel(&dev, i, y + height, 0);
-        vTaskDelay(1/1000);
-    }
-    for(char i = y + 1; i < y + height ; i++){
-        _ssd1306_pixel(&dev, x, i, 0);
-        _ssd1306_pixel(&dev, x+length, i, 0);
-        vTaskDelay(1/1000);
-    }
-    ssd1306_show_buffer(&dev);
-    ESP_LOGD(TAG, "successfully displayed rectangle");
-}
-
 void DataView::scrollTableUp(char * ID, char * timestamp){ //only display 8 first characters of string
     char clearingString[] = "        ";
     char IDLength = strlen(ID) > 8 ? 8 : strlen(ID);

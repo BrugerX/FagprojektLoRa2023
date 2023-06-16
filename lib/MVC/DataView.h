@@ -35,8 +35,6 @@ public:
     void drawMembersOnCompass(vector<Member> & members);
 
     void displayText(char *text);
-    void highlightRectangle(char x, char y, char length, char height);
-    void drawRectangle(char x, char y, char length, char height);
 
     void drawTable(char columns, char rows);
     void drawIDTable(char startIndex, vector<Member> & members);
