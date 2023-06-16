@@ -19,8 +19,6 @@ private:
     NavigationViewer compassViewer;
     TableViewer tableViewer;
     SSD1306_t dev;
-    void scrollTextUp(char * text, char length);
-    void scrollTextDown(char * text, char length);
 
 public:
     DataView();
@@ -34,6 +32,8 @@ public:
     void drawCompass();
     void drawMembersOnCompass(vector<Member> & members);
 
+    void scrollTextUp(char * text, char length);
+    void scrollTextDown(char * text, char length);
     void displayText(char *text);
 
     void drawTable(char columns, char rows);

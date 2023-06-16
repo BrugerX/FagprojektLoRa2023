@@ -13,7 +13,6 @@ class DataController{
 private:
     DataModel model;
     DataView * view;
-    void updateModel(char input); //many more methods
 
 public:
     explicit DataController(DataView * dataView); //DataModel datamodel, DataView dataViewet
