@@ -82,6 +82,7 @@ void dataIsSavedAfterReboot(){
     }
 }
 
+//TODO: TRANSLATE THIS TO ENGLISH
 /**
 * Scenarie: Vi har to SPIFFS objekter på samme tid, men kun det ene kan operere på SPIFFS
  * Spiffy gemmer et array og bekræfter, at det eksisterer samt loade det

@@ -25,7 +25,7 @@ int SHA256Hasher::init_ctx() {
     }
 
     mbedtls_sha256_init(&SHA_ctx);
-    is_initialized = 1;
+    is_initialized = 1; //Used to keep track of whether our context is initialized or not
     return 0;
 }
 
@@ -38,7 +38,6 @@ int SHA256Hasher::init_ctx() {
  * \param outputBuffer The buffer in which we put the hash. Must be at least 256 bits wide.
  *
  * \return         0 on success of everything but the initialization of the context else a specific error code
- * \warning        0
  */
 int SHA256Hasher::generate_checksum(unsigned char *input, size_t strLen, unsigned char *outputBuffer){
     int res;

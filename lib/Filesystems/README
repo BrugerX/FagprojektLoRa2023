@@ -1,8 +1,8 @@
 #####About this library:
 
-This library is ESP32 specific and deals with saving to the ESP32's NVM
+This library is ESP32 specific and deals with saving to the ESP32's NVM as well as handling file formats.
 
-- currently only the SPLIFFSFileManager -  reffered to in this readme as SPLIFFS-FM - has been implemented, which deals exclusively with the flash.
+ Currently the only class that deals with saving and loading to NVM is the SPLIFFSFileManager -  reffered to in this readme as SPLIFFS-FM - has been implemented, which deals exclusively with the flash.
 
 #####One SPLIFFSFileManager To Rule Them All:
 
@@ -26,3 +26,4 @@ However, the exceptions are thrown inside the wrapper functions we've made.
 #####Not Thread Safe
 
 We have yet to make the SPLIFFS-FM object thread safe.
+

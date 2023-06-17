@@ -64,12 +64,12 @@ void setup(){
 
 
 
-    res = rsa_Cryptographer->load_key_pem(pub_to_load,0);
+    res = rsa_Cryptographer->parse_key_pem(pub_to_load, 0);
     if(!isGoodResult(res)){
         Serial.print("FAILED TO LOAD PUB KEY PEM");
     }
 
-    res = rsa_Cryptographer->load_key_pem(priv_to_load,1);
+    res = rsa_Cryptographer->parse_key_pem(priv_to_load, 1);
     if(!isGoodResult(res)){
         Serial.print("FAILED TO LOAD PRIV KEY PEM");
     }
@@ -80,7 +80,7 @@ void setup(){
     }
 
     int IDXs[2];
-    PEMHandler->getIDXs(pub_to_load,PEMPubKeyLen,IDXs);
+    PEMHandler->get_IDXs(pub_to_load, PEMPubKeyLen, IDXs);
     int startingIdx = IDXs[0];
     int endIdx = IDXs[1];
 
@@ -97,13 +97,18 @@ void setup(){
 
     unsigned char * PEMFile;
     size_t PEMLen;
-    PEMHandler->getSource(pub_to_load,PEMPubKeyLen,&source,&source_size);
-    PEMHandler->addPEMHeaders(source,source_size,&PEMFile,&PEMLen,0);
+    PEMHandler->get_source(pub_to_load, PEMPubKeyLen, &source, &source_size);
+    PEMHandler->add_headers(source, source_size, &PEMFile, &PEMLen, 0);
+    log_e("PEMLen: %i",PEMLen);
     Serial.print("Starting PEMFile2\n");
     println_unsignedString(PEMFile,PEMLen,CHR);
     Serial.print("END OF PEMFILE2\n");
-    rsa_Cryptographer->load_key_pem(PEMFile,0,PEMLen);
-    log_e("%i",rsa_Cryptographer->validate_key());
+    println_unsignedString(pub_to_load,CHR);
+    rsa_Cryptographer->parse_key_pem(PEMFile, 0, PEMLen);
+    res = rsa_Cryptographer->validate_key();
+    if(isGoodResult(res)){
+        Serial.print("\nWE MADE IT\n");
+    }
 };
 
 void loop(){

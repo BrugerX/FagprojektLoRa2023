@@ -40,6 +40,7 @@ public:
 
     /**
      * Warning: Do not use this with strings. It will append random characters at the end of the string array.
+     * Instead use the load_file version, where you have to manually enter the ending index of the string.
      */
     bool load_file(const char * filePath, unsigned char * resultArray);
 
@@ -57,8 +58,15 @@ public:
      */
     bool load_file(const char * filePath, unsigned char * resultArray, size_t endIdx);
 
+    /**
+     * Will dismount the current SPIFFSFileManager object from the SPIFFS, allowing another instance of the object to mount.
+     * Read the README for more details.
+     */
     void dismount();
 
+    /**
+    * Will mount the current SPIFFSFileManager object unto the SPIFFS, if no other SPIFFSFileManager is mounted.
+    */
     bool mount();
 };
 

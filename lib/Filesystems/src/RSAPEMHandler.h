@@ -15,6 +15,7 @@ void create_PEM_arr(unsigned char ** PEM_arr,size_t arr_size);
 
 bool isGoodPEMResult(int result);
 
+
 /**
  *  The purpose of the RSAPEMHandler is responsible for reading and writing PEM data files, allowing for communication of data in PEM format
  */
@@ -23,6 +24,8 @@ class RSAPEMHandler{
     const char * regex_ending_header_pattern = "-----END (PUBLIC|PRIVATE) KEY-----";
     const char * pub_beginning_header = "-----BEGIN PUBLIC KEY-----";
     const char * pub_ending_header = "-----END PUBLIC KEY-----\n";
+    const char * priv_beginning_header = "-----BEGIN PRIVATE KEY-----";
+    const char * priv_ending_header = "-----END PRIVATE KEY-----\n";
 
 
 private:
@@ -93,10 +96,18 @@ public:
      * @param isPrivate [IN] Do we wish to add private or public PEM headers?
      */
 
-    void add_PEM_headers(unsigned char * source, size_t source_size, unsigned char ** PEMFile, size_t * PEM_size, bool isPrivate);
+    void add_headers(unsigned char * source, size_t source_size, unsigned char ** PEMFile, size_t * PEM_size, bool isPrivate);
 
+    /**
+     *
+     * @param pub_beginning_header_size_carrier The unsigned int to set to the size of the public key beginning PEM header
+     */
     void get_pub_beginning_header_size(size_t * pub_beginning_header_size_carrier);
 
+    /**
+     *
+     * @param pub_ending_header_size_carrier The unsigned int to set to the size of the public key ending PEM header
+     */
     void get_pub_ending_header_size(size_t * pub_ending_header_size_carrier);
 };
 

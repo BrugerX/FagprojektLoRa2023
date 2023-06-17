@@ -47,6 +47,8 @@ public:
 
 };
 
+
+
 class RSACryptographer : public Cryptographer{
 
 protected:
@@ -95,6 +97,7 @@ private:
         return this->RSA_priv_ctx;
     }
 
+    //Gets the public key in PEM format
     int get_pub_key_pem(unsigned char ** buf){
         int result;
 
@@ -113,6 +116,7 @@ private:
         return result;
     }
 
+    //Gets the public key in PEM format
     int get_priv_key_pem(unsigned char ** buf){
         int result;
 
@@ -133,6 +137,7 @@ private:
         return result;
     }
 
+    //Parses a private key PEM file into the current private key context
     int parse_priv_key(unsigned char * key_pem, size_t keyLen){
         if(!&RSA_priv_ctx){
             mbedtls_pk_free(&RSA_priv_ctx);
@@ -143,6 +148,7 @@ private:
         return mbedtls_pk_parse_key(&this->RSA_priv_ctx,key_pem,keyLen,NULL,0);
     }
 
+    //Parses a public key PEM file into the current public key context
     int parse_pub_key(unsigned char * key_pem, size_t keylen){
         if(!&RSA_pub_ctx){
             mbedtls_pk_free(&RSA_pub_ctx);
@@ -196,7 +202,9 @@ public:
     }
 
     /**
-     * @post RSA_ctx.initialized == True, RSA_ctx.can_debug == True
+     * @post RSA_ctx.initialized == True && RSA_ctx.can_debug == True && validate() == True
+     *
+     * Generates a new RSA keypair, that is ready to be used for encryption and decryption
      *
      */
     int generate_key(){
@@ -262,6 +270,7 @@ public:
         return RSABooleanTrue;
     }
 
+    //Validates that the RSACryptographers key contexts work
     int validate_key(){
         return mbedtls_pk_check_pair(&this->RSA_pub_ctx,&this->RSA_priv_ctx);
     }
@@ -316,8 +325,13 @@ public:
 
     }
 
+
+    /**
+     * Parses a public or private key in PEM format into the respective context
+     */
     int parse_key_pem(unsigned char * key_pem, bool isPrivateKeyPem){
         int operation_result;
+
 
         if(isPrivateKeyPem){
             operation_result = parse_priv_key(key_pem, PEMPrivKeyLen);

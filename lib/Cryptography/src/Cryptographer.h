@@ -18,6 +18,7 @@
 #include <RSAPEMHandler.h>
 
 class Cryptographer;
+class AssymetricCryptographer;
 class RSACryptographer;
 
 #endif //FAGPROJEKTLORA2023_CRYPTOGRAPHER_H

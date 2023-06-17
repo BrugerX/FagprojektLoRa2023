@@ -119,7 +119,7 @@ void RSAPEMHandler::add_src(unsigned char *PEMFile, size_t src_size, unsigned ch
     }
 }
 
-void RSAPEMHandler::add_PEM_headers(unsigned char * source, size_t source_size, unsigned char ** PEMFile, size_t * PEM_size, bool isPrivate){
+void RSAPEMHandler::add_headers(unsigned char * source, size_t source_size, unsigned char ** PEMFile, size_t * PEM_size, bool isPrivate){
     unsigned char * PEMFile_arr;
 
 
