@@ -37,7 +37,17 @@ DataController dataController = DataController(&dataView);
 char names[6][8] = {"Bjarke", "Benny", "Birger", "Bjarne", "Bent", "Birk"};
 
 
+int findStartingIndexPEMFile(unsigned char * PEMBuffer, size_t sizeOfBuffer){
+    for(int i = sizeOfBuffer;i>0;i--){
+        unsigned char c = PEMBuffer[i];
+        if(c == PEM_EMPTY_PLACEHOLDER){
+            return ++i;
+        }
 
+        return PEM_ERR_NO_PEM_FILE;
+    }
+
+}
 
 
 auto * rsa_Cryptographer = new RSACryptographer();
