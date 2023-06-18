@@ -4,15 +4,7 @@
 
 #include "RegexUtility.h"
 
-/**
- * @data The string we need to search through
- * @size The size of this string in number of indices
- * @formula The regex formula we will match
- *
- * @return
- *        Returns the index immediately after the end of the match
- *        Else it returns -1
- */
+
 int RegexUtil::getEndIDX(const unsigned char *data, int size, std::regex formula) {
     int IDX = -1;
 
@@ -35,15 +27,6 @@ int RegexUtil::getEndIDX(const unsigned char *data, int size, std::regex formula
 
 };
 
-/**
- * @data The string we need to search through
- * @size The size of this string in number of indices
- * @formula The regex formula we will match
- *
- * @return
- *        Returns the index at the start of the match
- *        Else it returns -1
- */
 
 int RegexUtil::getStartIDX(const unsigned char *data, int size, std::regex formula) {
     std::string content(reinterpret_cast<const char*>(data), size);

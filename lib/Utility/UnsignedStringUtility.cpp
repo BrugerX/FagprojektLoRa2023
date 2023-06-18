@@ -48,7 +48,6 @@ void println_unsignedString(unsigned char * unsginedString, int base){
 }
 
 
-//Generates the following array ReGex [A,B,C,...,z]^(|[A,B,C,...,z]|%(sizeOf))
 void fill_alphanumeric_unsignedString(unsigned char * unsignedString, size_t sizeOf){
     unsigned char a = 'A';
 

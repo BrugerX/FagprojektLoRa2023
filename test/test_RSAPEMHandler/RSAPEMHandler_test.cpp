@@ -66,6 +66,7 @@ void normalPubKey(){
     }
 }
 
+//TODO: NEED TO FINISH THE TESTS FOR THIS
 /**
  *
  */

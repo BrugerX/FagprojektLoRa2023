@@ -55,7 +55,10 @@ private:
     void get_source_len(size_t PEMFile_original_len, int beginIDX, int endIDX, size_t * new_len);
 
 
+    //Adds the beginning header of a public RSA PEM file
     void add_public_begin_header(unsigned char * PEMFile);
+
+    //Adds the ending header of a public RSA PEM file
     void add_public_end_header(unsigned char * PEMFile, size_t src_size);
 
     __attribute__((unused)) void addPrivateBeginHeader(unsigned char * PEMFile);
@@ -76,6 +79,7 @@ public:
      */
     void get_PEM_length(unsigned char * PEMFile_array, size_t * PEMFile_size);
 
+    //Gets the starting and ending index of a source
     void get_IDXs(unsigned char* PEMFile, size_t PEMFile_len, int IDXTuple[2]);
 
     /**

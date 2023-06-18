@@ -13,7 +13,27 @@
 
 class RegexUtil{
 public:
+    /**
+     * @data The unsigned char array we need to search through
+     * @size The size of this string in number of indices
+     * @formula The regex formula we will match
+     *
+     * @return
+     *        Returns the index immediately after the end of the match
+     *        Else it returns -1
+     */
     static int getEndIDX (const unsigned char *data, int size, std::regex formula);
+
+    /**
+     * @data The string we need to search through
+     * @size The size of this string in number of indices
+     * @formula The regex formula we will match
+     *
+     * @return
+     *        Returns the index at the start of the match
+     *        Else it returns -1
+     */
+
     static int getStartIDX(const unsigned char *data, int size, std::regex formula);
 };
 

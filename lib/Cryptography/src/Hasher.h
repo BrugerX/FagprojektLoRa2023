@@ -26,8 +26,10 @@ private:
 public:
     SHA256Hasher();
 
+    //Initializes the context, such that it is ready to calculate a hash
     int init_ctx();
 
+    //Generates the checksum of the input and saves it to the outputBuffer
     int generate_checksum(unsigned char *input, size_t strLen, unsigned char *outputBuffer);
 };
 #endif //FAGPROJEKTLORA2023_HASHER_H
