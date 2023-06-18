@@ -30,4 +30,5 @@ add_custom_target(
     WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-add_executable(Z_DUMMY_TARGET ${SRC_LIST})
+
+add_executable(Z_DUMMY_TARGET ${SRC_LIST} test/test_RegexUtility/UtilityRegexTest.cpp test/test_RSAPEMHandler/RSAPEMHandler_test.cpp lib/MVC/MVCSettings.h lib/MVC/NavigationData.cpp test/test_MVC/test_adding_and_deletion_of_members.hpp test/test_MVC/test_user_input_compass_state.hpp test/test_MVC/test_user_input_table_state.hpp test/test_MVC/test_embedded_main.cpp test/test_MVC/test_user_input_nav_overview_state.hpp test/test_MVC/test_user_input_nav_overview_state.hpp)
