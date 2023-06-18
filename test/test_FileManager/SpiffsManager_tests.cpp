@@ -11,11 +11,12 @@
 #include <TestUtility.h>
 
 
+
 /**
  * IMPORTANT: Remember not to use the same paths for the tests that need to be resat; They will overwrite each other.
  */
 const char * TEST_STR_PATH;
-char * TEST_STR;
+char TEST_STR[] = "ABC";;
 SPIFFSFileManager * spiffy;
 int testInt;
 
@@ -39,7 +40,6 @@ bool didWeRestart(){
 void setUp(void) {
     // set stuff up here
     TEST_STR_PATH = "/abc";
-    TEST_STR = "ABC";
 }
 
 

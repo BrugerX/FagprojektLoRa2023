@@ -18,6 +18,12 @@
 #include "../lib/MVC/MVCSettings.h"
 #include <cstdlib>
 
+#define CHR 0
+#define DEC 10
+#define HEX 16
+#define OCT 8
+#define BIN 2
+
 
 static const char* TAG_main = "Main";
 
