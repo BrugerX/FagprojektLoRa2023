@@ -7,7 +7,7 @@
 
 #include <RegexUtility.h>
 #include <CryptographicSettings.h>
-#include <utility.h>
+#include <UnsignedStringUtility.h>
 
 #define BAD_PEM_RESULT -1
 

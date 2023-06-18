@@ -4,7 +4,7 @@
 #include "esp_dsp.h"
 #include "stddef.h"
 #include <FileManager.h>
-#include "../lib/Utility/Utility.h"
+#include "UnsignedStringUtility.h"
 #include <Cryptographer.cpp>
 #include "sha/sha_parallel_engine.h"
 #include "mbedtls/sha256.h"
@@ -12,7 +12,6 @@
 #include "regex"
 #include <RegexUtility.h>
 #include <RSAPEMHandler.h>
-#include <ssd1306.h>
 #include "../lib/MVC/DataView.h"
 #include "../lib/MVC/DataController.h"
 #include "../lib/MVC/MVCSettings.h"
@@ -37,22 +36,9 @@ DataController dataController = DataController(&dataView);
 char names[6][8] = {"Bjarke", "Benny", "Birger", "Bjarne", "Bent", "Birk"};
 
 
-int findStartingIndexPEMFile(unsigned char * PEMBuffer, size_t sizeOfBuffer){
-    for(int i = sizeOfBuffer;i>0;i--){
-        unsigned char c = PEMBuffer[i];
-        if(c == PEM_EMPTY_PLACEHOLDER){
-            return ++i;
-        }
-
-        return PEM_ERR_NO_PEM_FILE;
-    }
-
-}
-
 
 auto * rsa_Cryptographer = new RSACryptographer();
 
-auto * hashishi = new SHA256Hasher();
 
 auto * PEMHandler = new RSAPEMHandler();
 
@@ -106,41 +92,7 @@ void setup(){
         Serial.print("FAILED TO LOAD PRIV KEY PEM");
     }
 
-    res = rsa_Cryptographer->validate_key();
-    if(!isGoodResult(res)){
-        Serial.print("NONO MISTAH!");
-    }
 
-    int IDXs[2];
-    PEMHandler->get_IDXs(pub_to_load, PEMPubKeyLen, IDXs);
-    int startingIdx = IDXs[0];
-    int endIdx = IDXs[1];
-
-    unsigned char * source;
-    size_t source_size;
-
-    if(startingIdx>-1)
-    {
-
-    }
-    else{
-        Serial.println("Huh??!");
-    }
-
-    unsigned char * PEMFile;
-    size_t PEMLen;
-    PEMHandler->get_source(pub_to_load, PEMPubKeyLen, &source, &source_size);
-    PEMHandler->add_headers(source, source_size, &PEMFile, &PEMLen, 0);
-    log_e("PEMLen: %i",PEMLen);
-    Serial.print("Starting PEMFile2\n");
-    println_unsignedString(PEMFile,PEMLen,CHR);
-    Serial.print("END OF PEMFILE2\n");
-    println_unsignedString(pub_to_load,CHR);
-    rsa_Cryptographer->parse_key_pem(PEMFile, 0, PEMLen);
-    res = rsa_Cryptographer->validate_key();
-    if(isGoodResult(res)){
-        Serial.print("\nWE MADE IT\n");
-    }
 };
 char input = ' ';
 void loop(){

@@ -4,7 +4,7 @@
 
 #include <Arduino.h>
 #include <unity.h>
-#include "../../lib/Utility/Utility.cpp"
+#include "UnsignedStringUtility.cpp"
 #include <CryptographicSettings.cpp>
 #include <Cryptographer.cpp>
 #include <TestUtility.h>

@@ -4,7 +4,7 @@
 
 #include "unity.h"
 #include <RSAPEMHandler.h>
-#include <utility.h>
+#include <UnsignedStringUtility.h>
 
 #define HEADER_PUB_BEGIN  "-----BEGIN PUBLIC KEY-----"
 #define HEADER_PUB_END  "-----END PUBLIC KEY-----"
