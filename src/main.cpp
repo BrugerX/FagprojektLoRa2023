@@ -10,7 +10,6 @@ DataController dataController = DataController(&dataView);
 char names[6][8] = {"Bjarke", "Benny", "Birger", "Bjarne", "Bent", "Birk"};
 
 void setup() {
-    // put your setup code here, to run once:
     Serial.begin(9600);
     delay(2000);
     dataView.initialiseView();
@@ -21,19 +20,9 @@ void setup() {
         srand(i);
         dataController.addGroupMember(Member(names[i], NavigationData()));
     }
-    /*while(Serial.available() != 0){
-      char input = Serial.read();
-      delay(2);
-      if(input == 'g'){
-        char IDs[32][8] = {"ID1", "ID2", "ID3", "ID4", "ID5", "ID6", "ID7", "ID8"};
-        char names[32][8] = {"Name1", "Name2", "Name3", "Name4", "Name5", "Name6", "Name7", "Name8"};
-        dataViewet.drawIDTable(IDs, names, &dev);
-      }
-    }*/
 }
 char input = ' ';
 void loop() {
-    // put your main code here, to run repeatedly:
     if(Serial.available() != 0){
         Serial.println("Ready to read");
         input = (char) Serial.read();
