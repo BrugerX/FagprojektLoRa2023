@@ -1,3 +1,5 @@
+Bjarke has been the main person responsible for developing this library
+
 This is our library for the MVC architecture.
 
 This is used for the GUI, so we can have the data in the DataModel be displayed on the display.

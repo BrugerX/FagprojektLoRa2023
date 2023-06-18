@@ -1,3 +1,5 @@
+Benjamin has been the main person responsible for this library.
+
 #####About this library:
 
 This library is ESP32 specific and deals with saving to the ESP32's NVM as well as handling file formats.
