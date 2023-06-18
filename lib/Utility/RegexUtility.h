@@ -1,6 +1,9 @@
 //
 // Created by DripTooHard on 05-06-2023.
 //
+//*
+//* Contains methods related to simple ReGex operations
+//*
 
 #ifndef FAGPROJEKTLORA2023_REGEXUTILITY_H
 #define FAGPROJEKTLORA2023_REGEXUTILITY_H

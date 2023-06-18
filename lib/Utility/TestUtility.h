@@ -1,6 +1,9 @@
 //
 // Created by DripTooHard on 29-05-2023.
 //
+//*
+//* Contains methods for easier unit testing
+//*
 
 #include "stddef.h"
 

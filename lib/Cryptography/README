@@ -4,6 +4,11 @@ Benjamin has been the main person responsible for this library.
 
 This library deals with everything related to cryptography.
 
+RSACryptographer: A class that utilizes the ESP32's cryptographic accelerator through MbedTLS in order to provide RSA functionalities.
+CryptographicSettings: Cotnains settings related to cryptography.
+SHA256Hasher: A class that utilizes the ESP32's cryptographic accelerator through MbedTLS in order to provide SHA256 functionalities
+
+
 #####Error handling:
 
 In case of failed or unexpected errors from functions facing the user of this API, we throw errors as well as print the specific error codes of the given error.
@@ -25,4 +30,4 @@ The MbedTLS libraries typically uses 0 as the value for success and the specific
 We've therefore defined the macros RSABooleanTrue and RSABooleanFalse to designate success of an operation in the Cryptography library.
 
 In other words: It is important that a future developer does not check the success of an MbedTLS API call by using:
-result == True
+result == True, but rather result == RSABooleanTrue

@@ -5,8 +5,7 @@
 
 /*
  *
- * Contains methods that make it easier to develop,test and debug the software,
- * but which add no functionality to the software.
+ * Contains methods that make it easier to develop and debug unsigned strings
  *
  */
 

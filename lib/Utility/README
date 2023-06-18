@@ -1,0 +1,8 @@
+Benjamin has been responsible for this library.
+
+In general this library contains functions, that cannot be placed firmly within any of the other libraries,
+but which are not big og important enough to have their own.
+
+RegexUtility: Contains methods related to simple ReGex operations
+TestUtility: Contains methods for easier unit testing
+Utility: Contains methods that make it easier to develop and debug unsigned strings
