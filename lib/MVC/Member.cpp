@@ -8,17 +8,17 @@ Member::Member(char * ID, NavigationData nav){
 }
 
 void Member::ChangeLocation(char x, char y){
-    //nav.changeLocation()
+    //nav.changeLocation() //this method should be used to change the gps coordinates, but since we haven't implemented getting them, this does nothing.
 }
 
 char Member::getXLocation(){
     //nav.getX
-    return 10 + (rand() % 109);//64;
+    return 10 + (rand() % 109); // This is only for illustrative purposes.
 }
 
 char Member::getYLocation(){
     //nav.getY
-    return 5 + (rand() % 55);//32;
+    return 5 + (rand() % 55); // This is only for illustrative purposes.
 }
 
 char * Member::getID(){

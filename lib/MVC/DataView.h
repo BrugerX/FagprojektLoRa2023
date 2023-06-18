@@ -1,7 +1,5 @@
 #include <ssd1306.h>
 #include "MVCSettings.h"
-#include "CompassViewer.h"
-#include "TableViewer.h"
 #include "../ssd1306/ssd1306.h"
 #include <vector>
 #include "Member.h"
@@ -16,8 +14,6 @@ using namespace std;
 
 class DataView {
 private:
-    NavigationViewer compassViewer;
-    TableViewer tableViewer;
     SSD1306_t dev;
 
 public:
